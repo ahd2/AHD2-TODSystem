@@ -743,6 +743,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentTime: 0
+  _timeFlow: 0
+  MainLight: {fileID: 2064599365}
 --- !u!1 &2064599362
 GameObject:
   m_ObjectHideFlags: 0
