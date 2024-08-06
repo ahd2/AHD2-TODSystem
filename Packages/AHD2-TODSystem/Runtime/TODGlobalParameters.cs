@@ -5,10 +5,12 @@ using UnityEngine;
 /// <summary>
 /// 管理全局参数的类
 /// </summary>
-public class TODGlobalParameters
+[CreateAssetMenu(fileName = "TODGlobalParameters", menuName = "AHD2TODSystem/GlobalParameters", order = 0)]
+public class TODGlobalParameters : ScriptableObject
 {
-    private static float _currentTime;
-    public static float CurrentTime
+    [SerializeField,Range(0f,24f),Tooltip("时间")]
+    private float _currentTime;
+    public float CurrentTime
     {
         get { return _currentTime; }
         set
@@ -30,5 +32,6 @@ public class TODGlobalParameters
         }
     }
     //控制时间是否流动
-    public static bool timeFlow;
+    public bool timeFlow;
+    
 }
