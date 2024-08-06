@@ -1,0 +1,10 @@
+{
+  "name": "com.ahd2.tod-system",
+  "version": "0.1.0",
+  "displayName": "AHD2-TODSystem",
+  "description": "TOD系统。",
+  "unity": "2021.3",
+  "author": {
+    "name": "ahd2"
+  }
+}

@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.ahd2.tod-system": {
+      "version": "file:AHD2-TODSystem",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
