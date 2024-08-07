@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
   m_Name: TODGlobalParameters
   m_EditorClassIdentifier: 
+  _currentTime: 13.559252
+  timeFlow: 1
