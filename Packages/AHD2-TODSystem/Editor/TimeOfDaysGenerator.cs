@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 public partial class TimeOfDaysGenerator : EditorWindow
 {
     private TODGlobalParameters _todGlobalParameters;
     private List<TempTOD> todList = new List<TempTOD>();
-    public List<TimeOfDay> timeOfDays;//赋值nextTOD的列表
+    public List<TimeOfDay> timeOfDays = new List<TimeOfDay>();//赋值nextTOD的列表(列表一定要初始化)
     
     //消息提示框提示的消息
     string message = "";
@@ -61,6 +62,8 @@ public partial class TimeOfDaysGenerator : EditorWindow
             GenerateTOD();
             message = "生成成功！";
             messageType = MessageType.Info;
+            //清空timeOfDays
+            timeOfDays.Clear();
         }
         //消息盒子
         if (!string.IsNullOrEmpty(message))
@@ -98,14 +101,36 @@ public partial class TimeOfDaysGenerator : EditorWindow
         //赋值nextTOD
         for (int i = 0; i < timeOfDays.Count; i++)
         {
-            int nextID = (i + 1 == todList.Count) ? 0 : i + 1;//下一个时刻的索引
+            int nextID = (i + 1 == timeOfDays.Count) ? 0 : i + 1;//下一个时刻的索引
             timeOfDays[i].nextTOD = timeOfDays[nextID];
+            timeOfDays[i].materials = new Material[_todGlobalParameters.materials.Length]; //初始化材质数组，大小为全局参数材质数组大小
         }
 
+        string matPath;
         foreach (var mat in _todGlobalParameters.materials)
         {
             //每个mat，创建关键帧个数的实例
-            
+            CreateDirectory(currentPath + "/" + mat.name + "_TOD");//尝试创建路径
+            for (int i = 0; i < todList.Count; i++)
+            {
+                matPath = currentPath + "/" +mat.name + "_TOD" + "/" + todList[i].name + "_" +mat.name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
+                // 创建一个新的材质，复制原始材质的属性
+                Material newMaterial = new Material(mat);
+                timeOfDays[i].materials[0] = newMaterial;//后续要改索引，
+                // 保存新的材质到Assets文件夹
+                AssetDatabase.CreateAsset(newMaterial, matPath);
+                AssetDatabase.SaveAssets();
+            }
+        }
+    }
+    
+    public void CreateDirectory(string path)
+    {
+        // 检查路径是否已存在
+        if (!Directory.Exists(path))
+        {
+            // 如果路径不存在，创建它
+            Directory.CreateDirectory(path);
         }
     }
 }

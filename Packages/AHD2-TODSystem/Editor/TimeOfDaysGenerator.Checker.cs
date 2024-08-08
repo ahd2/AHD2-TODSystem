@@ -39,6 +39,14 @@ public partial class TimeOfDaysGenerator : EditorWindow
                 return; // 避免在遍历过程中修改列表
             }
         }
+        //检测全局参数是否为空
+        if (_todGlobalParameters == null)
+        {
+            message = "全局参数配置为空";
+            messageType = MessageType.Error;
+            GUIUtility.ExitGUI();//提前结束绘制，不加这个报错不匹配
+            return; // 避免在遍历过程中修改列表
+        }
     }
 
     private void CheckTime()
