@@ -9,6 +9,23 @@ using UnityEngine;
 /// </summary>
 public partial class TimeOfDaysGenerator : EditorWindow
 {
+    //检测全局参数
+    private void CheckGlobalParameters()
+    {
+        if (_todGlobalParameters != null)
+        {
+            //检测全局参数材质数组是否有空的
+            for (int i = 0; i < _todGlobalParameters.materials.Length; i++)
+            {
+                if (_todGlobalParameters.materials[i] == null)
+                {
+                    message = "全局参数材质数组有缺失！";
+                    messageType = MessageType.Error;
+                    return; // 避免在遍历过程中修改列表
+                }
+            }
+        }
+    }
     //检测todlist内所有关键帧名字是否合规
     private void CheckName()
     {

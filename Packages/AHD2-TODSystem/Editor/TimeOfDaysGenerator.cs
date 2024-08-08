@@ -31,6 +31,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
             typeof(TODGlobalParameters), // 允许选择的对象类型。
             false
         );
+        CheckGlobalParameters();
         GUILayout.EndHorizontal();
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
         EditorGUILayout.BeginVertical(GUI.skin.box);
@@ -100,12 +101,14 @@ public partial class TimeOfDaysGenerator : EditorWindow
             AssetDatabase.CreateAsset(newTOD, soPath);
             AssetDatabase.SaveAssets();
         }
+        _todGlobalParameters.timeOfDays = new TimeOfDay[timeOfDays.Count];//重新初始化tod数组
         //赋值nextTOD
         for (int i = 0; i < timeOfDays.Count; i++)
         {
             int nextID = (i + 1 == timeOfDays.Count) ? 0 : i + 1;//下一个时刻的索引
             timeOfDays[i].nextTOD = timeOfDays[nextID];
             timeOfDays[i].materials = new Material[_todGlobalParameters.materials.Length]; //初始化材质数组，大小为全局参数材质数组大小
+            _todGlobalParameters.timeOfDays[i] = timeOfDays[i];//把tod赋值到全局参数中。
         }
         //赋值材质
         string matPath;
