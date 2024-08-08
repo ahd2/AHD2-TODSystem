@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
-  m_Name: TODGlobalParameters
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: 0-12
   m_EditorClassIdentifier: 
-  _currentTime: 13.35
-  timeFlow: 0
-  materials: []
-  timeOfDays: []
-  todTime: 0
+  startTime: 0
+  endTime: 12
+  isCross24: 0
+  duration: 0
+  materials:
+  - {fileID: 2100000, guid: b6699d4bb93bcb244894d56959f011ec, type: 2}

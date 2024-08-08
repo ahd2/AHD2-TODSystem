@@ -32,6 +32,9 @@ public class TODGlobalParameters : ScriptableObject
         }
     }
     //控制时间是否流动
-    public bool timeFlow;
-    
+    public bool timeFlow; //私有的加_，公开的不加
+    public Material[] materials;//插值材质数组，场景中使用的材质放这里。
+    public TimeOfDay[] timeOfDays;//tod数组
+    public TimeOfDay currentTimeOfDay;
+    public float todTime;//当前tod已经经过的时间
 }
