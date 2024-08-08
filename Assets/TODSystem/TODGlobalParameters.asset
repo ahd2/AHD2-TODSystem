@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
   m_Name: TODGlobalParameters
   m_EditorClassIdentifier: 
-  _currentTime: 14.957747
+  _currentTime: 12.897974
   timeFlow: 1
   materials:
   - {fileID: 2100000, guid: 2ce7b0830b4e50e4891b41ee3d74ddfd, type: 2}
+  - {fileID: 2100000, guid: b68fac354b176724f934ffab33d63196, type: 2}
   timeOfDays:
-  - {fileID: 11400000, guid: 5280f45e3e911b54197d1aa6bcd97f03, type: 2}
-  - {fileID: 11400000, guid: 4a4a71e870e368d44a6e5d50de1289e0, type: 2}
-  currentTimeOfDay: {fileID: 11400000, guid: 4a4a71e870e368d44a6e5d50de1289e0, type: 2}
-  todTime: 2.9470832
+  - {fileID: 11400000, guid: bc46d5fce0f29004298c772e206c599a, type: 2}
+  - {fileID: 11400000, guid: fa71ed6fd6b6c464eb0c18a8583f7718, type: 2}
+  - {fileID: 11400000, guid: 44e1548e9a24efe4a9cad150e821ec5d, type: 2}
+  currentTimeOfDay: {fileID: 11400000, guid: fa71ed6fd6b6c464eb0c18a8583f7718, type: 2}
+  todTime: 2.8927217

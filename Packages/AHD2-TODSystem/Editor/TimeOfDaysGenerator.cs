@@ -60,10 +60,6 @@ public partial class TimeOfDaysGenerator : EditorWindow
             CheckName();
             CheckTime();
             GenerateTOD();
-            message = "生成成功！";
-            messageType = MessageType.Info;
-            //清空timeOfDays
-            timeOfDays.Clear();
         }
         //消息盒子
         if (!string.IsNullOrEmpty(message))
@@ -86,6 +82,12 @@ public partial class TimeOfDaysGenerator : EditorWindow
 
         string soPath;
         currentPath = EditorUtility.OpenFolderPanel("选择路径", assetPath, "");
+        //做一个判空，检测用户关闭弹窗
+        if (currentPath == "")
+        {
+            GUIUtility.ExitGUI();//提前结束绘制，不加这个报错不匹配
+            return;
+        }
         currentPath = currentPath.Replace(Application.dataPath, "Assets");
         for (int i = 0; i < todList.Count; i++)
         {
@@ -105,23 +107,29 @@ public partial class TimeOfDaysGenerator : EditorWindow
             timeOfDays[i].nextTOD = timeOfDays[nextID];
             timeOfDays[i].materials = new Material[_todGlobalParameters.materials.Length]; //初始化材质数组，大小为全局参数材质数组大小
         }
-
+        //赋值材质
         string matPath;
-        foreach (var mat in _todGlobalParameters.materials)
+        for (int i = 0; i < _todGlobalParameters.materials.Length; i++)//逐个材质
         {
             //每个mat，创建关键帧个数的实例
-            CreateDirectory(currentPath + "/" + mat.name + "_TOD");//尝试创建路径
-            for (int i = 0; i < todList.Count; i++)
+            CreateDirectory(currentPath + "/" + _todGlobalParameters.materials[i].name + "_TOD");//尝试创建路径
+            for (int j = 0; j < todList.Count; j++)//每个材质逐个TOD赋值
             {
-                matPath = currentPath + "/" +mat.name + "_TOD" + "/" + todList[i].name + "_" +mat.name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
+                Debug.Log(j);
+                matPath = currentPath + "/" +_todGlobalParameters.materials[i].name + "_TOD" + "/" + todList[j].name + "_" +_todGlobalParameters.materials[i].name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
                 // 创建一个新的材质，复制原始材质的属性
-                Material newMaterial = new Material(mat);
-                timeOfDays[i].materials[0] = newMaterial;//后续要改索引，
+                Material newMaterial = new Material(_todGlobalParameters.materials[i]);
+                timeOfDays[j].materials[i] = newMaterial;//后续要改索引，
                 // 保存新的材质到Assets文件夹
                 AssetDatabase.CreateAsset(newMaterial, matPath);
                 AssetDatabase.SaveAssets();
             }
         }
+        
+        message = "生成成功！";
+        messageType = MessageType.Info;
+        //清空timeOfDays,todList不清空是因为它也不会在代码中生成
+        timeOfDays.Clear();
     }
     
     public void CreateDirectory(string path)
