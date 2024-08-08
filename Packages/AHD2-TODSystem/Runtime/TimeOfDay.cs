@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 单个时刻的父类。子类为一天中的单个时刻
 /// </summary>
-[CreateAssetMenu(fileName = "TOD", menuName = "AHD2TODSystem/TimeOfDay", order = 5)]
+//[CreateAssetMenu(fileName = "TOD", menuName = "AHD2TODSystem/TimeOfDay", order = 5)]
 public class TimeOfDay : ScriptableObject
 {
     public TimeOfDay nextTOD;//下一个时刻

@@ -1,3 +1,16 @@
 {
-	"name": "AHD2.TODSystem.Editor"
+    "name": "AHD2.TODSystem.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:68e8cf1a3c026044da8fe2f07f7de963"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
