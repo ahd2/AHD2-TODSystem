@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: 12-24
   m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 5280f45e3e911b54197d1aa6bcd97f03, type: 2}
   startTime: 12
-  endTime: 24
-  isCross24: 0
-  duration: 0
+  endTime: 0
+  isCross24: 1
+  duration: 12
   materials:
   - {fileID: 2100000, guid: 44ae2a0870c02554fbf5524b874a37ab, type: 2}
