@@ -37,4 +37,5 @@ public class TODGlobalParameters : ScriptableObject
     public TimeOfDay[] timeOfDays;//tod数组
     public TimeOfDay currentTimeOfDay;
     public float todTime;//当前tod已经经过的时间
+    public List<TempTOD> todFrameList = new List<TempTOD>();//维护关键帧列表，工具用
 }
