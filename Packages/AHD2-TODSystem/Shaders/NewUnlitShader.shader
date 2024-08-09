@@ -36,7 +36,7 @@ Shader "Unlit/RP_Cubemap_reflection_shader"
             float4 _ReflectColor;//用于控制反射的天空盒子的颜色量
             float _ReflectAmount;//用于控制反射的天空盒子的颜色和漫反射diffuse在总体反射中的占比
             //samplerCUBE _GlossyEnvironmentCubeMap;
-            
+            sampler2D _PlanarReflectionTexture;
             
             half4 _Specular;
             half _Gloss;
@@ -58,7 +58,7 @@ Shader "Unlit/RP_Cubemap_reflection_shader"
                 float3 normal_WS : TEXCOORD1;
                 float3 view_dir_WS : TEXCOORD2;
                 float3 reflect_dir_WS : TEXCOORD3;
-                
+                float4 uv : TEXCOORD4;
             };
             
 
@@ -68,7 +68,7 @@ Shader "Unlit/RP_Cubemap_reflection_shader"
                 o.position_CS = TransformObjectToHClip(v.vertex);//获取裁剪空间的顶点坐标
                 o.position_WS = mul(unity_ObjectToWorld, v.vertex);//获取世界空间的顶点坐标
                 o.normal_WS = TransformObjectToWorldNormal(v.vertex_normal);//获取世界空间的法线
-                
+                o.uv = ComputeScreenPos(o.position_CS);
                 
                 o.view_dir_WS = GetWorldSpaceViewDir(o.position_WS);
                 o.reflect_dir_WS = reflect(-normalize(o.view_dir_WS), normalize(o.normal_WS));//获取反射光线
@@ -98,8 +98,10 @@ Shader "Unlit/RP_Cubemap_reflection_shader"
                 
                 reflection = lerp(diffuse, reflection,  _ReflectAmount);//通过平滑函数获得最佳的反射
                 
-                
+                float2 uv = i.uv.xy / i.uv.w;
                 half3 return_color = ambient + reflection  + specular;
+                half4 col = tex2D(_PlanarReflectionTexture,uv);
+                return col * 0.78;
                 return half4(return_color, 1.0);
             }
             ENDHLSL

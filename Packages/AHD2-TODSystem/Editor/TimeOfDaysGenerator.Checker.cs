@@ -12,7 +12,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
     //检测全局参数
     private void CheckGlobalParameters()
     {
-        if (_todGlobalParameters != null)
+        if (_todGlobalParameters)
         {
             if (message == "全局参数配置为空")//拖入全局参数后，把配置为空的消息清空
             {
@@ -108,7 +108,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
         }
         foreach (var mat in extraMats)
         {
-            if (mat == null)
+            if (!mat)
             {
                 message = "要添加的材质中有空材质";
                 messageType = MessageType.Error;
