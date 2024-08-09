@@ -47,9 +47,9 @@ Material:
     m_Colors:
     - _SunColor: {r: 2.012792, g: 1.8903925, b: 0, a: 1}
     - _SunInnercolor: {r: 8.967696, g: 6.0599046, b: 2.6564682, a: 1}
-    - _sky_color: {r: 0.007843142, g: 0.010640348, b: 0.21568628, a: 1}
-    - _sunOrgColorBeside: {r: 0, g: 0, b: 0, a: 1}
-    - _sunOrgColorLookAt: {r: 0.29411766, g: 0, b: 0.26253897, a: 1}
-    - _sunScatterColorBeside: {r: 0, g: 0, b: 0, a: 1}
-    - _sunScatterColorLookAt: {r: 0, g: 0.5116832, b: 0.7818518, a: 1}
+    - _sky_color: {r: 0.6320754, g: 0.2091426, b: 0, a: 1}
+    - _sunOrgColorBeside: {r: 0.9150943, g: 0.46444014, b: 0.02071909, a: 1}
+    - _sunOrgColorLookAt: {r: 0.9221513, g: 0.7676548, b: 0, a: 1}
+    - _sunScatterColorBeside: {r: 0, g: 0.3512595, b: 0.6695884, a: 1}
+    - _sunScatterColorLookAt: {r: 1.4436274, g: 0.15578714, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -12,6 +12,10 @@ public class TimeOfDay : ScriptableObject
     public float endTime;//当前时刻结束时间（即下一时刻开始时间）(时间范围为[0,24)，即24点统一用0点)
     [HideInInspector]public bool isCross24;//这个时刻和下个时刻中间是否越过24点
     [HideInInspector]public float duration;//这个tod会持续的时间
+    //光源
+    public Color lightColor;
+    public bool datOrNight;//0为白天，1为黑夜
+        
     public Material[] materials;
     public void Initialize()
     {

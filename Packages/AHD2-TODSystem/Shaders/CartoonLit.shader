@@ -2,57 +2,85 @@ Shader "AHD2TODSystem/CartoonLit"
 {
     Properties
     {
+        [Header(MainColor)]
+        [Space(10)]
         _MainTex ("Texture", 2D) = "white" {}
+        
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        LOD 100
 
         Pass
         {
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
-
-            #include "UnityCG.cginc"
-
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
-                float4 vertex : SV_POSITION;
-            };
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
-                return o;
-            }
-
-            fixed4 frag (v2f i) : SV_Target
-            {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
-            }
-            ENDCG
+            //光照Pass
+            Name "CartoonForwardLit"
+            HLSLPROGRAM
+            #pragma vertex CartoonLitVertex
+            #pragma fragment CartoonLitFragment
+            //接收投影变体
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            //光照贴图变体（只开启静态）
+            #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ SHADOWS_SHADOWMASK //这两个宏用于控制阴影的烘焙和采样。当你在Unity的Lighting窗口中选择了Shadowmask或者Subtractive模式，这两个宏就会被激活。
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED //这个宏用于控制是否将定向光源的光照信息烘焙到光照贴图中。当你在Unity的Lighting窗口中选择了Baked GI，并且选择了Directional Mode，这个宏就会被激活。
+            #pragma multi_compile _ LIGHTMAP_ON
+            #include "CartoonLitInput.hlsl"
+	        #include "CartoonLitForwardPass.hlsl"
+            ENDHLSL
         }
+
+        Pass
+        {
+            //阴影写入Pass（目前不支持alphaTest阴影，需要的话再加）
+            Name "CartoonShadowCaster"
+            Tags{ "LightMode" = "ShadowCaster" }
+            HLSLPROGRAM
+            #pragma vertex CartoonShadowCasterVertex
+            #pragma fragment CartoonShadowCasterFragment
+            #include "CartoonLitInput.hlsl"
+	        #include "CartoonShadowCasterPass.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            //深度法线Pass
+            Name "CartoonDepthNormals"
+            Tags{ "LightMode" = "DepthNormals" }
+            HLSLPROGRAM
+            #pragma vertex CartoonDepthNormalsVertex
+            #pragma fragment CartoonDepthNormalsFragment
+            #include "CartoonLitInput.hlsl"
+	        #include "CartoonDepthNormalsPass.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            //深度Pass
+            Name "CartoonDepthOnly"
+            Tags{ "LightMode" = "DepthOnly" }
+            HLSLPROGRAM
+            #pragma vertex CartoonDepthOnlyVertex
+            #pragma fragment CartoonDepthOnlyFragment
+            #include "CartoonLitInput.hlsl"
+	        #include "CartoonDepthOnlyPass.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            //烘焙光照Pass
+            Name "Meta"
+            Tags{ "LightMode" = "Meta" }
+            HLSLPROGRAM
+            #pragma vertex UniversalVertexMeta
+            #pragma fragment CartoonMetaFragment
+            #include "CartoonLitInput.hlsl"
+	        #include "CartoonMetaPass.hlsl"
+            ENDHLSL
+        }
+
     }
 }

@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: c2a
   m_EditorClassIdentifier: 
-  nextTOD: {fileID: 0}
+  nextTOD: {fileID: 11400000, guid: cae3392104e79094fb43bf087ed16dcb, type: 2}
   startTime: 20
   endTime: 0
-  isCross24: 0
-  duration: 0
-  materials: []
+  isCross24: 1
+  duration: 4
+  lightColor: {r: 0.9811321, g: 0.117242105, b: 0.9020587, a: 0}
+  datOrNight: 1
+  materials:
+  - {fileID: 2100000, guid: 303e9f3c10ac6da479b6eadf57b8414f, type: 2}
+  - {fileID: 2100000, guid: 2a0cf5cd8a323334cb43e3811cdbc199, type: 2}
+  - {fileID: 2100000, guid: d4177440dc31d694bb81681c2dbaba7a, type: 2}
