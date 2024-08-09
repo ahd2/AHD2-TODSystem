@@ -22,7 +22,11 @@ public partial class TimeOfDaysGenerator : EditorWindow
     {
         GetWindow<TimeOfDaysGenerator>("ImageReconstructor");
     }
-    
+    //选择生成tod的文件分布类型
+    private int _selectedIndex = 0;
+    /// <summary>
+    /// OnGUI是每帧调用的。
+    /// </summary>
     void OnGUI()
     {
         GUILayout.BeginHorizontal();
@@ -32,6 +36,10 @@ public partial class TimeOfDaysGenerator : EditorWindow
             false
         );
         CheckGlobalParameters();
+        GUILayout.FlexibleSpace();
+        // 定义一个字符串数组作为下拉框的选项
+        string[] options = new string[] {"按材质分文件夹", "按关键帧分文件夹"};
+        _selectedIndex = EditorGUILayout.Popup( _selectedIndex, options);
         GUILayout.EndHorizontal();
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
         EditorGUILayout.BeginVertical(GUI.skin.box);
@@ -112,20 +120,41 @@ public partial class TimeOfDaysGenerator : EditorWindow
         }
         //赋值材质
         string matPath;
-        for (int i = 0; i < _todGlobalParameters.materials.Length; i++)//逐个材质
+        if (_selectedIndex == 0)//如果按材质划分文件夹
         {
-            //每个mat，创建关键帧个数的实例
-            CreateDirectory(currentPath + "/" + _todGlobalParameters.materials[i].name + "_TOD");//尝试创建路径
-            for (int j = 0; j < todList.Count; j++)//每个材质逐个TOD赋值
+            for (int i = 0; i < _todGlobalParameters.materials.Length; i++)//逐个材质
             {
-                Debug.Log(j);
-                matPath = currentPath + "/" +_todGlobalParameters.materials[i].name + "_TOD" + "/" + todList[j].name + "_" +_todGlobalParameters.materials[i].name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
-                // 创建一个新的材质，复制原始材质的属性
-                Material newMaterial = new Material(_todGlobalParameters.materials[i]);
-                timeOfDays[j].materials[i] = newMaterial;//后续要改索引，
-                // 保存新的材质到Assets文件夹
-                AssetDatabase.CreateAsset(newMaterial, matPath);
-                AssetDatabase.SaveAssets();
+                //每个mat，创建关键帧个数的实例
+                CreateDirectory(currentPath + "/" + _todGlobalParameters.materials[i].name + "_TOD");//尝试创建路径
+                for (int j = 0; j < todList.Count; j++)//每个材质逐个TOD赋值
+                {
+                    //Debug.Log(j);
+                    matPath = currentPath + "/" +_todGlobalParameters.materials[i].name + "_TOD" + "/" + todList[j].name + "_" +_todGlobalParameters.materials[i].name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
+                    // 创建一个新的材质，复制原始材质的属性
+                    Material newMaterial = new Material(_todGlobalParameters.materials[i]);
+                    timeOfDays[j].materials[i] = newMaterial;//把材质赋予TOD
+                    // 保存新的材质到Assets文件夹
+                    AssetDatabase.CreateAsset(newMaterial, matPath);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+        }
+        else//按关键帧划分文件夹，一个文件夹存一个关键帧下所有材质
+        {
+            for (int i = 0; i < todList.Count; i++)//逐个关键帧
+            {
+                //每个关键帧创建一个文件夹
+                CreateDirectory(currentPath + "/" + todList[i].name);//尝试创建路径
+                for (int j = 0; j < _todGlobalParameters.materials.Length; j++)
+                {
+                    matPath = currentPath + "/" + todList[i].name+ "/" + todList[i].name + "_" +_todGlobalParameters.materials[j].name + ".mat";//命名规则为时刻+材质名，如Noon_Cloud
+                    // 创建一个新的材质，复制原始材质的属性
+                    Material newMaterial = new Material(_todGlobalParameters.materials[j]);
+                    timeOfDays[i].materials[j] = newMaterial;//把材质赋予TOD
+                    // 保存新的材质到Assets文件夹
+                    AssetDatabase.CreateAsset(newMaterial, matPath);
+                    AssetDatabase.SaveAssets();
+                }
             }
         }
         
