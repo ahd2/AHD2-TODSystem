@@ -11,9 +11,9 @@ public class TODController : MonoBehaviour
     void Start()
     {
         todGlobalParameters.CurrentTime = 6;//从6点开始
-        foreach (var VARIABLE in todGlobalParameters.timeOfDays)
+        foreach (var tod in todGlobalParameters.timeOfDays)
         {
-            VARIABLE.Initialize();
+            tod.Initialize();
         }
         FixTimeOfDay();//调整时间段符合当前时间
         InitialLight();//光源需要拖入(unity自己会报错，不处理了。)
@@ -96,13 +96,14 @@ public class TODController : MonoBehaviour
         }
     }
     /// <summary>
-    /// 混合关键帧之间的材质
+    /// 混合关键帧之间的材质或其他数据
     /// </summary>
     void LerpProperties()
     {
         for (int i = 0; i < todGlobalParameters.materials.Length; i++)
         {
             todGlobalParameters.materials[i].Lerp(todGlobalParameters.currentTimeOfDay.materials[i],todGlobalParameters.currentTimeOfDay.nextTOD.materials[i],todGlobalParameters.todTime/todGlobalParameters.currentTimeOfDay.duration);
+            //插值光源色（）
         }
     }
     /// <summary>

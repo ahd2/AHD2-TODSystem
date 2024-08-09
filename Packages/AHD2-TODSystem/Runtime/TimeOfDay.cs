@@ -13,7 +13,6 @@ public class TimeOfDay : ScriptableObject
     [HideInInspector]public bool isCross24;//这个时刻和下个时刻中间是否越过24点
     [HideInInspector]public float duration;//这个tod会持续的时间
     public Material[] materials;
-    
     public void Initialize()
     {
         isCross24 = startTime > endTime;//用代码判断它会不会越过24

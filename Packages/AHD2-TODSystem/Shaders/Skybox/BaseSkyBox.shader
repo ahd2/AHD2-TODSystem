@@ -1,4 +1,4 @@
-Shader "HDRSkyBox/BaseSky"
+Shader "AHD2TODSystem/BaseSky"
 {
     Properties
     {
