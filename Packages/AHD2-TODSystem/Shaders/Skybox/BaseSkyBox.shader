@@ -103,6 +103,10 @@ Shader "AHD2TODSystem/BaseSky"
             float _StarRange;
 
             sampler2D _CloudMap;
+            CBUFFER_START(Light)
+            half4 _lightDirection;//a通道为标记，0为白天，1为晚上
+            float4 _lightColor;//a通道为强度
+            CBUFFER_END
 
             float3 RGB2HSV(float3 c)
             {
@@ -168,8 +172,7 @@ Shader "AHD2TODSystem/BaseSky"
                 float3 _worldPos = TransformObjectToWorld( v.vertex.xyz );
                 float3 _viewDir = normalize(_worldPos.xyz - _WorldSpaceCameraPos);
                 //光源方向（指向光源
-                Light mainLight=GetMainLight();
-                float3 _lightDir = mainLight.direction;
+                float3 _lightDir = _lightDirection.xyz;
 
                 //核心
                 //LDotV
@@ -221,8 +224,7 @@ Shader "AHD2TODSystem/BaseSky"
                 float _VDotUp = dot(_viewDirNormalize, float3(0,1,0));
                 float _VDotUp_Multi999 = abs(_VDotUp) * _sun_disk_power_999;
                 //VDotL
-                Light mainLight=GetMainLight();
-                float3 _lightDir =mainLight.direction;
+                float3 _lightDir = _lightDirection.xyz;
                 float _LDotV = dot(_lightDir, _viewDirNormalize);
                 //_LDotV_remap
                 float _LDotV_remap01 = (_LDotV * 0.5) + 0.5;

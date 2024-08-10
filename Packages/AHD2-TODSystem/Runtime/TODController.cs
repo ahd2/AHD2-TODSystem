@@ -8,6 +8,7 @@ public class TODController : MonoBehaviour
     public Light MainLight;//主光源
     private Vector3 starquat;//计算光源旋转用
     private Vector3 endquat;//计算光源旋转用
+    private Vector3 lightDirection;//假光源方向，360度转
     private static readonly int LightColor = Shader.PropertyToID("_lightColor");
     private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
 
@@ -43,6 +44,11 @@ public class TODController : MonoBehaviour
     {
         //欧拉角插值
         Vector3 quat = Vector3.Lerp(starquat,endquat,todGlobalParameters.CurrentTime/24);
+        lightDirection = -(Quaternion.Euler(quat) * Vector3.forward).normalized;//要反向，指向光源
+        if (todGlobalParameters._dayOrNight == 1)
+        {
+            quat.x += 180;//晚上则反向
+        }
         MainLight.transform.rotation = Quaternion.Euler(quat);
     }
     
@@ -52,18 +58,6 @@ public class TODController : MonoBehaviour
     public void SetGlobalParameters()
     {
         Shader.SetGlobalColor(LightColor,todGlobalParameters._lightColor);
-        // 获取光源的反向，因为Unity中的方向光方向是从光源指向物体
-        Vector3 lightDirection = Vector3.zero;
-        if (todGlobalParameters._dayOrNight == 0)
-        {
-            lightDirection = -MainLight.transform.forward;//白天
-        }
-        else
-        {
-            lightDirection = MainLight.transform.forward;//晚上
-        }
         Shader.SetGlobalVector(LightDirection, new Vector4(lightDirection.x,lightDirection.y,lightDirection.z,todGlobalParameters._dayOrNight));
     }
-    
-    
 }

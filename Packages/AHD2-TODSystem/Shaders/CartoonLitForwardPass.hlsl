@@ -52,11 +52,14 @@ v2f CartoonLitVertex (appdata v)
 
 half4 CartoonLitFragment (v2f i) : SV_Target
 {
+    i.shadowCoord = TransformWorldToShadowCoord(i.positionWS);//这里采样才不会出现精度瑕疵
+    Light mainlight = GetMainLight(i.shadowCoord);
     half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
-    half lambert = saturate(dot(normalize(_lightDirection.xyz),i.normalWS));
+    half lambert = saturate(dot(mainlight.direction,i.normalWS));
     half4 col = half4(1,1,1,1);
     col.xyz = _lightColor.xyz;
-    col.xyz *= lambert;
+    col.xyz *= lambert ;
+    col.xyz = lerp(col.xyz * (1 - _lightColor.a*1.15) ,col.xyz,mainlight.shadowAttenuation);
     return col;
 }
 #endif
