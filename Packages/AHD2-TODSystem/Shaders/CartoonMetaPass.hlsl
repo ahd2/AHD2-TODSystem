@@ -48,10 +48,10 @@ half4 UniversalFragmentMeta(Varyings fragIn, MetaInput metaInput)
 
 half4 CartoonMetaFragment(Varyings i) : SV_Target
 {
-    half4 col = tex2D(_MainTex, i.uv) * _BaseCol;
+    half4 col = tex2D(_MainTex, i.uv) ;
     float2 uv = i.uv;
     MetaInput metaInput;
-    metaInput.Albedo = tex2D(_MainTex, i.uv) * _BaseCol;
+    metaInput.Albedo = tex2D(_MainTex, i.uv) ;
     metaInput.Emission = half4(1,1,1,1);
     return UniversalFragmentMeta(i, metaInput);
 }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: Dawn2Noon
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: a28711987f65dcc4da40d853e7d8365c, type: 2}
+  startTime: 6
+  endTime: 12
+  isCross24: 0
+  duration: 6
+  lightColor: {r: 0, g: 0, b: 0, a: 1}
+  datOrNight: 0
+  materials:
+  - {fileID: 2100000, guid: 664d6e6d9d7f0d142be68ed61e754426, type: 2}
+  - {fileID: 2100000, guid: 5fb0d4f34e951b542a2644f03dc60d2c, type: 2}
+  - {fileID: 2100000, guid: cfcfa63e6c85251479fd85d19efbec2e, type: 2}

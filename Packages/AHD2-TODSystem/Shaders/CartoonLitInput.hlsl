@@ -13,9 +13,10 @@ float4 _NormalMap_ST;
 CBUFFER_END
 
 CBUFFER_START(Light)
-float4 _LightDirection;//a通道为标记，0为白天，1为晚上
-//half3 _lightColor;
+half4 _lightDirection;//a通道为标记，0为白天，1为晚上
+float4 _lightColor;//a通道为强度
 CBUFFER_END
+
 
 //贴图采样
 //Test测试贴图

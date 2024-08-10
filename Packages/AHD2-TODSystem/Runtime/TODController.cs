@@ -9,7 +9,7 @@ public class TODController : MonoBehaviour
     private Vector3 starquat;//计算光源旋转用
     private Vector3 endquat;//计算光源旋转用
     private static readonly int LightColor = Shader.PropertyToID("_lightColor");
-    private static readonly int LightDirection = Shader.PropertyToID("_LightDirection");
+    private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
 
     void Start()
     {
@@ -57,14 +57,12 @@ public class TODController : MonoBehaviour
         if (todGlobalParameters._dayOrNight == 0)
         {
             lightDirection = -MainLight.transform.forward;//白天
-            Debug.Log(lightDirection.y);
         }
         else
         {
             lightDirection = MainLight.transform.forward;//晚上
-            Debug.Log(lightDirection.y);
         }
-        Shader.SetGlobalVector(LightDirection, new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
+        Shader.SetGlobalVector(LightDirection, new Vector4(lightDirection.x,lightDirection.y,lightDirection.z,todGlobalParameters._dayOrNight));
     }
     
     

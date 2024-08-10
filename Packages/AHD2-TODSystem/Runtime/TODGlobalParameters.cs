@@ -24,7 +24,6 @@ public class TODGlobalParameters : ScriptableObject
             else if(value < 0 )
             {
                 throw new ArgumentException("currentTime违规。");
-                return; // 阻止无效的赋值
             }
             else
             {
@@ -38,7 +37,7 @@ public class TODGlobalParameters : ScriptableObject
     public TimeOfDay[] timeOfDays;//tod数组
     public TimeOfDay currentTimeOfDay;
     public float todTime;//当前tod已经经过的时间
-    [HideInInspector]public float todTimeRatio;//当前tod已经经过的时间比例（插值用）
+    /*[HideInInspector]*/public float todTimeRatio;//当前tod已经经过的时间比例（插值用）
     public List<TempTOD> todFrameList = new List<TempTOD>();//维护关键帧列表，工具用
     
     //光源
@@ -53,18 +52,19 @@ public class TODGlobalParameters : ScriptableObject
     /// </summary>
     public void BaseUpdate()
     {
-        todTimeRatio = todTime / currentTimeOfDay.duration;
         if (timeFlow)
         {
             //如果时间流动。
-            CurrentTime += Time.deltaTime * 5;
-            todTime += Time.deltaTime * 5;
+            CurrentTime += Time.deltaTime * 5f;
+            todTime += Time.deltaTime * 5f;
             UpdateTimeOfDay();
+            todTimeRatio = todTime / currentTimeOfDay.duration;
             LerpProperties();
         }
         else
         {
             FixTimeOfDay();
+            todTimeRatio = todTime / currentTimeOfDay.duration;
             LerpProperties();
         }
         CalLightParam();

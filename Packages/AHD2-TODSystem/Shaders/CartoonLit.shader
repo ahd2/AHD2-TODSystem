@@ -69,18 +69,18 @@ Shader "AHD2TODSystem/CartoonLit"
             ENDHLSL
         }
 
-        Pass
-        {
-            //烘焙光照Pass
-            Name "Meta"
-            Tags{ "LightMode" = "Meta" }
-            HLSLPROGRAM
-            #pragma vertex UniversalVertexMeta
-            #pragma fragment CartoonMetaFragment
-            #include "CartoonLitInput.hlsl"
-	        #include "CartoonMetaPass.hlsl"
-            ENDHLSL
-        }
+//        Pass
+//        {
+//            //烘焙光照Pass
+//            Name "Meta"
+//            Tags{ "LightMode" = "Meta" }
+//            HLSLPROGRAM
+//            #pragma vertex UniversalVertexMeta
+//            #pragma fragment CartoonMetaFragment
+//            #include "CartoonLitInput.hlsl"
+//	        #include "CartoonMetaPass.hlsl"
+//            ENDHLSL
+//        }
 
     }
 }

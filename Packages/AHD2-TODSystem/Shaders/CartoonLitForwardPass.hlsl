@@ -44,13 +44,6 @@ v2f CartoonLitVertex (appdata v)
     o.tangentWS = normalInput.tangentWS;
     o.bitangentWS = normalInput.bitangentWS;
 
-    o.viewDirWS = GetWorldSpaceNormalizeViewDir(o.positionWS); //方向从顶点指向摄像机
-    //MatcapUV
-    half3 reflectDir = reflect(-normalize(o.viewDirWS), o.normalWS);//世界空间下，看向平面的反射向量
-    half3 reflectDirVS = normalize(mul(UNITY_MATRIX_V, reflectDir)); //将反射向量转换到视角空间，平面的反射方向永远包含于球面内。
-    float m = 2.82842712474619 * sqrt(reflectDirVS.z + 1.0);//2倍法向量模长
-    o.capUV = reflectDirVS.xy / m + 0.5;
-
     // 处理烘培光照
     OUTPUT_LIGHTMAP_UV(v.staticLightmapUV, unity_LightmapST, o.lightmapUVOrVertexSH.xy);
     OUTPUT_SH(o.normalWS, o.lightmapUVOrVertexSH.xyz);
@@ -60,10 +53,10 @@ v2f CartoonLitVertex (appdata v)
 half4 CartoonLitFragment (v2f i) : SV_Target
 {
     half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
-    half lambert = saturate(dot(_LightDirection.xyz,i.normalWS));
+    half lambert = saturate(dot(normalize(_lightDirection.xyz),i.normalWS));
     half4 col = half4(1,1,1,1);
-    //col.xyz = _lightColor;
-    col *= lambert;
+    col.xyz = _lightColor.xyz;
+    col.xyz *= lambert;
     return col;
 }
 #endif

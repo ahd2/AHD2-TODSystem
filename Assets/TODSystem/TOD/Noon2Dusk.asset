@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: Noon2Dusk
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 431cf68753bc8d94492469f5cf4c7e18, type: 2}
+  startTime: 12
+  endTime: 18
+  isCross24: 0
+  duration: 6
+  lightColor: {r: 1, g: 0, b: 0.1251812, a: 0}
+  datOrNight: 0
+  materials:
+  - {fileID: 2100000, guid: 50ba577ae1a57a0468a22b333c3f747a, type: 2}
+  - {fileID: 2100000, guid: f06763f0755499c46aab40a143caf1fd, type: 2}
+  - {fileID: 2100000, guid: e33088e21648210428f66ed0e65aa2c7, type: 2}

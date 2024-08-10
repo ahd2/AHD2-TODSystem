@@ -19,11 +19,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 44ae2a0870c02554fbf5524b874a37ab, type: 2}
   - {fileID: 2100000, guid: 865f2e6d1b10a2a4c8bfaeee0880b1f3, type: 2}
   timeOfDays:
-  - {fileID: 11400000, guid: cae3392104e79094fb43bf087ed16dcb, type: 2}
-  - {fileID: 11400000, guid: ee9e35f2525d2ce41a9dfe595e39f197, type: 2}
-  - {fileID: 11400000, guid: ca3aad3fb1ed8d649b9396ee86782fd9, type: 2}
-  currentTimeOfDay: {fileID: 11400000, guid: cae3392104e79094fb43bf087ed16dcb, type: 2}
+  - {fileID: 11400000, guid: b1d6ec13237e618488047f87bd22abba, type: 2}
+  - {fileID: 11400000, guid: 1f35cd5acf99ae74da17c76b6f75e3fa, type: 2}
+  - {fileID: 11400000, guid: a28711987f65dcc4da40d853e7d8365c, type: 2}
+  - {fileID: 11400000, guid: 431cf68753bc8d94492469f5cf4c7e18, type: 2}
+  currentTimeOfDay: {fileID: 11400000, guid: b1d6ec13237e618488047f87bd22abba, type: 2}
   todTime: 0
   todTimeRatio: 0
-  _lightColor: {r: 1, g: 0, b: 0, a: 0}
+  _lightColor: {r: 0, g: 0.7490196, b: 1, a: 0}
   _dayOrNight: 1
