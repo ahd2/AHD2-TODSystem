@@ -30,7 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bce86175e415f5548a07c3b3076be06d, type: 2}
   - {fileID: 11400000, guid: 4ceb007edd454b24495b336529fbe6ad, type: 2}
   - {fileID: 11400000, guid: 0c72de17e8f61fd43bcecccba2b1f34e, type: 2}
-  currentTimeOfDay: {fileID: 11400000, guid: 97454bac57defa147ac0b356ca3a8dcd, type: 2}
+  currentTimeOfDay: {fileID: 0}
   todTime: 0
   todTimeRatio: 0
   todFrameList:

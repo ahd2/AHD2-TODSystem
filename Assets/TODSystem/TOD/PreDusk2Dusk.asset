@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: PreDusk2Dusk
   m_EditorClassIdentifier: 
-  nextTOD: {fileID: 0}
+  nextTOD: {fileID: 11400000, guid: bce86175e415f5548a07c3b3076be06d, type: 2}
   startTime: 17
   endTime: 18
   isCross24: 0
   duration: 0
   lightColor: {r: 0, g: 0, b: 0, a: 0}
   datOrNight: 0
-  materials: []
+  materials:
+  - {fileID: 2100000, guid: 761bda7e042bce249a6c7536589a24f9, type: 2}
+  - {fileID: 2100000, guid: 7c618365f9f60e342b2d83356fdc8e5c, type: 2}
+  - {fileID: 2100000, guid: cd5e5ec0bf217f64eb65be7b767aa002, type: 2}

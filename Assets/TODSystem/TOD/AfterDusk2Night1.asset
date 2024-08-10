@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: AfterDusk2Night1
   m_EditorClassIdentifier: 
-  nextTOD: {fileID: 0}
+  nextTOD: {fileID: 11400000, guid: 0c72de17e8f61fd43bcecccba2b1f34e, type: 2}
   startTime: 19
   endTime: 20
   isCross24: 0
   duration: 0
   lightColor: {r: 0, g: 0, b: 0, a: 0}
   datOrNight: 0
-  materials: []
+  materials:
+  - {fileID: 2100000, guid: b60d1fddf5ed0cc4da539145fccefa1f, type: 2}
+  - {fileID: 2100000, guid: f7446bcccfa6f484596e20b81cf31f0f, type: 2}
+  - {fileID: 2100000, guid: 27931dfdfa1ecb74782505d2087bfc3d, type: 2}

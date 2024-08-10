@@ -111,6 +111,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
                     // 创建一个新的材质，复制原始材质的属性
                     Material newMaterial = new Material(_todGlobalParameters.materials[i]);
                     timeOfDays[j].materials[i] = newMaterial;//把材质赋予TOD
+                    EditorUtility.SetDirty(timeOfDays[j]);//要用这个标记so为已修改。unity才能把改动保存
                     // 保存新的材质到Assets文件夹
                     AssetDatabase.CreateAsset(newMaterial, matPath);
                     AssetDatabase.SaveAssets();
@@ -133,6 +134,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
                     AssetDatabase.CreateAsset(newMaterial, matPath);
                     AssetDatabase.SaveAssets();
                 }
+                EditorUtility.SetDirty(timeOfDays[i]);//要用这个标记so为已修改。unity才能把改动保存
             }
         }
         

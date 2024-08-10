@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: Noon12Noon2
   m_EditorClassIdentifier: 
-  nextTOD: {fileID: 0}
+  nextTOD: {fileID: 11400000, guid: 6065039f18d998644bec635daed51450, type: 2}
   startTime: 8
   endTime: 16
   isCross24: 0
   duration: 0
   lightColor: {r: 0, g: 0, b: 0, a: 0}
   datOrNight: 0
-  materials: []
+  materials:
+  - {fileID: 2100000, guid: 5a8affe6ffae03947bf73140644f2416, type: 2}
+  - {fileID: 2100000, guid: 36294f595c67b8d47b3f4df18642efa4, type: 2}
+  - {fileID: 2100000, guid: a5b2842d976ce6e459cf6c3604d64a36, type: 2}
