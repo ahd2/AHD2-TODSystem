@@ -32,6 +32,12 @@ float3 IndirectDiffuse( float2 uvStaticLightmap, float3 normalWS )
     return SampleSH(normalWS);
     #endif
 }
+//初始化输入结构体
+void InitializeInputData(v2f input , out CartoonInputData inputdata)
+{
+    inputdata.viewDirWS = normalize(_WorldSpaceCameraPos - input.positionWS); //指向摄像机方向
+    inputdata.normalWS = normalize(input.normalWS);
+}
 v2f CartoonLitVertex (appdata v)
 {
     v2f o;
@@ -55,11 +61,21 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     i.shadowCoord = TransformWorldToShadowCoord(i.positionWS);//这里采样才不会出现精度瑕疵
     Light mainlight = GetMainLight(i.shadowCoord);
     half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
-    half lambert = saturate(dot(mainlight.direction,i.normalWS));
-    half4 col = half4(1,1,1,1);
-    col.xyz = _lightColor.xyz;
-    col.xyz *= lambert ;
-    col.xyz = lerp(col.xyz * (1 - _lightColor.a*1.15) ,col.xyz,mainlight.shadowAttenuation);
-    return col;
+    half4 mainTex = tex2D(_MainTex,i.uv);
+    half4 basecol = _BaseColor * mainTex;
+    
+    Surface surface;
+    surface.normalWS = normalize(i.normalWS);//归一化是必须的
+    surface.color = basecol.xyz;
+    surface.alpha = basecol.a;
+    surface.metallic = _Metallic;
+    surface.smoothness = _Smoothness;
+
+    CartoonInputData inputdata;
+    InitializeInputData(i , inputdata);
+
+    BRDF brdf = GetBRDF(surface);
+    half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, _lightColor);
+    return half4(finalcolor,surface.alpha);
 }
 #endif
