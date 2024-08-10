@@ -76,7 +76,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
             assetPath = "Assets";
         }
 
-        string soPath;
+        //string soPath;
         currentPath = EditorUtility.OpenFolderPanel("选择路径", assetPath, "");
         //做一个判空，检测用户关闭弹窗
         if (currentPath == "")

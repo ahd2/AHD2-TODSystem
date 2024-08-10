@@ -31,6 +31,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
             }
             //如果全局参数类没问题，拿到它的todlist
             todList = _todGlobalParameters.todFrameList;
+            EditorUtility.SetDirty(_todGlobalParameters);//要用这个标记so为已修改。unity才能把改动保存
         }
         else
         {

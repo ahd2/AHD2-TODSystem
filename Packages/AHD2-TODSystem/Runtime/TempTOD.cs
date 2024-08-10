@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]//让其可被序列化，存入SO
 public class TempTOD
 {
-    public string name;
-    private float _time;
+    [SerializeField]public string name;
+    [SerializeField]private float _time;
     public float Time
     {
         get { return _time; }

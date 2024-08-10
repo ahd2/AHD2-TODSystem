@@ -26,5 +26,14 @@ MonoBehaviour:
   currentTimeOfDay: {fileID: 11400000, guid: a28711987f65dcc4da40d853e7d8365c, type: 2}
   todTime: 0
   todTimeRatio: 0
+  todFrameList:
+  - name: Night
+    _time: 0
+  - name: Noon
+    _time: 12
+  - name: Dawn
+    _time: 6
+  - name: Dusk
+    _time: 18
   _lightColor: {r: 9.849155, g: 0, b: 1.2359725, a: 1}
   _dayOrNight: 0

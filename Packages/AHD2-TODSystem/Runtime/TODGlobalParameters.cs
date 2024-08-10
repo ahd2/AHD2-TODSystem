@@ -38,7 +38,7 @@ public class TODGlobalParameters : ScriptableObject
     public TimeOfDay currentTimeOfDay;
     public float todTime;//当前tod已经经过的时间
     /*[HideInInspector]*/public float todTimeRatio;//当前tod已经经过的时间比例（插值用）
-    public List<TempTOD> todFrameList = new List<TempTOD>();//维护关键帧列表，工具用
+    [SerializeField]public List<TempTOD> todFrameList;//维护关键帧列表，工具用
     
     //光源
     [ColorUsageAttribute(false,true)]
