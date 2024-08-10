@@ -9,6 +9,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "TODGlobalParameters", menuName = "AHD2TODSystem/GlobalParameters", order = 0)]
 public class TODGlobalParameters : ScriptableObject
 {
+    public float timeFlowSpeed = 2.0f;
     [SerializeField,Range(0f,24f),Tooltip("时间")]
     private float _currentTime;
     public float CurrentTime
@@ -55,8 +56,8 @@ public class TODGlobalParameters : ScriptableObject
         if (timeFlow)
         {
             //如果时间流动。
-            CurrentTime += Time.deltaTime * 5f;
-            todTime += Time.deltaTime * 5f;
+            CurrentTime += Time.deltaTime * timeFlowSpeed;
+            todTime += Time.deltaTime * timeFlowSpeed;
             UpdateTimeOfDay();
             todTimeRatio = todTime / currentTimeOfDay.duration;
             LerpProperties();

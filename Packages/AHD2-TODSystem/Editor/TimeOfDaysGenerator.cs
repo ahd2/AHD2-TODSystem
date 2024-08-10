@@ -11,7 +11,8 @@ public partial class TimeOfDaysGenerator : EditorWindow
     private enum SubWindowType
     {
         Window1,//生成窗口
-        Window2//新增材质窗口
+        Window2,//新增材质窗口
+        Window3 //烘焙环境反射图窗口
     }
     // 当前选中的子界面类型
     private SubWindowType currentSubWindow = SubWindowType.Window1;
@@ -51,6 +52,9 @@ public partial class TimeOfDaysGenerator : EditorWindow
                 break;
             case SubWindowType.Window2:
                 DrawWindow2();
+                break;
+            case SubWindowType.Window3:
+                DrawWindow3();
                 break;
         }
     }

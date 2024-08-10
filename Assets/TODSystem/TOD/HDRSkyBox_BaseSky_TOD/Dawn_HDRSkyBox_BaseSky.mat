@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Dawn_HDRSkyBox_BaseSky
+  m_Shader: {fileID: 4800000, guid: bc931b23da3b78949b2548a983e9945b, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CloudMap:
+        m_Texture: {fileID: 2800000, guid: c6bec5849a61b90439cf0108ded6d2df, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarMap:
+        m_Texture: {fileID: 8900000, guid: 28bf54abb45dcf4468466b0d546f117f, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TransmissionRGMap:
+        m_Texture: {fileID: 2800000, guid: a7599b48566a964468935114baec5027, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _LDotV_damping_factor: 1.51
+    - _StarRange: 6
+    - _SunRange: 1.1
+    - _SunRange0: 0.992
+    - _SunRange1: 1
+    - _num: 214.7
+    - _sky_color_intensity: 1.92
+    - _sky_scatter: 0.19
+    - _sun_disk_power_999: 144
+    - _sun_scatter: 0.37
+    m_Colors:
+    - _SunColor: {r: 1.9773997, g: 0.46233478, b: 0.14494023, a: 1}
+    - _SunInnercolor: {r: 8.967697, g: 7.4981055, b: 2.6762238, a: 1}
+    - _sky_color: {r: 0.6320754, g: 0.2091426, b: 0, a: 1}
+    - _sunOrgColorBeside: {r: 0.5283019, g: 0.33816305, b: 0.31100035, a: 1}
+    - _sunOrgColorLookAt: {r: 0.735849, g: 0.6136044, b: 0.023602655, a: 1}
+    - _sunScatterColorBeside: {r: 0, g: 0.19846268, b: 0.3773585, a: 1}
+    - _sunScatterColorLookAt: {r: 1.4079617, g: 0.46963933, b: 0, a: 1}
+  m_BuildTextureStacks: []
