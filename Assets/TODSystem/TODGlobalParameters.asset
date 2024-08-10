@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
   m_Name: TODGlobalParameters
   m_EditorClassIdentifier: 
-  _currentTime: 12.031499
+  _currentTime: 20.415846
   timeFlow: 1
   materials:
   - {fileID: 2100000, guid: 2ce7b0830b4e50e4891b41ee3d74ddfd, type: 2}
@@ -23,16 +23,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1f35cd5acf99ae74da17c76b6f75e3fa, type: 2}
   - {fileID: 11400000, guid: a28711987f65dcc4da40d853e7d8365c, type: 2}
   - {fileID: 11400000, guid: 431cf68753bc8d94492469f5cf4c7e18, type: 2}
-  currentTimeOfDay: {fileID: 11400000, guid: a28711987f65dcc4da40d853e7d8365c, type: 2}
-  todTime: 0
+  currentTimeOfDay: {fileID: 0}
+  todTime: 14.3158455
   todTimeRatio: 0
   todFrameList:
   - name: Night
     _time: 0
-  - name: Noon
-    _time: 12
   - name: Dawn
     _time: 6
+  - name: Noon
+    _time: 12
   - name: Dusk
     _time: 18
   _lightColor: {r: 9.849155, g: 0, b: 1.2359725, a: 1}

@@ -48,7 +48,18 @@ public class TODController : MonoBehaviour
         if (todGlobalParameters._dayOrNight == 1)
         {
             quat.x += 180;//晚上则反向
+            //quat.x = quat.x % 360;
         }
+        //Debug.Log(quat.x);//后续考虑要不要固定光照，让其不会在10°后再下降。
+        // if (quat.x < 10)
+        // {
+        //     quat.x = 10;
+        // }
+        //
+        // if (quat.x > 170)
+        // {
+        //     quat.x = 170;
+        // }
         MainLight.transform.rotation = Quaternion.Euler(quat);
     }
     
