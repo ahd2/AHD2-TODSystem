@@ -34,22 +34,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _LDotV_damping_factor: 1.51
-    - _StarRange: 5
+    - _LDotV_damping_factor: 2
+    - _StarRange: 6
     - _SunRange: 1.1
-    - _SunRange0: 0.9949
+    - _SunRange0: 0.9978
     - _SunRange1: 1
     - _num: 214.7
-    - _sky_color_intensity: 1.27
+    - _sky_color_intensity: 1.92
     - _sky_scatter: 0.19
-    - _sun_disk_power_999: 144
-    - _sun_scatter: 0.37
+    - _sun_disk_power_999: 603
+    - _sun_scatter: 0.202
     m_Colors:
-    - _SunColor: {r: 2.012792, g: 1.8903925, b: 0, a: 1}
-    - _SunInnercolor: {r: 8.967696, g: 6.0599046, b: 2.6564682, a: 1}
-    - _sky_color: {r: 0.6320754, g: 0.2091426, b: 0, a: 1}
-    - _sunOrgColorBeside: {r: 0.9150943, g: 0.46444014, b: 0.02071909, a: 1}
-    - _sunOrgColorLookAt: {r: 0.9221513, g: 0.7676548, b: 0, a: 1}
-    - _sunScatterColorBeside: {r: 0, g: 0.3512595, b: 0.6695884, a: 1}
-    - _sunScatterColorLookAt: {r: 1.4436274, g: 0.15578714, b: 0, a: 1}
+    - _SunColor: {r: 0.8965982, g: 0.53377265, b: 0.028758751, a: 1}
+    - _SunInnercolor: {r: 10.391295, g: 8.381951, b: 1.7057405, a: 1}
+    - _sky_color: {r: 0.009220327, g: 0.5647017, b: 0.6981132, a: 1}
+    - _sunOrgColorBeside: {r: 0.086274505, g: 0.5228429, b: 0.8666667, a: 1}
+    - _sunOrgColorLookAt: {r: 0.19736558, g: 0.75638324, b: 0.7924528, a: 1}
+    - _sunScatterColorBeside: {r: 0, g: 0.32884306, b: 0.9099493, a: 1}
+    - _sunScatterColorLookAt: {r: 0, g: 0.6558958, b: 1.5277573, a: 1}
   m_BuildTextureStacks: []

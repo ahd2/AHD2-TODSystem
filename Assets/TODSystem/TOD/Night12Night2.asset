@@ -15,10 +15,10 @@ MonoBehaviour:
   nextTOD: {fileID: 11400000, guid: d94006c5fad26244e96af587bcf4529d, type: 2}
   startTime: 20
   endTime: 4
-  isCross24: 0
-  duration: 0
+  isCross24: 1
+  duration: 8
   lightColor: {r: 0, g: 0, b: 0, a: 0}
-  datOrNight: 0
+  datOrNight: 1
   materials:
   - {fileID: 2100000, guid: 4617616a707b24b4a871995622387615, type: 2}
   - {fileID: 2100000, guid: 7b1e963c93bb6964da57f4fbcd569795, type: 2}
