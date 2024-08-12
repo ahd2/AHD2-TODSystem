@@ -75,7 +75,7 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     InitializeInputData(i , inputdata);
 
     BRDF brdf = GetBRDF(surface);
-    half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, _lightColor);
+    half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, _lightColor, mainlight.shadowAttenuation);
     return half4(finalcolor,surface.alpha);
 }
 #endif

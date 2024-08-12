@@ -30,7 +30,7 @@ public partial class TimeOfDaysGenerator : EditorWindow
     [MenuItem("Tools/TOD生成工具")]
     public static void ShowWindow()
     {
-        GetWindow<TimeOfDaysGenerator>("ImageReconstructor");
+        GetWindow<TimeOfDaysGenerator>("TimeOfDaysGenerator");
     }
     //选择生成tod的文件分布类型
     private int _selectedIndex = 0;

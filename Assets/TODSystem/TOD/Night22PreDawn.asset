@@ -17,7 +17,7 @@ MonoBehaviour:
   endTime: 5
   isCross24: 0
   duration: 1
-  lightColor: {r: 0, g: 0.04390338, b: 0.18867922, a: 1}
+  lightColor: {r: 0.06805504, g: 0.08728915, b: 0.2924528, a: 0.69803923}
   datOrNight: 1
   materials:
   - {fileID: 2100000, guid: bf4f113384dabc84aa71b53df9990dc6, type: 2}
