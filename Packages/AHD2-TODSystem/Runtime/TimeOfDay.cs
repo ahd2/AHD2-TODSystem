@@ -18,6 +18,9 @@ public class TimeOfDay : ScriptableObject
     public bool datOrNight;//0为白天，1为黑夜
         
     public Material[] materials;
+
+    public Cubemap specularMap;//镜面反射图
+    public Texture2D irrdianceMap;//
     public void Initialize()
     {
         isCross24 = startTime > endTime;//用代码判断它会不会越过24

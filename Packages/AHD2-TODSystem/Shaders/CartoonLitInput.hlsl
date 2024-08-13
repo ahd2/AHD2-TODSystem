@@ -19,6 +19,13 @@ half _Smoothness;
 //Test,测试用属性
 CBUFFER_END
 
+CBUFFER_START(IBL)
+half3 _irradianceMap0;
+half3 _irradianceMap1;
+half3 _specularMap0;
+half3 _specularMap1;
+CBUFFER_END
+
 CBUFFER_START(Light)
 half4 _lightColor;//a通道为强度
 half4 _lightDirection;//a通道为标记，0为白天，1为晚上

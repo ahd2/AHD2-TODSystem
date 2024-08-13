@@ -7,7 +7,12 @@ half3 IncomingLight (Surface surface, half3 mainlightDir,half4 lightCol, half di
     //return saturate(dot(surface.normalWS, mainlightDir)) * lightCol.xyz * lightCol.a * saturate((directShadow + 1 - 0.5 * lightCol.a));
     return saturate(dot(surface.normalWS, mainlightDir)) * lightCol.xyz * lightCol.a * saturate((directShadow + 1 - lightCol.a));
 }
-half3 GetLighting (Surface surface, BRDF brdf, CartoonInputData inputdata, half3 mainlightDir, half4 lightCol, half direcctShadow) {
-	return IncomingLight(surface, mainlightDir, lightCol, direcctShadow) * DirectBRDF(surface, brdf, mainlightDir, inputdata);
+half3 GetIBL()
+{
+    return 0;
 }
+half3 GetLighting (Surface surface, BRDF brdf, CartoonInputData inputdata, half3 mainlightDir, half4 lightCol, half direcctShadow) {
+	return IncomingLight(surface, mainlightDir, lightCol, direcctShadow) * DirectBRDF(surface, brdf, mainlightDir, inputdata) + GetIBL();
+}
+
 #endif
