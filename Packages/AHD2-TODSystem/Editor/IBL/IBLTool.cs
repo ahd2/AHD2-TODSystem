@@ -139,13 +139,13 @@ public class IBLTool : EditorWindow
         Graphics.Blit(cubemaps[i], rt1, material, 0);
         EditorUtility.ClearProgressBar();
         // 保存
-        Texture2D texture = new Texture2D(cubemaps[i].width * 2, cubemaps[i].width, TextureFormat.ARGB32, true);
+        Texture2D texture = new Texture2D(cubemaps[i].width * 2, cubemaps[i].width, TextureFormat.RGBAFloat, true);
         var k = RenderTexture.active;
         RenderTexture.active = rt0;
         texture.ReadPixels(new Rect(0, 0, rt0.width, rt0.height), 0, 0);
         RenderTexture.active = k;
-        byte[] bytes = texture.EncodeToPNG();
-        System.IO.FileStream fs = new System.IO.FileStream( path+ "/" + cubemaps[i].name + "_irradiance.png", System.IO.FileMode.Create);
+        byte[] bytes = texture.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
+        System.IO.FileStream fs = new System.IO.FileStream(path + "/" + cubemaps[i].name + "_irradiance.exr", System.IO.FileMode.Create);
         System.IO.BinaryWriter bw = new System.IO.BinaryWriter(fs);
         bw.Write(bytes);
         fs.Close();
