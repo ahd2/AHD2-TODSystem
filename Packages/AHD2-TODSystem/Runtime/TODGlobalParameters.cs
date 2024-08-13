@@ -45,6 +45,7 @@ public class TODGlobalParameters : ScriptableObject
     [ColorUsageAttribute(false,true)]
     public Color _lightColor;//光源色
     public int _dayOrNight;//0为白天1为夜晚
+    public Texture2D IblBrdfLut;
 
     //====================================================================================================
     #region 函数区域

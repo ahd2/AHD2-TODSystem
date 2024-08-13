@@ -6,7 +6,17 @@ struct BRDF {
 	half3 diffuse; //漫反射项
 	//half3 specular;//镜面反射颜色（注意不是项）
 	half roughness;
+	float2 iblLUT;
 };
+
+float2 normal2uv(half3 normal)
+{
+	float2 result;
+	result.y = 1 - acos(normal.y) / PI;
+	result.x = (atan2(normal.z , normal.x)) / PI * 0.5 + 0.5;
+	result.x = result.x;
+	return result;
+}
 
 #define MIN_REFLECTIVITY 0.04
 
@@ -21,24 +31,26 @@ half3 GetDiffuseBRDF(Surface surface)
 	return (1 - surface.metallic) * surface.color / PI;
 }
 //镜面反射比例。因为预先计算了颜色。这里只用计算一维比例。
-half GetSprecularBRDF(Surface surface ,half3 normalWS, half3 lightDirectionWS,half3  viewDirectionWS)
-{
-	return 0;
-}
+// half GetSprecularBRDF(Surface surface ,half3 normalWS, half3 lightDirectionWS,half3  viewDirectionWS)
+// {
+// 	return 0;
+// }
 
-BRDF GetBRDF (Surface surface) {
+BRDF GetBRDF (Surface surface, CartoonInputData inputdata) {
+	half NdotV = saturate(dot(inputdata.normalWS, inputdata.viewDirWS));
 	BRDF brdf;
 	brdf.diffuse = GetDiffuseBRDF(surface);//漫反射颜色
 	brdf.roughness = max(1 - surface.smoothness,0.04);
+	brdf.iblLUT = tex2D(_iblBrdfLut,float2(NdotV,1 - surface.smoothness)).rg;//有待商榷
 	return brdf;
 }
 
-BRDF GetBRDFPremul (Surface surface) {
-	BRDF brdf;
-	brdf.diffuse = GetDiffuseBRDF(surface) * surface.alpha;//漫反射颜色
-	brdf.roughness = max(1 - surface.smoothness,0.04);
-	return brdf;
-}
+// BRDF GetBRDFPremul (Surface surface) {
+// 	BRDF brdf;
+// 	brdf.diffuse = GetDiffuseBRDF(surface) * surface.alpha;//漫反射颜色
+// 	brdf.roughness = max(1 - surface.smoothness,0.04);
+// 	return brdf;
+// }
 
 //F项
 half3 F_Schlick(half HdotV, half3 F0)
@@ -79,7 +91,24 @@ half3 DirectBRDF(Surface surface, BRDF brdf, half3 mainLightDir, CartoonInputDat
 	half3 fTerm = F_Schlick(HdotV, F0);
 	half dTerm = DistributionGGX(NdotH, brdf.roughness);
 	half gTerm = GeometrySchlickGGX(brdf.roughness, NdotV) * GeometrySchlickGGX(brdf.roughness, NdotL);
+	
 	//return  gTerm * dTerm * fTerm;
 	return brdf.diffuse + fTerm * dTerm * gTerm / max(4 * NdotL * NdotV ,0.001);//漫反射项+镜面反射项
+}
+
+//采样Irradiance
+half3 GetIrradiance(Surface surface)
+{
+	float2 uv = normal2uv(surface.normalWS);
+	half3 Irradiance0 = tex2D(_irradianceMap0,uv);
+	half3 Irradiance1 = tex2D(_irradianceMap1,uv);
+	return lerp(Irradiance0, Irradiance1, _todTimeRatio);
+}
+
+float3 EnvBRDF(float Metallic, float3 BaseColor, float2 LUT)
+{
+	float3 F0 = lerp(0.04f, BaseColor.rgb, Metallic); 
+    
+	return F0 * LUT.x + LUT.y;
 }
 #endif

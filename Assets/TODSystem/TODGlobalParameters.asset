@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TODGlobalParameters
   m_EditorClassIdentifier: 
   timeFlowSpeed: 1
-  _currentTime: 19
+  _currentTime: 2.79
   timeFlow: 0
   materials:
   - {fileID: 2100000, guid: 2ce7b0830b4e50e4891b41ee3d74ddfd, type: 2}
@@ -30,9 +30,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bce86175e415f5548a07c3b3076be06d, type: 2}
   - {fileID: 11400000, guid: 4ceb007edd454b24495b336529fbe6ad, type: 2}
   - {fileID: 11400000, guid: 0c72de17e8f61fd43bcecccba2b1f34e, type: 2}
-  currentTimeOfDay: {fileID: 11400000, guid: 4ceb007edd454b24495b336529fbe6ad, type: 2}
-  todTime: 0
-  todTimeRatio: 0
+  currentTimeOfDay: {fileID: 11400000, guid: 0c72de17e8f61fd43bcecccba2b1f34e, type: 2}
+  todTime: 6.79
+  todTimeRatio: 0.84875
   todFrameList:
   - name: Night2
     _time: 4
@@ -54,5 +54,6 @@ MonoBehaviour:
     _time: 19
   - name: Night1
     _time: 20
-  _lightColor: {r: 0.254717, g: 0.05927375, b: 0.254717, a: 0.69803923}
+  _lightColor: {r: 0.07227288, g: 0.09139007, b: 0.2953066, a: 0.69803923}
   _dayOrNight: 1
+  IblBrdfLut: {fileID: 2800000, guid: 373b983f45125c042a202367c7f36bf4, type: 3}

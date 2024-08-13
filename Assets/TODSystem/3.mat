@@ -125,7 +125,7 @@ Material:
     - _HighLightRange: 5
     - _HightLightIntensity: 1.05
     - _MetalIntensity: 1
-    - _Metallic: 0.366
+    - _Metallic: 0.294
     - _Metalness: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -135,7 +135,7 @@ Material:
     - _RoughnessIntensity: 0.27
     - _ShadowRatio: 0.7
     - _ShadowShreshold: 0.8
-    - _Smoothness: 0.452
+    - _Smoothness: 0.886
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

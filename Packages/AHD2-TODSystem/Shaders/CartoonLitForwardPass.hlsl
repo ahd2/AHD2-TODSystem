@@ -1,6 +1,9 @@
 #ifndef CARTOON_LIT_FORWARD_PASS_INCLUDED
 #define CARTOON_LIT_FORWARD_PASS_INCLUDED
-
+#include "../ShaderLibrary/Surface.hlsl"
+#include "../ShaderLibrary/CartoonInputData.hlsl"
+#include "../ShaderLibrary/BRDF.hlsl"
+#include "../ShaderLibrary/Lighting.hlsl"
 struct appdata
 {
     float4 vertex : POSITION;
@@ -37,6 +40,7 @@ void InitializeInputData(v2f input , out CartoonInputData inputdata)
 {
     inputdata.viewDirWS = normalize(_WorldSpaceCameraPos - input.positionWS); //指向摄像机方向
     inputdata.normalWS = normalize(input.normalWS);
+    inputdata.reflectionDirWS = normalize(reflect(-inputdata.viewDirWS,inputdata.normalWS)); //指向视线反射反向
 }
 v2f CartoonLitVertex (appdata v)
 {
@@ -74,7 +78,7 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     CartoonInputData inputdata;
     InitializeInputData(i , inputdata);
 
-    BRDF brdf = GetBRDF(surface);
+    BRDF brdf = GetBRDF(surface, inputdata);
     half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, _lightColor, mainlight.shadowAttenuation);
     return half4(finalcolor,surface.alpha);
 }
