@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: AfterDusk2Night1
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 0c72de17e8f61fd43bcecccba2b1f34e, type: 2}
+  startTime: 19
+  endTime: 20
+  isCross24: 0
+  duration: 1
+  lightColor: {r: 0.254717, g: 0.05927375, b: 0.254717, a: 0.69803923}
+  datOrNight: 1
+  materials:
+  - {fileID: 2100000, guid: b60d1fddf5ed0cc4da539145fccefa1f, type: 2}
+  specularMap: {fileID: 8900000, guid: e20b8c380c1b6314f951a25ebd7d7fb1, type: 3}
+  irrdianceMap: {fileID: 2800000, guid: d4950ff6e5b9bf74b9d0f71d96e38581, type: 3}
