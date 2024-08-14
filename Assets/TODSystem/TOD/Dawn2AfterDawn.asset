@@ -23,5 +23,5 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 27f13a448a7381348a8b4448b33e61c2, type: 2}
   - {fileID: 2100000, guid: 71a56458f3e36d943aaa5a959ff43bc2, type: 2}
   - {fileID: 2100000, guid: b3b7b12c484aa4e48a3046315fea1b16, type: 2}
-  specularMap: {fileID: 8900000, guid: 327419cfd3614d24bbb50d9843d3eaf1, type: 3}
-  irrdianceMap: {fileID: 2800000, guid: 31324f5d32f34884093b3882255ca344, type: 3}
+  specularMap: {fileID: 8900000, guid: a43bbe939eb5f4244ad71a461980c739, type: 3}
+  irrdianceMap: {fileID: 2800000, guid: 984e3d5fb5148374fa1ef6bab6e76131, type: 3}
