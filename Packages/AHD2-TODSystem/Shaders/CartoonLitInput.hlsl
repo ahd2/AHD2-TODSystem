@@ -31,6 +31,8 @@ sampler2D _irradianceMap1;
 samplerCUBE _specularMap0;
 samplerCUBE _specularMap1;
 sampler2D _iblBrdfLut;
+//PBR贴图
+//sampler2D 
 //Test测试贴图
 
 #endif

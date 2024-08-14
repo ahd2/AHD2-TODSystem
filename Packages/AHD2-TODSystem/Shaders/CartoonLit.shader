@@ -8,6 +8,7 @@ Shader "AHD2TODSystem/CartoonLit"
         _BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
         [Header(PBR)]
         [Space(10)]
+        _NormalMap("NormalMap", 2D) = "bump" { }
         _Metallic ("Metallic", Range(0, 1)) = 0
 		_Smoothness ("Smoothness", Range(0, 1)) = 0.5
     }
@@ -87,4 +88,5 @@ Shader "AHD2TODSystem/CartoonLit"
 //        }
 
     }
+    CustomEditor "AHD2PBRGUI"
 }
