@@ -83,12 +83,12 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LDotV_damping_factor: 0.31277
-    - _Metallic: 0
+    - _Metallic: 0.839
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
-    - _Smoothness: 0.685
+    - _Smoothness: 0.696
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

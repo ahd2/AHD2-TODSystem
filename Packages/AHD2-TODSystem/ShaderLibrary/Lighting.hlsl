@@ -14,14 +14,15 @@ half3 GetSpecular(Surface surface, BRDF brdf, CartoonInputData inputdata)
 //返回方向光的radiance
 half3 IncomingLight (Surface surface, half3 mainlightDir,half4 lightCol, half directShadow) {
     //return saturate(dot(surface.normalWS, mainlightDir)) * lightCol.xyz * lightCol.a * saturate((directShadow + 1 - 0.5 * lightCol.a));
-    return saturate(dot(surface.normalWS, mainlightDir)) * lightCol.xyz * lightCol.a * saturate((directShadow + 1 - lightCol.a));
+    half mainlightIntensity = 5;//临时用，后面要调整下光照输入
+    return mainlightIntensity * saturate(dot(surface.normalWS, mainlightDir)) * lightCol.xyz * lightCol.a * saturate((directShadow + 1 - lightCol.a));
 }
 half3 AmbientLighting(Surface surface, BRDF brdf, CartoonInputData inputdata)
 {
     //ibl漫反射
     half3 Irradiance = GetIrradiance(surface);
     half3 DiffuseColor = (1.0 - surface.metallic) * surface.color; // Metallic surfaces have no diffuse reflections
-    half3 DiffuseContribution = DiffuseColor  * Irradiance;//不除以pi可能是IBL图已经除以过了。
+    half3 DiffuseContribution = DiffuseColor * Irradiance;//不除以pi可能是IBL图已经除以过了。
     //ibl镜面反射
     half3 prefilteredColor = GetSpecular(surface, brdf, inputdata);
     half3 SpecularContribution = prefilteredColor * EnvBRDF(surface.metallic, surface.color, brdf.iblLUT);
