@@ -10,7 +10,7 @@ Material:
   m_Name: New Material
   m_Shader: {fileID: 4800000, guid: 416ff817243bd3844810d73509e58406, type: 3}
   m_ValidKeywords:
-  - _METALLICMAP
+  - _RMOMAP
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -21,6 +21,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AOMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -62,7 +66,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ed324aea9671fdb4388c09c50a9310b2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -71,6 +75,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RMOMap:
+        m_Texture: {fileID: 2800000, guid: 50703fba3012b65408f87f40297617c3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _StarMap:
@@ -94,11 +102,12 @@ Material:
     - _GlossyReflections: 1
     - _LDotV_damping_factor: 0.31277
     - _METALLICMAP: 0
-    - _Metallic: 0.762
+    - _Metallic: 0.142
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _Roughness: 0.234
     - _Smoothness: 0.696
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

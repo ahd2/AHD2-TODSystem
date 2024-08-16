@@ -3,6 +3,11 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
+#include "../ShaderLibrary/Surface.hlsl"
+#include "../ShaderLibrary/CartoonInputData.hlsl"
+#include "../ShaderLibrary/BRDF.hlsl"
+#include "../ShaderLibrary/Lighting.hlsl"
+
 
 CBUFFER_START(UnityPerMaterial)
 //贴图ST
@@ -16,25 +21,31 @@ half _Roughness;
 //Test,测试用属性
 CBUFFER_END
 
-CBUFFER_START(Light)
-half4 _lightColor;//a通道为强度
-half4 _lightDirection;//a通道为标记，0为白天，1为晚上
-half _todTimeRatio;//已经经过的时间比例
-CBUFFER_END
-
-
 //贴图采样
 sampler2D _MainTex;
-//IBL
-sampler2D _irradianceMap0;
-sampler2D _irradianceMap1;
-samplerCUBE _specularMap0;
-samplerCUBE _specularMap1;
-sampler2D _iblBrdfLut;
 //PBR贴图
 sampler2D _NormalMap;
-sampler2D _MetalicMap;
+sampler2D _RMOMap;
+sampler2D _AOMap;
 //sampler2D 
 //Test测试贴图
+
+inline void InitializeSurfaceData(out Surface surface,half4 basecol, float2 uv, half3 normalWS)
+{
+    surface.normalWS = normalWS;//归一化是必须的
+    //surface.normalWS = normalize(normalWS);//归一化是必须的
+    surface.color = basecol.xyz;
+    surface.alpha = basecol.a;
+    #if defined (_RMOMAP)
+    half3 RMO = tex2D(_RMOMap,uv);
+    surface.metallic = RMO.g; //跟diffuse一个ST
+    surface.roughness = RMO.r;
+    surface.ambientOcclusion = RMO.b;
+    #else
+    surface.metallic = _Metallic;
+    surface.roughness = _Roughness;
+    surface.ambientOcclusion = tex2D(_AOMap, uv);
+    #endif
+}
 
 #endif

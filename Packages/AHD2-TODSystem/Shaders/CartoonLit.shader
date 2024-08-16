@@ -9,9 +9,10 @@ Shader "AHD2TODSystem/CartoonLit"
         [Header(PBR)]
         [Space(10)]
         _NormalMap("NormalMap", 2D) = "bump" { }
-        _MetalicMap("MetalicMap",2D) = "white" {}
+        _RMOMap("RMOMap",2D) = "white" {}
         _Metallic ("Metallic", Range(0, 1)) = 0
 		_Roughness ("Roughness", Range(0, 1)) = 0.5
+        _AOMap("AOMap", 2D) = "white" { }
     }
     SubShader
     {
@@ -32,8 +33,7 @@ Shader "AHD2TODSystem/CartoonLit"
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED //这个宏用于控制是否将定向光源的光照信息烘焙到光照贴图中。当你在Unity的Lighting窗口中选择了Baked GI，并且选择了Directional Mode，这个宏就会被激活。
             #pragma multi_compile _ LIGHTMAP_ON
             //材质面板keyword
-            #pragma shader_feature_local_fragment _METALLICMAP //_local_fragment表示只在片元着色器生效
-            #pragma shader_feature_local_fragment _ROUGHNESSMAP
+            #pragma shader_feature_local_fragment _RMOMAP //_local_fragment表示只在片元着色器生效
             #include "CartoonLitInput.hlsl"
 	        #include "CartoonLitForwardPass.hlsl"
             ENDHLSL

@@ -1,9 +1,6 @@
 #ifndef CARTOON_LIT_FORWARD_PASS_INCLUDED
 #define CARTOON_LIT_FORWARD_PASS_INCLUDED
-#include "../ShaderLibrary/Surface.hlsl"
-#include "../ShaderLibrary/CartoonInputData.hlsl"
-#include "../ShaderLibrary/BRDF.hlsl"
-#include "../ShaderLibrary/Lighting.hlsl"
+
 struct appdata
 {
     float4 vertex : POSITION;
@@ -39,7 +36,8 @@ float3 IndirectDiffuse( float2 uvStaticLightmap, float3 normalWS )
 void InitializeInputData(v2f input , out CartoonInputData inputdata)
 {
     inputdata.viewDirWS = normalize(_WorldSpaceCameraPos - input.positionWS); //指向摄像机方向
-    inputdata.normalWS = normalize(input.normalWS);
+    //inputdata.normalWS = normalize(input.normalWS);
+    inputdata.normalWS = input.normalWS;
     inputdata.reflectionDirWS = normalize(reflect(-inputdata.viewDirWS,inputdata.normalWS)); //指向视线反射反向
 }
 v2f CartoonLitVertex (appdata v)
@@ -64,20 +62,15 @@ half4 CartoonLitFragment (v2f i) : SV_Target
 {
     i.shadowCoord = TransformWorldToShadowCoord(i.positionWS);//这里采样才不会出现精度瑕疵
     Light mainlight = GetMainLight(i.shadowCoord);
-    half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, i.normalWS.xyz);
+    half3 normalMap = tex2D(_NormalMap, i.uv * _NormalMap_ST.xy + _NormalMap_ST.zw,ddx(i.uv.x),ddy(i.uv.y));//双重ST，在Maintex的ST上叠加
+    normalMap = normalize(normalMap * 2 - 1);
+    half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, normalize(i.normalWS.xyz));
+    i.normalWS = TransformTangentToWorld(normalMap,TBN);//矫正了normalWS插值造成的误差，后面直接赋值即可
     half4 mainTex = tex2D(_MainTex,i.uv);
     half4 basecol = _BaseColor * mainTex;
     
     Surface surface;
-    surface.normalWS = normalize(i.normalWS);//归一化是必须的
-    surface.color = basecol.xyz;
-    surface.alpha = basecol.a;
-    #if defined (_METALLICMAP)
-    surface.metallic = tex2D(_MetalicMap,i.uv).r; //跟diffuse一个ST
-    #else
-    surface.metallic = _Metallic;
-    #endif
-    surface.roughness = _Roughness;
+    InitializeSurfaceData(surface,basecol, i.uv, i.normalWS);
 
     CartoonInputData inputdata;
     InitializeInputData(i , inputdata);

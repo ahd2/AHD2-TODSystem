@@ -26,9 +26,10 @@ public class AHD2PBRGUI : ShaderGUI
     public MaterialProperty maintex { get; set; }
     protected MaterialProperty basecol { get; set; }
     protected MaterialProperty normalMap { get; set; }
-    protected MaterialProperty metalicMap { get; set; }
-    protected MaterialProperty metalic { get; set; }
+    protected MaterialProperty RMOMap { get; set; }
+    protected MaterialProperty metallic { get; set; }
     protected MaterialProperty roughness { get; set; }
+    protected MaterialProperty aoMap { get; set; }
     
     //存放下拉框Item的GUIContent（其实没必要翻译，但是翻译了证明我来过）
     protected class Styles
@@ -37,8 +38,10 @@ public class AHD2PBRGUI : ShaderGUI
             "决定物体看起来啥样。");
         public static GUIContent MainTex = EditorGUIUtility.TrTextContent("漫反射图", "What can i say? Man");//tips 是说明文字，鼠标悬停属性名称时显示 ,text是面板上显示的名称（可以为中文）
         public static GUIContent NormalMap = EditorGUIUtility.TrTextContent("法线贴图", "NormalMap");//tips 是说明文字，鼠标悬停属性名称时显示 ,text是面板上显示的名称（可以为中文）
-        public static GUIContent MetalicMap = EditorGUIUtility.TrTextContent("金属度贴图", "MetalicMap");
-        public static GUIContent RoughnessMap = EditorGUIUtility.TrTextContent("粗糙度贴图", "RoughnessMap");
+        public static GUIContent RMOMap = EditorGUIUtility.TrTextContent("RMO(粗糙度、金属度、AO)贴图", "RMOMap");
+        public static GUIContent Metallic = EditorGUIUtility.TrTextContent("金属度", "Metallic");
+        public static GUIContent Roughness = EditorGUIUtility.TrTextContent("粗糙度", "Roughness");
+        public static GUIContent AOMap = EditorGUIUtility.TrTextContent("AO贴图", "AOMap");
     }
     
     protected virtual uint materialFilter => uint.MaxValue;
@@ -62,9 +65,20 @@ public class AHD2PBRGUI : ShaderGUI
         editor.TexturePropertySingleLine(Styles.NormalMap, normalMap);
         editor.TextureScaleOffsetProperty(normalMap);
         //画金属度贴图
-        bool hasMetalMap = metalicMap.textureValue != null;
-        editor.TexturePropertySingleLine(Styles.MetalicMap, metalicMap,hasMetalMap? null : metalic);
-        //画粗糙度
+        bool hasRMOMap = RMOMap.textureValue != null;
+        editor.TexturePropertySingleLine(Styles.RMOMap, RMOMap);
+        if (!hasRMOMap)//如果没拖入RMO贴图
+        {
+            EditorGUI.indentLevel += 2;
+            //金属度滑杆
+            editor.ShaderProperty(metallic, Styles.Metallic);
+            //画粗糙度
+            editor.ShaderProperty(roughness, Styles.Roughness);
+            //AO图
+            editor.TexturePropertySingleLine(Styles.AOMap, aoMap);
+            EditorGUI.indentLevel-= 2;
+        }
+        
     }
 
     public bool m_FirstTimeApply = true;//面板是否首充打开，用于OnOpenGUI函数调用
@@ -95,8 +109,10 @@ public class AHD2PBRGUI : ShaderGUI
         maintex = FindProperty("_MainTex", properties, true); //第三个参数是未找到属性时是否抛出异常
         basecol = FindProperty("_BaseColor", properties, true);
         normalMap = FindProperty("_NormalMap", properties, true); //第三个参数是未找到属性时是否抛出异常
-        metalicMap = FindProperty("_MetalicMap", properties, false);
-        metalic = FindProperty("_Metallic", properties, false);
+        RMOMap = FindProperty("_RMOMap", properties, false);
+        metallic = FindProperty("_Metallic", properties, false);
+        roughness = FindProperty("_Roughness", this.properties, false);
+        aoMap = FindProperty("_AOMap", this.properties, false);
     }
     
     // material changed check
@@ -107,8 +123,7 @@ public class AHD2PBRGUI : ShaderGUI
 
     public static void SetMaterialKeywords(Material material)
     {
-        var hasGlossMap = material.GetTexture("_MetalicMap") != null;
-        
-        CoreUtils.SetKeyword(material, "_METALLICMAP", hasGlossMap);
+        var hasRMOMap = material.GetTexture("_RMOMap") != null;
+        CoreUtils.SetKeyword(material, "_RMOMAP", hasRMOMap);
     }
 }

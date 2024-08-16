@@ -1,6 +1,16 @@
 #ifndef CUSTOM_BRDF_INCLUDED
 #define CUSTOM_BRDF_INCLUDED
-
+CBUFFER_START(Light)
+half4 _lightColor;//a通道为强度
+half4 _lightDirection;//a通道为标记，0为白天，1为晚上
+half _todTimeRatio;//已经经过的时间比例
+CBUFFER_END
+//IBL
+sampler2D _irradianceMap0;
+sampler2D _irradianceMap1;
+samplerCUBE _specularMap0;
+samplerCUBE _specularMap1;
+sampler2D _iblBrdfLut;
 //仿造URPLit，记录BRDF参数
 struct BRDF {
 	half3 diffuse; //漫反射项

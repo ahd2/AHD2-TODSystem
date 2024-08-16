@@ -6,6 +6,7 @@ struct Surface {
     half3 normalWS;
     half  metallic;
     half  roughness;
+    half ambientOcclusion;
     half alpha;
 };
 
