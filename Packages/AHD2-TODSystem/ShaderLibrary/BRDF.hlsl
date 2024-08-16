@@ -40,7 +40,7 @@ BRDF GetBRDF (Surface surface, CartoonInputData inputdata) {
 	half NdotV = saturate(dot(inputdata.normalWS, inputdata.viewDirWS));
 	BRDF brdf;
 	brdf.diffuse = GetDiffuseBRDF(surface);//漫反射颜色
-	brdf.roughness = max(1 - surface.smoothness,0.04);
+	brdf.roughness = max(surface.roughness, 0.04);
 	brdf.iblLUT = tex2D(_iblBrdfLut,float2(NdotV,brdf.roughness)).rg;//有待商榷
 	return brdf;
 }

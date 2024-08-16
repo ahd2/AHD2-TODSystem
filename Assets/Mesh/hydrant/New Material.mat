@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: New Material
   m_Shader: {fileID: 4800000, guid: 416ff817243bd3844810d73509e58406, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _METALLICMAP
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -52,6 +53,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: daba52eca5eda614a834b8a310b61c33, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetalicMap:
+        m_Texture: {fileID: 2800000, guid: 0eb2dc730215d20479192e02594f3739, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -82,12 +87,14 @@ Material:
     - _Clipping: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _DisplayColor: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LDotV_damping_factor: 0.31277
-    - _Metallic: 0.839
+    - _METALLICMAP: 0
+    - _Metallic: 0.762
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02

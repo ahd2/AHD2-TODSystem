@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 public class AHD2PBRGUI : ShaderGUI
@@ -25,6 +26,9 @@ public class AHD2PBRGUI : ShaderGUI
     public MaterialProperty maintex { get; set; }
     protected MaterialProperty basecol { get; set; }
     protected MaterialProperty normalMap { get; set; }
+    protected MaterialProperty metalicMap { get; set; }
+    protected MaterialProperty metalic { get; set; }
+    protected MaterialProperty roughness { get; set; }
     
     //存放下拉框Item的GUIContent（其实没必要翻译，但是翻译了证明我来过）
     protected class Styles
@@ -32,7 +36,9 @@ public class AHD2PBRGUI : ShaderGUI
         public static readonly GUIContent SurfaceInputs = EditorGUIUtility.TrTextContent("表面输入",
             "决定物体看起来啥样。");
         public static GUIContent MainTex = EditorGUIUtility.TrTextContent("漫反射图", "What can i say? Man");//tips 是说明文字，鼠标悬停属性名称时显示 ,text是面板上显示的名称（可以为中文）
-        public static GUIContent NormalMap = EditorGUIUtility.TrTextContent("法线贴图", "normalMap");//tips 是说明文字，鼠标悬停属性名称时显示 ,text是面板上显示的名称（可以为中文）
+        public static GUIContent NormalMap = EditorGUIUtility.TrTextContent("法线贴图", "NormalMap");//tips 是说明文字，鼠标悬停属性名称时显示 ,text是面板上显示的名称（可以为中文）
+        public static GUIContent MetalicMap = EditorGUIUtility.TrTextContent("金属度贴图", "MetalicMap");
+        public static GUIContent RoughnessMap = EditorGUIUtility.TrTextContent("粗糙度贴图", "RoughnessMap");
     }
     
     protected virtual uint materialFilter => uint.MaxValue;
@@ -55,6 +61,10 @@ public class AHD2PBRGUI : ShaderGUI
         //画法线贴图部分
         editor.TexturePropertySingleLine(Styles.NormalMap, normalMap);
         editor.TextureScaleOffsetProperty(normalMap);
+        //画金属度贴图
+        bool hasMetalMap = metalicMap.textureValue != null;
+        editor.TexturePropertySingleLine(Styles.MetalicMap, metalicMap,hasMetalMap? null : metalic);
+        //画粗糙度
     }
 
     public bool m_FirstTimeApply = true;//面板是否首充打开，用于OnOpenGUI函数调用
@@ -62,7 +72,6 @@ public class AHD2PBRGUI : ShaderGUI
     readonly MaterialHeaderScopeList m_MaterialScopeList = new MaterialHeaderScopeList(uint.MaxValue & ~(uint)Expandable.Advanced);
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
-        //base.OnGUI(materialEditor, properties);
         //这些参数存为成员变量，为了让它们在整个类里都可以调用。
         editor = materialEditor;
         materials = materialEditor.targets;
@@ -86,5 +95,20 @@ public class AHD2PBRGUI : ShaderGUI
         maintex = FindProperty("_MainTex", properties, true); //第三个参数是未找到属性时是否抛出异常
         basecol = FindProperty("_BaseColor", properties, true);
         normalMap = FindProperty("_NormalMap", properties, true); //第三个参数是未找到属性时是否抛出异常
+        metalicMap = FindProperty("_MetalicMap", properties, false);
+        metalic = FindProperty("_Metallic", properties, false);
+    }
+    
+    // material changed check
+    public override void ValidateMaterial(Material material)
+    {
+        SetMaterialKeywords(material);
+    }
+
+    public static void SetMaterialKeywords(Material material)
+    {
+        var hasGlossMap = material.GetTexture("_MetalicMap") != null;
+        
+        CoreUtils.SetKeyword(material, "_METALLICMAP", hasGlossMap);
     }
 }

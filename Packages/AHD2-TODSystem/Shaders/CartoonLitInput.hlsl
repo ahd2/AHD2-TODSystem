@@ -12,7 +12,7 @@ float4 _NormalMap_ST;
 half4 _BaseColor;
 //half
 half _Metallic;
-half _Smoothness;
+half _Roughness;
 //Test,测试用属性
 CBUFFER_END
 
@@ -32,6 +32,8 @@ samplerCUBE _specularMap0;
 samplerCUBE _specularMap1;
 sampler2D _iblBrdfLut;
 //PBR贴图
+sampler2D _NormalMap;
+sampler2D _MetalicMap;
 //sampler2D 
 //Test测试贴图
 

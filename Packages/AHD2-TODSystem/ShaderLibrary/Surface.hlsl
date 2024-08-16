@@ -5,7 +5,7 @@ struct Surface {
     half3 color;
     half3 normalWS;
     half  metallic;
-    half  smoothness;
+    half  roughness;
     half alpha;
 };
 

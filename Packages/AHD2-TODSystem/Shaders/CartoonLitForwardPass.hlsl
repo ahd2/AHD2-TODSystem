@@ -72,8 +72,12 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     surface.normalWS = normalize(i.normalWS);//归一化是必须的
     surface.color = basecol.xyz;
     surface.alpha = basecol.a;
+    #if defined (_METALLICMAP)
+    surface.metallic = tex2D(_MetalicMap,i.uv).r; //跟diffuse一个ST
+    #else
     surface.metallic = _Metallic;
-    surface.smoothness = _Smoothness;
+    #endif
+    surface.roughness = _Roughness;
 
     CartoonInputData inputdata;
     InitializeInputData(i , inputdata);
@@ -81,5 +85,7 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     BRDF brdf = GetBRDF(surface, inputdata);
     half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, _lightColor, mainlight.shadowAttenuation);
     return half4(finalcolor,surface.alpha);
+    
+    
 }
 #endif
