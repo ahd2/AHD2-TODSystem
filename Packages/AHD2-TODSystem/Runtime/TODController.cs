@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[ExecuteAlways]
 public class TODController : MonoBehaviour
 {
     public TODGlobalParameters todGlobalParameters;//未拖入也会报错，不处理了
