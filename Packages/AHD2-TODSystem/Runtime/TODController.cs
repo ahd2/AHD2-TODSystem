@@ -20,7 +20,7 @@ public class TODController : MonoBehaviour
 
     void Start()
     {
-        todGlobalParameters.CurrentTime = 6;//从6点开始
+        //todGlobalParameters.CurrentTime = 6;//从6点开始
         foreach (var tod in todGlobalParameters.timeOfDays)
         {
             tod.Initialize();

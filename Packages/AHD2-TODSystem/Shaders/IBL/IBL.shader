@@ -1,4 +1,5 @@
 Shader "Hidden/IBLMaker_CubeMap"
+//烘焙Irradicance贴图用
 {
     Properties
     {
