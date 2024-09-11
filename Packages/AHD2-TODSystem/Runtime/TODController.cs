@@ -11,8 +11,6 @@ public class TODController : MonoBehaviour
     private Vector3 lightDirection;//假光源方向，360度转
     private static readonly int LightColor = Shader.PropertyToID("_lightColor");
     private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
-    private static readonly int IrradianceMap0 = Shader.PropertyToID("_irradianceMap0");
-    private static readonly int IrradianceMap1 = Shader.PropertyToID("_irradianceMap1");
     private static readonly int SpecularMap0 = Shader.PropertyToID("_specularMap0");
     private static readonly int SpecularMap1 = Shader.PropertyToID("_specularMap1");
     private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
@@ -20,6 +18,7 @@ public class TODController : MonoBehaviour
 
     void Start()
     {
+        todGlobalParameters.Initailize();
         //todGlobalParameters.CurrentTime = 6;//从6点开始
         foreach (var tod in todGlobalParameters.timeOfDays)
         {
@@ -76,8 +75,7 @@ public class TODController : MonoBehaviour
     {
         Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
         Shader.SetGlobalVector(LightDirection, new Vector4(lightDirection.x,lightDirection.y,lightDirection.z,todGlobalParameters._dayOrNight));
-        Shader.SetGlobalTexture(IrradianceMap0, todGlobalParameters.currentTimeOfDay.irrdianceMap);
-        Shader.SetGlobalTexture(IrradianceMap1, todGlobalParameters.currentTimeOfDay.nextTOD.irrdianceMap);
+        todGlobalParameters.LerpIrradianceMap();
         Shader.SetGlobalTexture(SpecularMap0, todGlobalParameters.currentTimeOfDay.specularMap);
         Shader.SetGlobalTexture(SpecularMap1, todGlobalParameters.currentTimeOfDay.nextTOD.specularMap);
         Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todTimeRatio);

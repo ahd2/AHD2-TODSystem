@@ -6,8 +6,7 @@ half4 _lightDirection;//a通道为标记，0为白天，1为晚上
 half _todTimeRatio;//已经经过的时间比例
 CBUFFER_END
 //IBL
-sampler2D _irradianceMap0;
-sampler2D _irradianceMap1;
+sampler2D _IrradianceMap;
 samplerCUBE _specularMap0;
 samplerCUBE _specularMap1;
 sampler2D _iblBrdfLut;
@@ -110,9 +109,7 @@ half3 DirectBRDF(Surface surface, BRDF brdf, half3 mainLightDir, CartoonInputDat
 half3 GetIrradiance(Surface surface)
 {
 	float2 uv = normal2uv(surface.normalWS);
-	half3 Irradiance0 = tex2D(_irradianceMap0,uv);
-	half3 Irradiance1 = tex2D(_irradianceMap1,uv);
-	return lerp(Irradiance0, Irradiance1, _todTimeRatio);
+	return tex2D(_IrradianceMap,uv).xyz;
 }
 
 float3 EnvBRDF(float Metallic, float3 BaseColor, float2 LUT)

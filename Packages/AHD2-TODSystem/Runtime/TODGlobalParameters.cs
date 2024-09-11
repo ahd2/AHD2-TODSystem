@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -49,6 +51,21 @@ public class TODGlobalParameters : ScriptableObject
 
     //====================================================================================================
     #region 函数区域
+    /// <summary>
+    /// 初始化参数
+    /// </summary>
+    public void Initailize()
+    {
+        lerpTextureComputeShader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.ahd2.tod-system/Shaders/IBL/LerpTexture.compute");
+        if (lerpTextureComputeShader == null)
+        {
+            throw new FileNotFoundException("Failed to load LerpTexture Compute Shader.");
+        }
+        s_lerpKernal = lerpTextureComputeShader.FindKernel("LerpTexture");
+        irradianceMap = new RenderTexture(128, 64, 0, RenderTextureFormat.ARGBFloat);//固定宽高，后续开放选择
+        irradianceMap.enableRandomWrite = true; // 如果需要写入到Render Texture，可能需要这个  
+        irradianceMap.Create();  
+    }
     /// <summary>
     /// 全局参数类的基础update，
     /// </summary>
@@ -163,6 +180,24 @@ public class TODGlobalParameters : ScriptableObject
         _lightColor = Color.Lerp(currentTimeOfDay.lightColor,currentTimeOfDay.nextTOD.lightColor,todTimeRatio);
         //传入预计算光源方向，a通道为昼夜标记
         _dayOrNight = Convert.ToInt32(currentTimeOfDay.datOrNight);
+    }
+
+    private static int s_lerpKernal;
+    private ComputeShader lerpTextureComputeShader;
+    private static readonly int IrradianceMap0 = Shader.PropertyToID("_irradianceMap0");
+    private static readonly int IrradianceMap1 = Shader.PropertyToID("_irradianceMap1");
+    private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
+    private static readonly int IrradianceMap = Shader.PropertyToID("_IrradianceMap");
+    private RenderTexture irradianceMap;
+
+    public void LerpIrradianceMap()
+    {
+        lerpTextureComputeShader.SetTexture(s_lerpKernal, IrradianceMap, irradianceMap);
+        lerpTextureComputeShader.SetTexture(s_lerpKernal, IrradianceMap0, currentTimeOfDay.irrdianceMap);
+        lerpTextureComputeShader.SetTexture(s_lerpKernal, IrradianceMap1, currentTimeOfDay.nextTOD.irrdianceMap);
+        lerpTextureComputeShader.SetFloat(TodTimeRatio, todTimeRatio);
+        lerpTextureComputeShader.Dispatch(s_lerpKernal, 16, 8, 1); //宽高/8，后续更改
+        Shader.SetGlobalTexture(IrradianceMap, irradianceMap);
     }
 
     #endregion

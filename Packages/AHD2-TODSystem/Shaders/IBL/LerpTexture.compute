@@ -1,0 +1,15 @@
+#pragma kernel LerpTexture
+
+RWTexture2D<float4> _IrradianceMap;
+Texture2D<float4> _irradianceMap0;  
+Texture2D<float4> _irradianceMap1;  
+float _todTimeRatio;
+
+[numthreads(8,8,1)]
+void LerpTexture (uint3 id : SV_DispatchThreadID)
+{
+    // 从两个纹理中读取颜色  
+    float4 color1 = _irradianceMap0[id.xy];
+    float4 color2 = _irradianceMap1[id.xy];
+    _IrradianceMap[id.xy] = lerp(color1, color2, _todTimeRatio);
+}

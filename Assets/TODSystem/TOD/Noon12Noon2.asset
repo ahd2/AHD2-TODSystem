@@ -21,7 +21,5 @@ MonoBehaviour:
   datOrNight: 0
   materials:
   - {fileID: 2100000, guid: 5a8affe6ffae03947bf73140644f2416, type: 2}
-  - {fileID: 2100000, guid: 36294f595c67b8d47b3f4df18642efa4, type: 2}
-  - {fileID: 2100000, guid: a5b2842d976ce6e459cf6c3604d64a36, type: 2}
   specularMap: {fileID: 8900000, guid: 9ef3747ff6c424143a867866ea09c154, type: 3}
   irrdianceMap: {fileID: 2800000, guid: 3013b5efef2b3304f85b7e91f460e1f7, type: 3}
