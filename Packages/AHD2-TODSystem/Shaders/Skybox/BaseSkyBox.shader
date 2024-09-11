@@ -51,10 +51,6 @@ Shader "AHD2TODSystem/BaseSky"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 	    	#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            //#include "Assets/Fog/HLSLFogHeader.cginc"
-            //cg库,感觉还是用hlsl吧，跟上时代
-            //#include "UnityCG.cginc"
-
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -103,45 +99,11 @@ Shader "AHD2TODSystem/BaseSky"
             float _StarRange;
 
             sampler2D _CloudMap;
+            sampler2D _IrradianceMap;
             CBUFFER_START(Light)
             half4 _lightDirection;//a通道为标记，0为白天，1为晚上
             float4 _lightColor;//a通道为强度
             CBUFFER_END
-
-            float3 RGB2HSV(float3 c)
-            {
-                float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-                float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
-                float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
-
-                float d = q.x - min(q.w, q.y);
-                float e = 1.0e-10;
-                return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-            }
-            // HLSL 函数，用于将HSV颜色转换为RGB颜色  
-            float3 hsb2rgb( float3 c ){
-                float3 rgb = clamp( abs(fmod(c.x*6.0+float3(0.0,4.0,2.0),6)-3.0)-1.0, 0, 1);
-                rgb = rgb*rgb*(3.0-2.0*rgb);
-                return c.z * lerp( float3(1,1,1), rgb, c.y);
-            }
-            //偏移原始值函数
-            float3 RGB2HSV_Modified(float3 hsv,float hueOffset)  
-            {  
-                //float3 hsv = RGB2HSV(c); // 使用原始的RGB2HSV函数获取标准的HSV值  
-            
-                // 将色相从0-1映射到0-360度  
-                float hueInDegrees = hsv.x * 360.0;  
-            
-                // 将色相范围从0-360度更改为90-450度  
-                //float hueOffset = 90.0; // 偏移量，使90度对应0（在0-1范围内）  
-                float hueRange = 450.0 - 90.0; // 新的色相范围大小  
-                float hueModifiedInDegrees = (hueInDegrees + hueOffset) % hueRange; // 应用偏移并取模以确保值在范围内  
-            
-                // 将修改后的色相值重新映射回0-1范围  
-                hsv.x = hueModifiedInDegrees / hueRange;  
-            
-                return hsv;  
-            }
 
             float FastAcosForAbsCos(float in_abs_cos) {
                 float _local_tmp = ((in_abs_cos * -0.0187292993068695068359375 + 0.074261002242565155029296875) * in_abs_cos - 0.212114393711090087890625) * in_abs_cos + 1.570728778839111328125;
@@ -242,13 +204,7 @@ Shader "AHD2TODSystem/BaseSky"
 
                 float _LDotV_Pow_Scale = (_LDotV_Pow_0_01 * 0.03) + (_LDotV_Pow_0_1 * 0.12) + _LDotV_Pow.x;
                 float3 _sun_disk = _LDotV_Pow_Scale * _SunRange * _SunColor;
-
-                // float3 _sun_disk = _LDotV_Pow_Scale * _SunColor;
-                // _sun_disk = RGB2HSV(_sun_disk);
-                // _sun_disk.y *= _SunRange;
-                // _sun_disk.z *= _SunRange;
-                // _sun_disk = hsb2rgb(_sun_disk);
-                //
+                
                 //太阳内核
                 half innerRange = smoothstep(_SunRange0, _SunRange1, _LDotV_remap01);
 
@@ -262,11 +218,10 @@ Shader "AHD2TODSystem/BaseSky"
 
                 float4 finalcolor=float4(sunpart+starcol.xyz,1);
 
-                
+                half3 Irradiance = tex2D(_IrradianceMap, i.uv);
                 float n = smoothstep(-3.5,3,atan2(i.uv.z,i.uv.x));//环形x轴
                 float4 cloud = tex2D(_CloudMap,float2(n,i.uv.y));
-
-                finalcolor.xyz += cloud.a;
+                finalcolor.xyz += cloud.a * Irradiance;
 
                 //finalcolor.xyz = ExponentialHeightFog(finalcolor.xyz,i.posWS);
                 //finalcolor.xyz=  i.Varying_ColorAndLDotDamping.xyz;
