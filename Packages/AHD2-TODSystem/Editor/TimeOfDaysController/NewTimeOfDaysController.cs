@@ -23,7 +23,17 @@ namespace AHD2TimeOfDay
             // 在新创建的游戏对象上添加指定的脚本组件
             TODController scriptComponent = timeOfDaysController.AddComponent<TODController>(); 
             //初始化
-            scriptComponent.todGlobalParameters = AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Packages/com.ahd2.tod-system/TODSystem/TODGlobalParameters.asset");
+            TimeOfDaysEditorUtility.CreateDirectory("Assets/TODSystem");//尝试创建路径
+            TODGlobalParameters defaultTODGlobalParameters =
+                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/DefaultTODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
+            if (!defaultTODGlobalParameters)//如果没有,拿不到，那么就新建一个
+            {
+                defaultTODGlobalParameters = Instantiate(AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Packages/com.ahd2.tod-system/TODSystem/TODGlobalParameters.asset"));//复制出全局参数SO
+                AssetDatabase.CreateAsset(defaultTODGlobalParameters, "Assets/TODSystem/DefaultTODGlobalParameters.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            scriptComponent.todGlobalParameters = defaultTODGlobalParameters;
             
             Light[] lights = Light.GetLights(LightType.Directional, 0);//拿到所有方向光
             scriptComponent.MainLight = lights[0];
@@ -31,6 +41,8 @@ namespace AHD2TimeOfDay
             {
                 Debug.LogWarning("请放入主方向光！！Please add the main directional light!");
             }
+            
+            RenderSettings.skybox = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.ahd2.tod-system/TODSystem/Material/HDRSkyBox_BaseSky.mat");
             // 选中新创建的游戏对象
             Selection.activeObject = timeOfDaysController;
         }

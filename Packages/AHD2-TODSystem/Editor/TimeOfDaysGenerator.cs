@@ -66,14 +66,6 @@ namespace AHD2TimeOfDay
             }
         }
 
-        public void CreateDirectory(string path)
-        {
-            // 检查路径是否已存在
-            if (!Directory.Exists(path))
-            {
-                // 如果路径不存在，创建它
-                Directory.CreateDirectory(path);
-            }
-        }
+        
     }
 }
