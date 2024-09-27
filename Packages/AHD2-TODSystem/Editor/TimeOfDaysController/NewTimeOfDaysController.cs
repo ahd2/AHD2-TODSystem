@@ -19,12 +19,18 @@ namespace AHD2TimeOfDay
 
             // 将新创建的游戏对象设置为当前选中的对象的子对象
             GameObjectUtility.SetParentAndAlign(timeOfDaysController, menuCommand.context as GameObject);
-
+            
             // 在新创建的游戏对象上添加指定的脚本组件
             TODController scriptComponent = timeOfDaysController.AddComponent<TODController>(); 
             //初始化
             scriptComponent.todGlobalParameters = AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Packages/com.ahd2.tod-system/TODSystem/TODGlobalParameters.asset");
-            Debug.LogWarning("请放入主方向光！！Please add the main directional light!");
+            
+            Light[] lights = Light.GetLights(LightType.Directional, 0);//拿到所有方向光
+            scriptComponent.MainLight = lights[0];
+            if (!scriptComponent.MainLight)
+            {
+                Debug.LogWarning("请放入主方向光！！Please add the main directional light!");
+            }
             // 选中新创建的游戏对象
             Selection.activeObject = timeOfDaysController;
         }
