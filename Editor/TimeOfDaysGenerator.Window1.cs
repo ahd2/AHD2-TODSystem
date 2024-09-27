@@ -114,7 +114,7 @@ namespace AHD2TimeOfDay
                 for (int i = 0; i < _todGlobalParameters.materials.Length; i++) //逐个材质
                 {
                     //每个mat，创建关键帧个数的实例
-                    CreateDirectory(currentPath + "/" + _todGlobalParameters.materials[i].name + "_TOD"); //尝试创建路径
+                    TimeOfDaysEditorUtility.CreateDirectory(currentPath + "/" + _todGlobalParameters.materials[i].name + "_TOD"); //尝试创建路径
                     for (int j = 0; j < todList.Count; j++) //每个材质逐个TOD赋值
                     {
                         //Debug.Log(j);
@@ -136,7 +136,7 @@ namespace AHD2TimeOfDay
                 for (int i = 0; i < todList.Count; i++) //逐个关键帧
                 {
                     //每个关键帧创建一个文件夹
-                    CreateDirectory(currentPath + "/" + todList[i].name); //尝试创建路径
+                    TimeOfDaysEditorUtility.CreateDirectory(currentPath + "/" + todList[i].name); //尝试创建路径
                     for (int j = 0; j < _todGlobalParameters.materials.Length; j++)
                     {
                         matPath = currentPath + "/" + todList[i].name + "/" + todList[i].name + "_" +
