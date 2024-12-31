@@ -17,6 +17,9 @@ namespace AHD2TimeOfDay
 
         [SerializeField, Range(0f, 24f), Tooltip("时间")]
         private float _currentTime;
+        
+        [SerializeField, Tooltip("一天等于现实多少分钟？")]
+        public float timeFlowScale = 10;
 
         public float CurrentTime
         {
@@ -72,11 +75,19 @@ namespace AHD2TimeOfDay
             {
                 throw new FileNotFoundException("Failed to load LerpTexture Compute Shader.");
             }
-
             s_lerpKernal = lerpTextureComputeShader.FindKernel("LerpTexture");
             irradianceMap = new RenderTexture(128, 64, 0, RenderTextureFormat.ARGBFloat); //固定宽高，后续开放选择
             irradianceMap.enableRandomWrite = true; // 如果需要写入到Render Texture，可能需要这个  
             irradianceMap.Create();
+            
+            //加载时间（如果没有，返回默认值CurrentTime）
+            CurrentTime = PlayerPrefs.GetFloat("ahd2_time", CurrentTime);
+        }
+
+        public void SavedTime()
+        {
+            //保存时间
+            PlayerPrefs.SetFloat("ahd2_time", CurrentTime);
         }
 
         /// <summary>
@@ -87,7 +98,7 @@ namespace AHD2TimeOfDay
             if (timeFlow)
             {
                 //如果时间流动。
-                CurrentTime += Time.deltaTime * timeFlowSpeed;
+                CurrentTime += Time.deltaTime * timeFlowSpeed * 0.4f / timeFlowScale;
                 todTime += Time.deltaTime * timeFlowSpeed;
                 UpdateTimeOfDay();
                 todTimeRatio = todTime / currentTimeOfDay.duration;

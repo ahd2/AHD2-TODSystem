@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,12 @@ namespace AHD2TimeOfDay
             todGlobalParameters.BaseUpdate();
             SetGlobalParameters();
             RotateLight();
+        }
+        
+        //退出前保存时间
+        private void OnDestroy()
+        {
+            todGlobalParameters.SavedTime();
         }
 
         /// <summary>
