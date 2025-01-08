@@ -38,10 +38,8 @@ Shader "AHD2TODSystem/BaseSky"
     SubShader
     {
         Tags { "RenderType"="Background" "PreviewType"="Skybox" "RenderPipeline"="UniversalPipeline" "Queue"="Background"}
-        LOD 100
         //放到天空盒就不用Cull Front
-        //Cull Front
-
+        Cull Off
         Pass
         {
             HLSLPROGRAM
@@ -214,7 +212,7 @@ Shader "AHD2TODSystem/BaseSky"
                 sunpart = lerp(sunpart,_SunInnercolor,innerRange);
 
                 //星空
-                float4 starcol = SAMPLE_TEXTURECUBE(_StarMap, sampler_StarMap, i.uv.xyz)*2*pow((1-_LDotV_remap01),_StarRange);
+                float4 starcol = SAMPLE_TEXTURECUBE(_StarMap, sampler_StarMap, _viewDirNormalize)*2*pow((1-_LDotV_remap01),_StarRange);
 
                 float4 finalcolor=float4(sunpart+starcol.xyz,1);
 
