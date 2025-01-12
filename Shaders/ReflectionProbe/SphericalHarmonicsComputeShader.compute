@@ -1,0 +1,225 @@
+#pragma kernel CalculateSHMain
+struct SHBasis
+{
+    float y00;
+    float y1p1;
+    float y10;
+    float y1n1;
+    float y2p1;
+    float y2n1;
+    float y2n2;
+    float y20;
+    float y2p2;
+};
+
+SHBasis Evaluate(float3 normal)
+{
+    SHBasis shBasis = (SHBasis)0;
+    shBasis.y00 = 0.2820947917f;
+    shBasis.y1p1 = 0.4886025119f * normal.y; //yn表示第n行，pn表示负n，nn表示正n(目前命名是错乱的)
+    shBasis.y10 = 0.4886025119f * normal.z;
+    shBasis.y1n1 = 0.4886025119f * normal.x;
+    shBasis.y2p1 = 1.0925484306f * normal.x * normal.y;
+    shBasis.y2n1 = 1.0925484306f * normal.y * normal.z;
+    shBasis.y2n2= 0.3153915652f * (3 * normal.z * normal.z - 1.0f);
+    shBasis.y20 = 1.0925484306f * normal.x * normal.z;
+    shBasis.y2p2 = 0.5462742153f * (normal.x * normal.x - normal.y * normal.y);
+    return shBasis;
+}
+//Pack 3 coeffs in one struct
+struct CoeffsPack3
+{
+    float3 coeff0;
+    float3 coeff1;
+    float3 coeff2;
+};
+
+float _SHPackIndex;
+groupshared CoeffsPack3 coeffs[8 * 8 * 6];
+TextureCube _CubeMapTexture;
+SamplerState sampler_LinearClamp;
+//_TextureSize and _DispatchCount are float3 but used as uint3
+float3 _TextureSize;
+float3 _DispatchCount;
+
+//Check if we are sampling inside texture
+bool CheckInRange(uint3 texturesize, uint3 dispatchThreadID)
+{
+	return !any(dispatchThreadID >= texturesize);
+}
+
+//Calculate direction from dispatchThreadID
+float3 GetDirectionFromIndex(uint3 textureSize, uint3 dispatchThreadID)
+{
+    float2 uv = (dispatchThreadID.xy + 0.5) * rcp(textureSize.xy);
+    float u = uv.x;
+    float v = uv.y;
+    float3 dir = float3(0, 0, 0);
+    switch (dispatchThreadID.z)
+    {
+        case 0: //+X
+            dir.x = 1;
+            dir.y = v * -2.0f + 1.0f;
+            dir.z = u * -2.0f + 1.0f;
+            break;
+
+        case 1: //-X
+            dir.x = -1;
+            dir.y = v * -2.0f + 1.0f;
+            dir.z = u * 2.0f - 1.0f;
+            break;
+
+        case 2: //+Y
+            dir.x = u * 2.0f - 1.0f;
+            dir.y = 1.0f;
+            dir.z = v * 2.0f - 1.0f;
+            break;
+
+        case 3: //-Y
+            dir.x = u * 2.0f - 1.0f;
+            dir.y = -1.0f;
+            dir.z = v * -2.0f + 1.0f;
+            break;
+
+        case 4: //+Z
+            dir.x = u * 2.0f - 1.0f;
+            dir.y = v * -2.0f + 1.0f;
+            dir.z = 1;
+            break;
+
+        case 5: //-Z
+            dir.x = u * -2.0f + 1.0f;
+            dir.y = v * -2.0f + 1.0f;
+            dir.z = -1;
+            break;
+        }
+
+    return normalize(dir);
+}
+
+float AreaElement(float x, float y)
+{
+    return atan2(x * y, sqrt(x * x + y * y + 1));
+}
+
+//Calculate solid angle
+float GetWeightFromIndex(uint3 textureSize, uint3 dispatchThreadID)
+{
+    float2 invTextureSize = rcp(textureSize.xy);
+    float2 uv = (dispatchThreadID.xy + 0.5) * invTextureSize;
+    uv = uv * 2 - 1;
+    float x0 = uv.x - invTextureSize.x;
+    float y0 = uv.y - invTextureSize.y;
+    float x1 = uv.x + invTextureSize.x;
+    float y1 = uv.y + invTextureSize.y;
+
+    return AreaElement(x0, y0) - AreaElement(x0, y1) - AreaElement(x1, y0) + AreaElement(x1, y1);
+}
+
+//Texture format is RGBA SFloat, so we do not need to decode sampleHDR
+float3 SampleCubeMap(TextureCube cubTex, float3 sampleDir)
+{
+    float4 sampleHDR = cubTex.SampleLevel(sampler_LinearClamp, sampleDir, 0);
+    return sampleHDR.rgb;
+}
+RWStructuredBuffer<CoeffsPack3> _GroupCoefficients;
+
+CoeffsPack3 CoeffsAdd(CoeffsPack3 coeffsA, CoeffsPack3 coeffsB)
+{
+    CoeffsPack3 tempCoeffs = (CoeffsPack3)0;
+    tempCoeffs.coeff0 = coeffsA.coeff0 + coeffsB.coeff0;
+    tempCoeffs.coeff1 = coeffsA.coeff1 + coeffsB.coeff1;
+    tempCoeffs.coeff2 = coeffsA.coeff2 + coeffsB.coeff2;
+    return tempCoeffs;
+}
+
+void SumUp(uint groupIndex, uint indexGroup)
+{
+    GroupMemoryBarrierWithGroupSync();
+
+    uint faceIndex = groupIndex % 64;
+
+    if (faceIndex < 32)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 32]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (faceIndex < 16)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 16]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (faceIndex < 8)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 8]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (faceIndex < 4)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 4]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (faceIndex < 2)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 2]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (faceIndex < 1)
+        coeffs[groupIndex] = CoeffsAdd(coeffs[groupIndex], coeffs[groupIndex + 1]);
+
+    GroupMemoryBarrierWithGroupSync();
+
+    if (groupIndex == 0)
+    {
+        CoeffsPack3 output = coeffs[0];
+        output = CoeffsAdd(output, coeffs[64]);
+        output = CoeffsAdd(output, coeffs[128]);
+        output = CoeffsAdd(output, coeffs[192]);
+        output = CoeffsAdd(output, coeffs[256]);
+        output = CoeffsAdd(output, coeffs[320]);
+
+        _GroupCoefficients[indexGroup] = output;
+    }
+}
+
+[numthreads(8, 8, 6)]
+void CalculateSHMain(uint3 groupID : SV_GroupID, uint groupIndex : SV_GroupIndex, uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint indexGroup = groupID.z * _DispatchCount.x * _DispatchCount.y + groupID.y * _DispatchCount.x + groupID.x;
+    bool inRange = CheckInRange(_TextureSize, dispatchThreadID);
+    if (inRange)
+    {
+        float3 direction = GetDirectionFromIndex(_TextureSize, dispatchThreadID);
+        float weight = GetWeightFromIndex(_TextureSize, dispatchThreadID);
+        //I leave out sin(theta) term here
+        float3 sampleColor = SampleCubeMap(_CubeMapTexture, direction).rgb * weight * sqrt(1 - direction.z * direction.z);// * sqrt(1 - direction.z * direction.z);
+        
+        SHBasis shBasis = Evaluate(direction);
+        CoeffsPack3 tempCoeffs = (CoeffsPack3)0;
+
+        switch ((uint)_SHPackIndex)
+        {
+        case 0:
+            tempCoeffs.coeff0 = shBasis.y00 * sampleColor;
+            tempCoeffs.coeff1 = shBasis.y1p1 * sampleColor;
+            tempCoeffs.coeff2 = shBasis.y10 * sampleColor;
+            break;
+        case 1:
+            tempCoeffs.coeff0 = shBasis.y1n1 * sampleColor;
+            tempCoeffs.coeff1 = shBasis.y2p1 * sampleColor;
+            tempCoeffs.coeff2 = shBasis.y2n1 * sampleColor;
+            break;
+        case 2:
+            tempCoeffs.coeff0 = shBasis.y2n2 * sampleColor;
+            tempCoeffs.coeff1 = shBasis.y20 * sampleColor;
+            tempCoeffs.coeff2 = shBasis.y2p2 * sampleColor;
+            break;
+        default:
+            break;
+        }
+
+        coeffs[groupIndex] = tempCoeffs;
+    }
+
+    SumUp(groupIndex, indexGroup);
+}
