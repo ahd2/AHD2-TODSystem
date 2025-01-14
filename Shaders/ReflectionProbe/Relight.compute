@@ -16,7 +16,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float2 invTextureSize = rcp(float2(Resolution, Resolution));
     float2 uv = (float2(id.xy) + 0.5) * invTextureSize;
     float4 col = SAMPLE_TEXTURE2D_ARRAY_LOD(_Diffuse, sampler_Diffuse, uv, FaceIndex, 0);//a通道为遮罩
-    col.xyz *= 30;//强行转hdr
+    col.xyz *= 20;//强行转hdr
     //SkyboxTex[id.xy] = float4(col.xyz, 1);
     col.a = min(1, col.a * 2);
     float4 normal = SAMPLE_TEXTURE2D_ARRAY_LOD(_Normal, sampler_Normal, uv, FaceIndex, 0) * 2 - 1;

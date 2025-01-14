@@ -41,3 +41,4 @@
 
 * 使用需要先在RendererList中添加ReflectionBakedRenderer
 * Hierarchy窗口右键AHD2TODSystem - CreateReflectionProbe创建即可。
+* 探针目前只支持单探针，多探针有概率有bug
