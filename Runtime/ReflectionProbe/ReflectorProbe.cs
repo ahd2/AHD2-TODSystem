@@ -41,7 +41,7 @@ namespace AHD2TimeOfDay
         }
 
         [SerializeField]
-        private bool bakeable = false;
+        public bool bakeable = false;
 
         [SerializeField]
         private Texture baked;

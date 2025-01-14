@@ -69,7 +69,6 @@ namespace AHD2TimeOfDay
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
             reflectionProbes.Update();
             serializedObject.Update();
 
