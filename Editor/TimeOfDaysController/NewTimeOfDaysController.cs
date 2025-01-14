@@ -35,7 +35,18 @@ namespace AHD2TimeOfDay
             }
             scriptComponent.todGlobalParameters = defaultTODGlobalParameters;
             
-            Light[] lights = Light.GetLights(LightType.Directional, 0);//拿到所有方向光
+            //所有方向光
+            Light[] allLights = FindObjectsOfType<Light>();
+            List<Light> directionalLights = new List<Light>();
+            foreach (Light light in allLights)
+            {
+                if (light.type == LightType.Directional)
+                {
+                    directionalLights.Add(light);
+                }
+            }
+            Light[] lights = directionalLights.ToArray();//
+            
             scriptComponent.MainLight = lights[0];
             if (!scriptComponent.MainLight)
             {

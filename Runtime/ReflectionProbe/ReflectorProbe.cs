@@ -133,11 +133,11 @@ namespace AHD2TimeOfDay
                 //先找核
                 int index = RelightCS.FindKernel("CSMain");
                 int resolution = probe.resolution;
-                RelightCS.SetTexture(index, "_Diffuse", baked);
-                RelightCS.SetTexture(index, "_Normal", bakedNormal);
-                RelightCS.SetTexture(index, "SkyboxTex", skyboxmapmirror);
-                RelightCS.SetInt("FaceIndex", i);
-                RelightCS.SetInt("Resolution", resolution);
+                RelightCS.SetTexture(index, ShaderConstants.DiffuseTexture, baked);
+                RelightCS.SetTexture(index, ShaderConstants.NormalTexture, bakedNormal);
+                RelightCS.SetTexture(index, ShaderConstants.SkyboxTexture, skyboxmapmirror);
+                RelightCS.SetInt(ShaderConstants.FaceIndex, i);
+                RelightCS.SetInt(ShaderConstants.Resolution, resolution);
                 RelightCS.Dispatch(index, resolution / 8,resolution / 8,1);
                 skyboxmapmirror.GenerateMips();
                 Graphics.CopyTexture(skyboxmapmirror, 0, cubemap, i);
@@ -222,10 +222,10 @@ namespace AHD2TimeOfDay
             }
             pack3Buffer.SetData(pack3Array);
 
-            sphericalHarmonicsComputeShader.SetTexture(kernel, "_CubeMapTexture", cubemap);
-            sphericalHarmonicsComputeShader.SetBuffer(kernel, "_GroupCoefficients", pack3Buffer);
-            sphericalHarmonicsComputeShader.SetVector("_DispatchCount", (Vector3)dispatchCounts);
-            sphericalHarmonicsComputeShader.SetVector("_TextureSize", new Vector3(cubemap.width, cubemap.height, 6));
+            sphericalHarmonicsComputeShader.SetTexture(kernel, ShaderConstants.CubeMapTexture, cubemap);
+            sphericalHarmonicsComputeShader.SetBuffer(kernel, ShaderConstants.GroupCoefficients, pack3Buffer);
+            sphericalHarmonicsComputeShader.SetVector(ShaderConstants.DispatchCount, (Vector3)dispatchCounts);
+            sphericalHarmonicsComputeShader.SetVector(ShaderConstants.TextureSize, new Vector3(cubemap.width, cubemap.height, 6));
             CalculateNextSH();
         }
         
@@ -239,7 +239,7 @@ namespace AHD2TimeOfDay
                 isCalculating = false;
                 return;
             }
-            sphericalHarmonicsComputeShader.SetFloat("_SHPackIndex", shPackIndex);
+            sphericalHarmonicsComputeShader.SetFloat(ShaderConstants.SHPackIndex, shPackIndex);
             sphericalHarmonicsComputeShader.Dispatch(kernel, dispatchCounts.x, dispatchCounts.y, dispatchCounts.z);
             AsyncGPUReadback.Request(pack3Buffer, OnReadbackComplete);
         }
@@ -303,7 +303,7 @@ namespace AHD2TimeOfDay
                 C1 * coefficience.coefficiencesArray[8].y,
                 C1 * coefficience.coefficiencesArray[8].z, 
                 1);
-            Shader.SetGlobalVectorArray(ShaderConstants.SHArray,shArray);
+            Shader.SetGlobalVectorArray(ShaderConstants.SHArray, shArray);
         }
 
         private void OnDisable()
@@ -354,6 +354,18 @@ namespace AHD2TimeOfDay
         {
             //SH系数
             public static readonly int SHArray = Shader.PropertyToID("shArray");
+
+            // Compute Shader 变量
+            public static readonly int DiffuseTexture = Shader.PropertyToID("_Diffuse");
+            public static readonly int NormalTexture = Shader.PropertyToID("_Normal");
+            public static readonly int SkyboxTexture = Shader.PropertyToID("SkyboxTex");
+            public static readonly int FaceIndex = Shader.PropertyToID("FaceIndex");
+            public static readonly int Resolution = Shader.PropertyToID("Resolution");
+            public static readonly int CubeMapTexture = Shader.PropertyToID("_CubeMapTexture");
+            public static readonly int GroupCoefficients = Shader.PropertyToID("_GroupCoefficients");
+            public static readonly int DispatchCount = Shader.PropertyToID("_DispatchCount");
+            public static readonly int TextureSize = Shader.PropertyToID("_TextureSize");
+            public static readonly int SHPackIndex = Shader.PropertyToID("_SHPackIndex");
         }
     }
 }
