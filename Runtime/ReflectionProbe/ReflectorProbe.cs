@@ -74,10 +74,6 @@ namespace AHD2TimeOfDay
         }
         private void OnEnable()
         {
-            if(coefficiencesBuffer == null)
-            {
-                coefficiencesBuffer = new ComputeBuffer(9, 3 * 4, ComputeBufferType.Structured);
-            }
             instances.Add(this);
             
             probe = GetComponent<ReflectionProbe>();
@@ -194,7 +190,6 @@ namespace AHD2TimeOfDay
         private ComputeShader sphericalHarmonicsComputeShader;
         private Coefficience coefficience;
         private ComputeBuffer pack3Buffer;
-        private ComputeBuffer coefficiencesBuffer;
         private CoeffsPack3[] pack3Array;
         private int shPackIndex = 0; // 用于跟踪当前计算的球谐参数索引
         private bool isCalculating = false; // 用于标记是否正在计算
@@ -270,43 +265,45 @@ namespace AHD2TimeOfDay
             CalculateNextSH();
         }
         private Vector4[] shArray = new Vector4[7];
-        private float c1 = 0.429043f;
-        float c2 = 0.511664f;
-        float c3 = 0.743125f;
-        float c4 = 0.886227f;
-        float c5 = 0.247708f;
+        
+        private const float C1 = 0.429043f;
+        private const float C2 = 0.511664f;
+        private const float C3 = 0.743125f;
+        private const float C4 = 0.886227f;
+        private const float C5 = 0.247708f;
+
         private void SetBuffer()
         {
             //0是00 1是1-1 2是10 3是11 4是2-2 5是2-1 6是20 7是21 8是22 
-            shArray[0] = new Vector4(2 * c2 * coefficience.coefficiencesArray[3].x,
-                2 * c2 * coefficience.coefficiencesArray[1].x,
-                2 * c2 * coefficience.coefficiencesArray[2].x, 
-                c4 * coefficience.coefficiencesArray[0].x - c5 * coefficience.coefficiencesArray[6].x);
-            shArray[1] = new Vector4(2 * c2 * coefficience.coefficiencesArray[3].y,
-                2 * c2 * coefficience.coefficiencesArray[1].y,
-                2 * c2 * coefficience.coefficiencesArray[2].y, 
-                c4 * coefficience.coefficiencesArray[0].y - c5 * coefficience.coefficiencesArray[6].y);
-            shArray[2] = new Vector4(2 * c2 * coefficience.coefficiencesArray[3].z,
-                2 * c2 * coefficience.coefficiencesArray[1].z,
-                2 * c2 * coefficience.coefficiencesArray[2].z, 
-                c4 * coefficience.coefficiencesArray[0].z - c5 * coefficience.coefficiencesArray[6].x);
-            shArray[3] = new Vector4(2 * c1 * coefficience.coefficiencesArray[4].x,
-                2 * c1 * coefficience.coefficiencesArray[5].x,
-                c3 * coefficience.coefficiencesArray[6].x, 
-                2 * c1 * coefficience.coefficiencesArray[7].x);
-            shArray[4] = new Vector4(2 * c1 * coefficience.coefficiencesArray[4].y,
-                2 * c1 * coefficience.coefficiencesArray[5].y,
-                c3 * coefficience.coefficiencesArray[6].y, 
-                2 * c1 * coefficience.coefficiencesArray[7].y);
-            shArray[5] = new Vector4(2 * c1 * coefficience.coefficiencesArray[4].z,
-                2 * c1 * coefficience.coefficiencesArray[5].z,
-                c3 * coefficience.coefficiencesArray[6].z, 
-                2 * c1 * coefficience.coefficiencesArray[7].z);
-            shArray[6] = new Vector4(c1 * coefficience.coefficiencesArray[8].x,
-                c1 * coefficience.coefficiencesArray[8].y,
-                c1 * coefficience.coefficiencesArray[8].z, 
+            shArray[0] = new Vector4(2 * C2 * coefficience.coefficiencesArray[3].x,
+                2 * C2 * coefficience.coefficiencesArray[1].x,
+                2 * C2 * coefficience.coefficiencesArray[2].x, 
+                C4 * coefficience.coefficiencesArray[0].x - C5 * coefficience.coefficiencesArray[6].x);
+            shArray[1] = new Vector4(2 * C2 * coefficience.coefficiencesArray[3].y,
+                2 * C2 * coefficience.coefficiencesArray[1].y,
+                2 * C2 * coefficience.coefficiencesArray[2].y, 
+                C4 * coefficience.coefficiencesArray[0].y - C5 * coefficience.coefficiencesArray[6].y);
+            shArray[2] = new Vector4(2 * C2 * coefficience.coefficiencesArray[3].z,
+                2 * C2 * coefficience.coefficiencesArray[1].z,
+                2 * C2 * coefficience.coefficiencesArray[2].z, 
+                C4 * coefficience.coefficiencesArray[0].z - C5 * coefficience.coefficiencesArray[6].x);
+            shArray[3] = new Vector4(2 * C1 * coefficience.coefficiencesArray[4].x,
+                2 * C1 * coefficience.coefficiencesArray[5].x,
+                C3 * coefficience.coefficiencesArray[6].x, 
+                2 * C1 * coefficience.coefficiencesArray[7].x);
+            shArray[4] = new Vector4(2 * C1 * coefficience.coefficiencesArray[4].y,
+                2 * C1 * coefficience.coefficiencesArray[5].y,
+                C3 * coefficience.coefficiencesArray[6].y, 
+                2 * C1 * coefficience.coefficiencesArray[7].y);
+            shArray[5] = new Vector4(2 * C1 * coefficience.coefficiencesArray[4].z,
+                2 * C1 * coefficience.coefficiencesArray[5].z,
+                C3 * coefficience.coefficiencesArray[6].z, 
+                2 * C1 * coefficience.coefficiencesArray[7].z);
+            shArray[6] = new Vector4(C1 * coefficience.coefficiencesArray[8].x,
+                C1 * coefficience.coefficiencesArray[8].y,
+                C1 * coefficience.coefficiencesArray[8].z, 
                 1);
-            Shader.SetGlobalVectorArray("shArray",shArray);
+            Shader.SetGlobalVectorArray(ShaderConstants.SHArray,shArray);
         }
 
         private void OnDisable()
@@ -323,8 +320,6 @@ namespace AHD2TimeOfDay
             }
             if(pack3Buffer!=null)
                 pack3Buffer.Release();
-            if(coefficiencesBuffer!=null)
-                coefficiencesBuffer.Release();
         }
 
         private void CreateCubemap()
@@ -353,20 +348,12 @@ namespace AHD2TimeOfDay
             }
             if(pack3Buffer!=null)
                 pack3Buffer.Release();
-            if(coefficiencesBuffer!=null)
-                coefficiencesBuffer.Release();
         }
 
         static class ShaderConstants
         {
             //SH系数
-            public static readonly int ahd2_SHAr = Shader.PropertyToID("ahd2_SHAr");
-            public static readonly int ahd2_SHAg = Shader.PropertyToID("ahd2_SHAg");
-            public static readonly int ahd2_SHAb = Shader.PropertyToID("ahd2_SHAb");
-            public static readonly int ahd2_SHBr = Shader.PropertyToID("ahd2_SHBr");
-            public static readonly int ahd2_SHBg = Shader.PropertyToID("ahd2_SHBg");
-            public static readonly int ahd2_SHBb = Shader.PropertyToID("ahd2_SHBb");
-            public static readonly int ahd2_SHC  = Shader.PropertyToID("ahd2_SHC");
+            public static readonly int SHArray = Shader.PropertyToID("shArray");
         }
     }
 }
