@@ -15,8 +15,6 @@ namespace AHD2TimeOfDay
         private Vector3 lightDirection; //假光源方向，360度转
         private static readonly int LightColor = Shader.PropertyToID("_lightColor");
         private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
-        private static readonly int SpecularMap0 = Shader.PropertyToID("_specularMap0");
-        private static readonly int SpecularMap1 = Shader.PropertyToID("_specularMap1");
         private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
         private static readonly int IblBrdfLut = Shader.PropertyToID("_iblBrdfLut");
 
@@ -90,9 +88,6 @@ namespace AHD2TimeOfDay
             Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
             Shader.SetGlobalVector(LightDirection,
                 new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
-            todGlobalParameters.LerpIrradianceMap();
-            Shader.SetGlobalTexture(SpecularMap0, todGlobalParameters.currentTimeOfDay.specularMap);
-            Shader.SetGlobalTexture(SpecularMap1, todGlobalParameters.currentTimeOfDay.nextTOD.specularMap);
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todTimeRatio);
             Shader.SetGlobalTexture(IblBrdfLut, todGlobalParameters.IblBrdfLut);
         }

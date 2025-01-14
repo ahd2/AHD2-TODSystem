@@ -6,9 +6,8 @@
 half3 GetSpecular(Surface surface, BRDF brdf, CartoonInputData inputdata)
 {
     //float2 IBLLUT = tex2D(_PrefilteredEnvMapLUT,float2(NoV, 1- brdf.roughness)).rg;
-    float3 prefilteredColorA = texCUBElod(_specularMap0, float4(inputdata.reflectionDirWS,(brdf.roughness )* 7)).xyz;//mipmap有多少级，粗糙度就乘多少
-    float3 prefilteredColorB = texCUBElod(_specularMap1, float4(inputdata.reflectionDirWS,(brdf.roughness ) * 7)).xyz;
-    return lerp(prefilteredColorA, prefilteredColorB, _todTimeRatio);
+    half3 prefilteredColor = texCUBElod(_AHD2_SpecCube0, float4(inputdata.reflectionDirWS,(brdf.roughness )* 7)).xyz;//mipmap有多少级，粗糙度就乘多少
+    return prefilteredColor;
 }
 
 //返回方向光的radiance
@@ -20,7 +19,7 @@ half3 IncomingLight (Surface surface, half3 mainlightDir,half4 lightCol, half di
 half3 AmbientLighting(Surface surface, BRDF brdf, CartoonInputData inputdata)
 {
     //ibl漫反射
-    half3 Irradiance = GetIrradiance(surface);
+    half3 Irradiance = inputdata.vertexSH;
     half3 DiffuseColor = (1.0 - surface.metallic) * surface.color; // Metallic surfaces have no diffuse reflections
     half envLightIntensity = 1/*3*/;//临时用，后面要调整下光照输入
     half3 DiffuseContribution = envLightIntensity * DiffuseColor * Irradiance;//不除以pi可能是IBL图已经除以过了。

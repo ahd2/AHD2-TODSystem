@@ -39,6 +39,7 @@ void InitializeInputData(v2f input , out CartoonInputData inputdata)
     //inputdata.normalWS = normalize(input.normalWS);
     inputdata.normalWS = input.normalWS;
     inputdata.reflectionDirWS = normalize(reflect(-inputdata.viewDirWS,inputdata.normalWS)); //指向视线反射反向
+    inputdata.vertexSH = input.lightmapUVOrVertexSH.xyz;
 }
 v2f CartoonLitVertex (appdata v)
 {
@@ -54,7 +55,7 @@ v2f CartoonLitVertex (appdata v)
 
     // 处理烘培光照
     OUTPUT_LIGHTMAP_UV(v.staticLightmapUV, unity_LightmapST, o.lightmapUVOrVertexSH.xy);
-    OUTPUT_SH(o.normalWS, o.lightmapUVOrVertexSH.xyz);
+    o.lightmapUVOrVertexSH.xyz = SampleSH9(shArray, o.normalWS);
     return o;
 }
 

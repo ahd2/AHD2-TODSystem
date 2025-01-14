@@ -118,7 +118,6 @@ namespace AHD2TimeOfDay
         private Mesh skyboxmesh;
         private void Update()
         {
-            
             var cmd = CommandBufferPool.Get();
             for (int i = 0; i < 6; i++)
             {
@@ -159,6 +158,7 @@ namespace AHD2TimeOfDay
 #else
             Calculate();
 #endif
+            Shader.SetGlobalTexture(ShaderConstants.AHD2_SpecCube0, cubemap);
         }
         
         struct CoeffsPack3
@@ -366,6 +366,9 @@ namespace AHD2TimeOfDay
             public static readonly int DispatchCount = Shader.PropertyToID("_DispatchCount");
             public static readonly int TextureSize = Shader.PropertyToID("_TextureSize");
             public static readonly int SHPackIndex = Shader.PropertyToID("_SHPackIndex");
+            
+            //反射贴图（虽然从反射探针也能获取，但是要有一个全局主探针来设置，让某些拿不到specmap0的物体也能拿信息。）（好吧，好像还是不用了，毛发似乎用diffuse就好了）
+            public static readonly int AHD2_SpecCube0 = Shader.PropertyToID("_AHD2_SpecCube0");
         }
     }
 }

@@ -5,6 +5,7 @@ struct CartoonInputData {
     half3 viewDirWS;
     half3 normalWS;
     half3 reflectionDirWS;
+    half3 vertexSH;
 };
 
 #endif

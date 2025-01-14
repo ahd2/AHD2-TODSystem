@@ -6,9 +6,7 @@ half4 _lightDirection;//a通道为标记，0为白天，1为晚上
 half _todTimeRatio;//已经经过的时间比例
 CBUFFER_END
 //IBL
-sampler2D _IrradianceMap;
-samplerCUBE _specularMap0;
-samplerCUBE _specularMap1;
+samplerCUBE _AHD2_SpecCube0;
 sampler2D _iblBrdfLut;
 //仿造URPLit，记录BRDF参数
 struct BRDF {
@@ -103,13 +101,6 @@ half3 DirectBRDF(Surface surface, BRDF brdf, half3 mainLightDir, CartoonInputDat
 	
 	//return  gTerm * dTerm * fTerm;
 	return brdf.diffuse + fTerm * dTerm * gTerm / max(4 * NdotL * NdotV ,0.001);//漫反射项+镜面反射项
-}
-
-//采样Irradiance
-half3 GetIrradiance(Surface surface)
-{
-	float2 uv = normal2uv(surface.normalWS);
-	return tex2D(_IrradianceMap,uv).xyz;
 }
 
 float3 EnvBRDF(float Metallic, float3 BaseColor, float2 LUT)

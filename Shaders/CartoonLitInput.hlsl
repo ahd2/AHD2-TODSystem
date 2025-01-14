@@ -20,7 +20,7 @@ half _Metallic;
 half _Roughness;
 //Test,测试用属性
 CBUFFER_END
-
+uniform float4 shArray[7];
 //贴图采样
 sampler2D _MainTex;
 //PBR贴图
