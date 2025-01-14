@@ -17,16 +17,6 @@ namespace AHD2TimeOfDay
 
         private SerializedProperty resolution;
 
-        private SerializedProperty customCamera;
-
-        private SerializedProperty nearClip;
-        private SerializedProperty farClip;
-        private SerializedProperty culling;
-        private SerializedProperty occlusion;
-        private SerializedProperty clear;
-        private SerializedProperty background;
-        private SerializedProperty hdr;
-
         private SerializedProperty baked;
         private SerializedProperty bakedNormal;
         private SerializedProperty bakeable;
@@ -51,16 +41,6 @@ namespace AHD2TimeOfDay
             blend = reflectionProbes.FindProperty("m_BlendDistance");
 
             resolution = reflectionProbes.FindProperty("m_Resolution");
-
-            customCamera = serializedObject.FindProperty("customCamera");
-
-            nearClip = reflectionProbes.FindProperty("m_NearClip");
-            farClip = reflectionProbes.FindProperty("m_FarClip");
-            culling = reflectionProbes.FindProperty("m_CullingMask");
-            clear = reflectionProbes.FindProperty("m_ClearFlags");
-            background = reflectionProbes.FindProperty("m_BackGroundColor");
-            hdr = reflectionProbes.FindProperty("m_HDR");
-            occlusion = reflectionProbes.FindProperty("m_UseOcclusionCulling");
 
             bakedNormal = serializedObject.FindProperty("bakedNormal");
             baked = serializedObject.FindProperty("baked");
@@ -88,19 +68,6 @@ namespace AHD2TimeOfDay
             EditorGUI.indentLevel++;
 
             EditorGUILayout.IntPopup(resolution, resolutionNames, resolutionValues);
-            EditorGUILayout.PropertyField(customCamera, new GUIContent("Camera Override"));
-            if (customCamera.objectReferenceValue == null && !customCamera.hasMultipleDifferentValues)
-            {
-                EditorGUILayout.PropertyField(clear, new GUIContent("Clear Flags"));
-                if (clear.intValue == 2)
-                    EditorGUILayout.PropertyField(background, new GUIContent("Background Color"));
-
-                //EditorGUILayout.PropertyField(culling, new GUIContent("Culling Mask"));
-                EditorGUILayout.PropertyField(nearClip, new GUIContent("Near Clip"));
-                EditorGUILayout.PropertyField(farClip, new GUIContent("Far Clip"));
-                EditorGUILayout.PropertyField(occlusion, new GUIContent("Occlusion Culling"));
-                EditorGUILayout.PropertyField(hdr, new GUIContent("HDR"));
-            }
 
             EditorGUI.indentLevel--;
 

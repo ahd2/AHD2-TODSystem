@@ -36,3 +36,8 @@
 ## 结构说明：
 
 类似于手册一样的东西，主要是我要规范化类、函数、字段的命名。所以要写一个手册来记录一下
+
+### 反射探针
+
+* 使用需要先在RendererList中添加ReflectionBakedRenderer
+* Hierarchy窗口右键AHD2TODSystem - CreateReflectionProbe创建即可。
