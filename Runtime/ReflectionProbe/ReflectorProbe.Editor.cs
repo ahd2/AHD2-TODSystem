@@ -80,7 +80,7 @@ namespace AHD2TimeOfDay
             if (!targets.TryGetValue(resolution, out pair))
                 return null;
 
-            Texture2DArray bakedDiffuseArray = new Texture2DArray(resolution, resolution,6, TextureFormat.RGBA32, false);
+            Texture2DArray bakedDiffuseArray = new Texture2DArray(resolution, resolution,6, TextureFormat.RGBA32, false,false);
             bakedDiffuseArray.anisoLevel = 0;
             
             Camera camera = Camera;
@@ -137,7 +137,7 @@ namespace AHD2TimeOfDay
                 mirror.SetTexture("_MaskTex", pair.Mask);
                 Graphics.Blit(pair.Render, pair.Mirror, mirror);
                 //投影到数组
-                Texture2D reader = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true, true);
+                Texture2D reader = new Texture2D(resolution, resolution, TextureFormat.RGBA32, true, false);
                 reader.ReadPixels(new Rect(0, 0, resolution, resolution), 0, 0);
                 bakedDiffuseArray.SetPixels(reader.GetPixels(), face);
 
