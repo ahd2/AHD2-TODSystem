@@ -23,9 +23,6 @@ namespace AHD2TimeOfDay
 
         public Material[] materials;
 
-        public Cubemap specularMap; //镜面反射图
-        public Texture2D irrdianceMap; //
-
         public void Initialize()
         {
             isCross24 = startTime > endTime; //用代码判断它会不会越过24
