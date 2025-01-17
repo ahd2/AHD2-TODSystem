@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AHD2TimeOfDay
 {
@@ -11,11 +12,11 @@ namespace AHD2TimeOfDay
     public class TimeOfDay : ScriptableObject
     {
         public TimeOfDay nextTOD; //下一个时刻
-        public float startTime; //当前时刻开始时间
-        public float endTime; //当前时刻结束时间（即下一时刻开始时间）(时间范围为[0,24)，即24点统一用0点)
+        [FormerlySerializedAs("startTime")] public float CurrentTODTime; //当前时刻的代表时间
+        [FormerlySerializedAs("endTime")] public float NextTODTime; //下一时刻的代表时间(时间范围为[0,24)，即24点统一用0点)
         [HideInInspector] public bool isCross24; //这个时刻和下个时刻中间是否越过24点
 
-        [HideInInspector] public float duration; //这个tod会持续的时间
+        [HideInInspector] public float duration; //这个TOD到下个TOD的间隔时长
 
         //光源
         [ColorUsageAttribute(true, true)] public Color lightColor;
@@ -25,15 +26,15 @@ namespace AHD2TimeOfDay
 
         public void Initialize()
         {
-            isCross24 = startTime > endTime; //用代码判断它会不会越过24
+            isCross24 = CurrentTODTime > NextTODTime; //用代码判断它会不会越过24
             //Debug.Log(IsCrossing24);
             if (isCross24)
             {
-                duration = 24 - (startTime - endTime);
+                duration = 24 - (CurrentTODTime - NextTODTime);
             }
             else
             {
-                duration = endTime - startTime;
+                duration = NextTODTime - CurrentTODTime;
             }
         }
     }

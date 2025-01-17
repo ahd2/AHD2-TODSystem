@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AHD2TimeOfDay
 {
@@ -13,13 +14,17 @@ namespace AHD2TimeOfDay
     [CreateAssetMenu(fileName = "TODGlobalParameters", menuName = "AHD2TODSystem/GlobalParameters", order = 0)]
     public class TODGlobalParameters : ScriptableObject
     {
+        //===============================基本时间信息====================
+        #region Variables0
+        
+        //时间流逝速度
         public float timeFlowSpeed = 2.0f;
-
-        [SerializeField, Range(0f, 24f), Tooltip("时间")]
-        private float _currentTime;
         
         [SerializeField, Tooltip("一天等于现实多少分钟？")]
         public float timeFlowScale = 10;
+        
+        [SerializeField, Range(0f, 24f), Tooltip("时间")]
+        private float _currentTime;
 
         public float CurrentTime
         {
@@ -43,24 +48,36 @@ namespace AHD2TimeOfDay
         }
 
         //控制时间是否流动
-        public bool timeFlow; //私有的加_，公开的不加
-        public Material[] materials; //插值材质数组，场景中使用的材质放这里。
+        [FormerlySerializedAs("timeFlow")] public bool isTimeFlow; //私有的加_，公开的不加
+        
         public TimeOfDay[] timeOfDays; //tod数组
         public TimeOfDay currentTimeOfDay;
-
-        public float todTime; //当前tod已经经过的时间
-
+        
+        public int _dayOrNight; //0为白天1为夜晚
+        
         /*[HideInInspector]*/
-        public float todTimeRatio; //当前tod已经经过的时间比例（插值用）
+        [FormerlySerializedAs("todTimeRatio")] public float todElapsedTimeRatio; //当前时段已经经过的时间比例（插值用）
+        
+        [FormerlySerializedAs("todTime")] public float todElapsedTime; //当前时段已经经过的时间
+        
         [SerializeField] public List<TempTOD> todFrameList; //维护关键帧列表，工具用
+        
+        #endregion
+        
+        //=========================插值后的全局参数=======================
+        #region Variables1
 
         //光源
         [ColorUsageAttribute(false, true)] public Color _lightColor; //光源色
-        public int _dayOrNight; //0为白天1为夜晚
+        
         public Texture2D IblBrdfLut;
 
-        //====================================================================================================
-
+        #endregion
+        
+        //========================插值后的材质==========================
+        public Material[] materials; //插值材质数组，场景中使用的材质放这里。
+        
+        //======================函数部分================================
         #region 函数区域
 
         /// <summary>
@@ -83,19 +100,19 @@ namespace AHD2TimeOfDay
         /// </summary>
         public void BaseUpdate()
         {
-            if (timeFlow)
+            if (isTimeFlow)
             {
                 //如果时间流动。
                 CurrentTime += Time.deltaTime * timeFlowSpeed * 0.4f / timeFlowScale;
-                todTime += Time.deltaTime * timeFlowSpeed;
+                todElapsedTime += Time.deltaTime * timeFlowSpeed;
                 UpdateTimeOfDay();
-                todTimeRatio = todTime / currentTimeOfDay.duration;
+                todElapsedTimeRatio = todElapsedTime / currentTimeOfDay.duration;
                 LerpProperties();
             }
             else
             {
                 FixTimeOfDay();
-                todTimeRatio = todTime / currentTimeOfDay.duration;
+                todElapsedTimeRatio = todElapsedTime / currentTimeOfDay.duration;
                 LerpProperties();
             }
 
@@ -111,22 +128,22 @@ namespace AHD2TimeOfDay
             if (currentTimeOfDay.isCross24)
             {
                 //如果时间不在当前时刻中
-                if (CurrentTime >= currentTimeOfDay.endTime && CurrentTime < currentTimeOfDay.startTime)
+                if (CurrentTime >= currentTimeOfDay.NextTODTime && CurrentTime < currentTimeOfDay.CurrentTODTime)
                 {
                     //进入下一个时刻
                     currentTimeOfDay = currentTimeOfDay.nextTOD;
                     //把当前时刻已经经过的时间归零
-                    todTime = 0;
+                    todElapsedTime = 0;
                 }
             }
             else
             {
-                if (CurrentTime >= currentTimeOfDay.endTime)
+                if (CurrentTime >= currentTimeOfDay.NextTODTime)
                 {
                     //进入下一个时刻
                     currentTimeOfDay = currentTimeOfDay.nextTOD;
                     //把当前时刻已经经过的时间归零
-                    todTime = 0;
+                    todElapsedTime = 0;
                 }
             }
         }
@@ -143,18 +160,18 @@ namespace AHD2TimeOfDay
                 if (timeOfDay.isCross24)
                 {
                     //如果时间在当前时刻中
-                    if (CurrentTime <= timeOfDay.endTime || CurrentTime > timeOfDay.startTime)
+                    if (CurrentTime <= timeOfDay.NextTODTime || CurrentTime > timeOfDay.CurrentTODTime)
                     {
                         //切换至该时刻
                         currentTimeOfDay = timeOfDay;
                         //更新当前时刻已经经过的时间
-                        if (CurrentTime - timeOfDay.startTime > 0)
+                        if (CurrentTime - timeOfDay.CurrentTODTime > 0)
                         {
-                            todTime = CurrentTime - timeOfDay.startTime;
+                            todElapsedTime = CurrentTime - timeOfDay.CurrentTODTime;
                         }
                         else
                         {
-                            todTime = 24 - timeOfDay.startTime + CurrentTime;
+                            todElapsedTime = 24 - timeOfDay.CurrentTODTime + CurrentTime;
                         }
 
                         return;
@@ -163,12 +180,12 @@ namespace AHD2TimeOfDay
                 else
                 {
                     //如果时间在当前时刻中
-                    if (CurrentTime < timeOfDay.endTime && CurrentTime >= timeOfDay.startTime)
+                    if (CurrentTime < timeOfDay.NextTODTime && CurrentTime >= timeOfDay.CurrentTODTime)
                     {
                         //切换至该时刻
                         currentTimeOfDay = timeOfDay;
                         //更新当前时刻已经经过的时间
-                        todTime = CurrentTime - timeOfDay.startTime;
+                        todElapsedTime = CurrentTime - timeOfDay.CurrentTODTime;
                         return;
                     }
                 }
@@ -182,7 +199,7 @@ namespace AHD2TimeOfDay
         {
             for (int i = 0; i < materials.Length; i++)
             {
-                materials[i].Lerp(currentTimeOfDay.materials[i], currentTimeOfDay.nextTOD.materials[i], todTimeRatio);
+                materials[i].Lerp(currentTimeOfDay.materials[i], currentTimeOfDay.nextTOD.materials[i], todElapsedTimeRatio);
             }
         }
 
@@ -192,7 +209,7 @@ namespace AHD2TimeOfDay
         public void CalLightParam()
         {
             //插值光源色（）
-            _lightColor = Color.Lerp(currentTimeOfDay.lightColor, currentTimeOfDay.nextTOD.lightColor, todTimeRatio);
+            _lightColor = Color.Lerp(currentTimeOfDay.lightColor, currentTimeOfDay.nextTOD.lightColor, todElapsedTimeRatio);
             //传入预计算光源方向，a通道为昼夜标记
             _dayOrNight = Convert.ToInt32(currentTimeOfDay.datOrNight);
         }

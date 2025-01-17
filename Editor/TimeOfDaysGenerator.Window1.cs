@@ -90,8 +90,8 @@ namespace AHD2TimeOfDay
                 int nextID = (i + 1 == todList.Count) ? 0 : i + 1; //下一个时刻的索引
                 soPath = currentPath + "/" + todList[i].name + "2" + todList[nextID].name + ".asset";
                 TimeOfDay newTOD = ScriptableObject.CreateInstance<TimeOfDay>();
-                newTOD.startTime = todList[i].Time;
-                newTOD.endTime = todList[nextID].Time;
+                newTOD.CurrentTODTime = todList[i].Time;
+                newTOD.NextTODTime = todList[nextID].Time;
                 timeOfDays.Add(newTOD);
                 AssetDatabase.CreateAsset(newTOD, soPath);
                 AssetDatabase.SaveAssets();

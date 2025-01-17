@@ -88,7 +88,7 @@ namespace AHD2TimeOfDay
             Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
             Shader.SetGlobalVector(LightDirection,
                 new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
-            Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todTimeRatio);
+            Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);
             Shader.SetGlobalTexture(IblBrdfLut, todGlobalParameters.IblBrdfLut);
         }
     }
