@@ -105,7 +105,7 @@ namespace AHD2TimeOfDay
             {
                 //如果时间流动。
                 CurrentTime += Time.deltaTime * timeFlowSpeed * 0.4f / timeFlowScale;
-                todElapsedTime += Time.deltaTime * timeFlowSpeed;
+                todElapsedTime += Time.deltaTime * timeFlowSpeed * 0.4f / timeFlowScale;
                 UpdateTimeOfDay();
                 todElapsedTimeRatio = todElapsedTime / currentTimeOfDay.duration;
                 LerpProperties();
