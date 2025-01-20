@@ -113,7 +113,7 @@ namespace AHD2TimeOfDay
                             new List<Material>(_todGlobalParameters.timeOfDays[j].materials); //把数组换为list
                         tempMatList.Add(newMaterial); //list新增额外材质
                         _todGlobalParameters.timeOfDays[j].materials = tempMatList.ToArray(); //list再转为数组
-                        EditorUtility.SetDirty(timeOfDays[j]); //要用这个标记so为已修改。unity才能把改动保存
+                        EditorUtility.SetDirty(_todGlobalParameters.timeOfDays[j]); //要用这个标记so为已修改。unity才能把改动保存
                         // 保存新的材质到Assets文件夹
                         AssetDatabase.CreateAsset(newMaterial, matPath);
                         AssetDatabase.SaveAssets();
@@ -140,8 +140,7 @@ namespace AHD2TimeOfDay
                         AssetDatabase.CreateAsset(newMaterial, matPath);
                         AssetDatabase.SaveAssets();
                     }
-
-                    EditorUtility.SetDirty(timeOfDays[i]); //要用这个标记so为已修改。unity才能把改动保存
+                    EditorUtility.SetDirty(_todGlobalParameters.timeOfDays[i]); //要用这个标记so为已修改。unity才能把改动保存
                 }
             }
 
