@@ -13,7 +13,8 @@ namespace AHD2TimeOfDay
         private Vector3 starquat; //计算光源旋转用
         private Vector3 endquat; //计算光源旋转用
         private Vector3 lightDirection; //假光源方向，360度转
-        private static readonly int LightColor = Shader.PropertyToID("_lightColor");
+        private static readonly int AHD2_MainlightColor = Shader.PropertyToID("AHD2_MainlightColor");
+        private static readonly int AHD2_MainlightIntensity = Shader.PropertyToID("AHD2_MainlightIntensity");
         private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
         private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
         private static readonly int IblBrdfLut = Shader.PropertyToID("_iblBrdfLut");
@@ -92,7 +93,8 @@ namespace AHD2TimeOfDay
             MainLight.color = todGlobalParameters.MainlightColor;
             MainLight.intensity = todGlobalParameters.MainlightIntensity;
             //shader设置
-            //Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
+            Shader.SetGlobalColor(AHD2_MainlightColor, todGlobalParameters.MainlightColor);
+            Shader.SetGlobalFloat(AHD2_MainlightIntensity, todGlobalParameters.MainlightIntensity);
             Shader.SetGlobalVector(LightDirection,
                 new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);
