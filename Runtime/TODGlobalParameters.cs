@@ -68,7 +68,8 @@ namespace AHD2TimeOfDay
         #region Variables1
 
         //光源
-        [ColorUsageAttribute(false, true)] public Color _lightColor; //光源色
+        [FormerlySerializedAs("_lightColor")] public Color MainlightColor; //光源色
+        [FormerlySerializedAs("lightIntensity")] public float MainlightIntensity;
         
         public Texture2D IblBrdfLut;
 
@@ -208,8 +209,10 @@ namespace AHD2TimeOfDay
         /// </summary>
         public void CalLightParam()
         {
-            //插值光源色（）
-            _lightColor = Color.Lerp(currentTimeOfDay.lightColor, currentTimeOfDay.nextTOD.lightColor, todElapsedTimeRatio);
+            //插值光源色和强度
+            MainlightColor = Color.Lerp(currentTimeOfDay.MainlightColor, currentTimeOfDay.nextTOD.MainlightColor, todElapsedTimeRatio);
+            MainlightIntensity = Mathf.Lerp(currentTimeOfDay.MainlightIntensity, currentTimeOfDay.nextTOD.MainlightIntensity,
+                todElapsedTimeRatio);
             //传入预计算光源方向，a通道为昼夜标记
             _dayOrNight = Convert.ToInt32(currentTimeOfDay.datOrNight);
         }

@@ -19,7 +19,8 @@ namespace AHD2TimeOfDay
         [HideInInspector] public float duration; //这个TOD到下个TOD的间隔时长
 
         //光源
-        [ColorUsageAttribute(true, true)] public Color lightColor;
+        [FormerlySerializedAs("lightColor")] public Color MainlightColor;
+        [FormerlySerializedAs("lightIntensity")] public float MainlightIntensity;
         public bool datOrNight; //0为白天，1为黑夜
 
         public Material[] materials;

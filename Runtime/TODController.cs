@@ -51,6 +51,8 @@ namespace AHD2TimeOfDay
         {
             starquat = new Vector3(-90, 0, 0); //对应0点
             endquat = new Vector3(270, 0, 0); //对应24点
+            //光源设置为color模式
+            
         }
 
         /// <summary>
@@ -85,7 +87,12 @@ namespace AHD2TimeOfDay
         /// </summary>
         public void SetGlobalParameters()
         {
-            Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
+            //cpu端设置
+            //设置主光
+            MainLight.color = todGlobalParameters.MainlightColor;
+            MainLight.intensity = todGlobalParameters.MainlightIntensity;
+            //shader设置
+            //Shader.SetGlobalColor(LightColor, todGlobalParameters._lightColor);
             Shader.SetGlobalVector(LightDirection,
                 new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);

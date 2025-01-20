@@ -45,7 +45,6 @@ Shader "AHD2TODSystem/BaseSky"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // Includes
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 	    	#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
