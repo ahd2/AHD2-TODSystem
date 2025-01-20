@@ -15,7 +15,7 @@ namespace AHD2TimeOfDay
         {
             Window1, //生成窗口
             Window2, //新增材质窗口
-            Window3 //烘焙环境反射图窗口
+            Window3 //删除材质窗口
         }
 
         // 当前选中的子界面类型
@@ -48,7 +48,7 @@ namespace AHD2TimeOfDay
             // 顶部标签页
             GUILayout.BeginHorizontal();
             currentSubWindow =
-                (SubWindowType)GUILayout.Toolbar((int)currentSubWindow, new string[] { "TOD生成", "关键帧材质生成" });
+                (SubWindowType)GUILayout.Toolbar((int)currentSubWindow, new string[] { "TOD生成", "关键帧材质生成", "关键帧材质删除" });
             GUILayout.EndHorizontal();
 
             // 根据选中的标签页显示不同的子界面
