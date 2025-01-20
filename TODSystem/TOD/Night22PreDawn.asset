@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: Night22PreDawn
   m_EditorClassIdentifier: 
   nextTOD: {fileID: 11400000, guid: 8cca87775034a1844af411de29e36994, type: 2}
-  startTime: 4
-  endTime: 5
+  CurrentTODTime: 4
+  NextTODTime: 5
   isCross24: 0
   duration: 1
-  lightColor: {r: 0.06805504, g: 0.08728915, b: 0.2924528, a: 0}
+  MainlightColor: {r: 0.06805504, g: 0.08728915, b: 0.2924528, a: 0}
+  MainlightIntensity: 0
   datOrNight: 1
   materials:
   - {fileID: 2100000, guid: bf4f113384dabc84aa71b53df9990dc6, type: 2}
-  specularMap: {fileID: 8900000, guid: ab808f2f5645f9c4ead48f54b6efce62, type: 3}
-  irrdianceMap: {fileID: 2800000, guid: 30812dedd628af04d9eb82530891e583, type: 3}

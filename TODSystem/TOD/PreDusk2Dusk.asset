@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: PreDusk2Dusk
   m_EditorClassIdentifier: 
   nextTOD: {fileID: 11400000, guid: bce86175e415f5548a07c3b3076be06d, type: 2}
-  startTime: 17
-  endTime: 18
+  CurrentTODTime: 17
+  NextTODTime: 18
   isCross24: 0
   duration: 1
-  lightColor: {r: 0.9433962, g: 0.5490713, b: 0.14833269, a: 0.69803923}
+  MainlightColor: {r: 0.9433962, g: 0.5490713, b: 0.14833269, a: 0.69803923}
+  MainlightIntensity: 5
   datOrNight: 0
   materials:
   - {fileID: 2100000, guid: 761bda7e042bce249a6c7536589a24f9, type: 2}
-  specularMap: {fileID: 8900000, guid: 3a94fb3c47b391e4cbbd40e3b0560a57, type: 3}
-  irrdianceMap: {fileID: 2800000, guid: 4a4f5ad150942074e84fbdc12c5b0628, type: 3}

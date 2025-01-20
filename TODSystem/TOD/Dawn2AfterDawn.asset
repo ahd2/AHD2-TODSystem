@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: Dawn2AfterDawn
   m_EditorClassIdentifier: 
   nextTOD: {fileID: 11400000, guid: df7f12aa681827a40b43ffa6d9bc1760, type: 2}
-  startTime: 6
-  endTime: 7
+  CurrentTODTime: 6
+  NextTODTime: 7
   isCross24: 0
   duration: 1
-  lightColor: {r: 1.4901961, g: 1.4039216, b: 0.15686275, a: 0.69803923}
+  MainlightColor: {r: 0.7490197, g: 0.7056554, b: 0.078844175, a: 1}
+  MainlightIntensity: 1
   datOrNight: 0
   materials:
   - {fileID: 2100000, guid: 27f13a448a7381348a8b4448b33e61c2, type: 2}
-  specularMap: {fileID: 8900000, guid: a43bbe939eb5f4244ad71a461980c739, type: 3}
-  irrdianceMap: {fileID: 2800000, guid: 984e3d5fb5148374fa1ef6bab6e76131, type: 3}

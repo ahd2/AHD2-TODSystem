@@ -10,6 +10,7 @@ namespace AHD2TimeOfDay
     {
         public TODGlobalParameters todGlobalParameters; //未拖入也会报错，不处理了
         public Light MainLight; //主光源
+        [SerializeField]public bool isTimeFlow;
         private Vector3 starquat; //计算光源旋转用
         private Vector3 endquat; //计算光源旋转用
         private Vector3 lightDirection; //假光源方向，360度转
