@@ -19,48 +19,51 @@ namespace AHD2TimeOfDay
                 typeof(TODGlobalParameters), // 允许选择的对象类型。
                 false
             );
-            CheckGlobalParameters();
             GUILayout.FlexibleSpace();
             // 定义一个字符串数组作为下拉框的选项
             string[] options = new string[] { "按材质分文件夹", "按关键帧分文件夹" };
             _selectedIndex = EditorGUILayout.Popup(_selectedIndex, options);
             GUILayout.EndHorizontal();
-            //要新增的材质列表
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
-            EditorGUILayout.BeginVertical(GUI.skin.box);
-
-            for (int i = 0; i < extraMats.Count; i++)
+            
+            if (CheckGlobalParameters())
             {
+                //要新增的材质列表
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
                 EditorGUILayout.BeginVertical(GUI.skin.box);
-                extraMats[i] = (Material)EditorGUILayout.ObjectField(
-                    extraMats[i], // 当前选中的对象。
-                    typeof(Material), // 允许选择的对象类型。
-                    false
-                );
-                if (GUILayout.Button("Remove"))
+
+                for (int i = 0; i < extraMats.Count; i++)
                 {
-                    extraMats.RemoveAt(i);
-                    GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
-                    return; // 避免在遍历过程中修改列表
+                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                    extraMats[i] = (Material)EditorGUILayout.ObjectField(
+                        extraMats[i], // 当前选中的对象。
+                        typeof(Material), // 允许选择的对象类型。
+                        false
+                    );
+                    if (GUILayout.Button("Remove"))
+                    {
+                        extraMats.RemoveAt(i);
+                        GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
+                        return; // 避免在遍历过程中修改列表
+                    }
+
+                    EditorGUILayout.EndVertical();
                 }
 
                 EditorGUILayout.EndVertical();
-            }
+                EditorGUILayout.EndScrollView();
 
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndScrollView();
+                if (GUILayout.Button("添加材质", GUILayout.Height(50)))
+                {
+                    extraMats.Add(null);
+                }
 
-            if (GUILayout.Button("添加材质", GUILayout.Height(50)))
-            {
-                extraMats.Add(null);
-            }
-
-            if (GUILayout.Button("生成材质文件", GUILayout.Height(50)))
-            {
-                CheckMat();
-                CreateExtraMat();
-                message = "生成成功";
-                messageType = MessageType.Info;
+                if (GUILayout.Button("生成材质文件", GUILayout.Height(50)))
+                {
+                    CheckMat();
+                    CreateExtraMat();
+                    message = "生成成功";
+                    messageType = MessageType.Info;
+                }
             }
 
             //消息盒子
@@ -148,6 +151,9 @@ namespace AHD2TimeOfDay
             List<Material> tempGlobalMatList = new List<Material>(_todGlobalParameters.materials); //把数组换为list
             tempGlobalMatList.AddRange(extraMats); //添加额外材质
             _todGlobalParameters.materials = tempGlobalMatList.ToArray(); //list再转为数组
+            
+            //生成后清空extraMats
+            extraMats = new List<Material>();
         }
     }
 }

@@ -23,30 +23,39 @@ namespace AHD2TimeOfDay
             CheckGlobalParameters();
             GUILayout.EndHorizontal();
             
-            //要删除的材质列表
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
-            EditorGUILayout.BeginVertical(GUI.skin.box);
-
-            for (int i = 0; i < _todGlobalParameters.materials.Length; i++)
+            if (CheckGlobalParameters())
             {
+                //要删除的材质列表
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
                 EditorGUILayout.BeginVertical(GUI.skin.box);
-                _todGlobalParameters.materials[i] = (Material)EditorGUILayout.ObjectField(
-                    _todGlobalParameters.materials[i], // 当前选中的对象。
-                    typeof(Material), // 允许选择的对象类型。
-                    false
-                );
-                if (GUILayout.Button("Remove"))
+
+                for (int i = 0; i < _todGlobalParameters.materials.Length; i++)
                 {
-                    DeleteMat(i);
-                    GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
-                    return; // 避免在遍历过程中修改列表
+                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                    _todGlobalParameters.materials[i] = (Material)EditorGUILayout.ObjectField(
+                        _todGlobalParameters.materials[i], // 当前选中的对象。
+                        typeof(Material), // 允许选择的对象类型。
+                        false
+                    );
+                    if (GUILayout.Button("Remove"))
+                    {
+                        DeleteMat(i);
+                        GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
+                        return; // 避免在遍历过程中修改列表
+                    }
+
+                    EditorGUILayout.EndVertical();
                 }
 
                 EditorGUILayout.EndVertical();
+                EditorGUILayout.EndScrollView();
             }
-
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndScrollView();
+            
+            //消息盒子
+            if (!string.IsNullOrEmpty(message))
+            {
+                EditorGUILayout.HelpBox(message, messageType);
+            }
         }
         
         private void DeleteMat(int index)
@@ -61,6 +70,7 @@ namespace AHD2TimeOfDay
                 tempMatList.RemoveAt(index);//list删除索引处材质
                 timeOfDay.materials = tempMatList.ToArray();//list再转为数组，这时候tod上材质就已经移除了。
                 AssetDatabase.DeleteAsset(path);//删除材质文件
+                EditorUtility.SetDirty(timeOfDay);
             }
             //最后从全局参数本身移除这个材质（不删文件
             tempMatList = new List<Material>(_todGlobalParameters.materials);
