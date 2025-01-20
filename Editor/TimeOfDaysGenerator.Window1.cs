@@ -19,43 +19,46 @@ namespace AHD2TimeOfDay
                 typeof(TODGlobalParameters), // 允许选择的对象类型。
                 false
             );
-            CheckGlobalParameters();
             GUILayout.FlexibleSpace();
             // 定义一个字符串数组作为下拉框的选项
             string[] options = new string[] { "按材质分文件夹", "按关键帧分文件夹" };
             _selectedIndex = EditorGUILayout.Popup(_selectedIndex, options);
             GUILayout.EndHorizontal();
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
-            EditorGUILayout.BeginVertical(GUI.skin.box);
-
-            for (int i = 0; i < todList.Count; i++)
+            //如果检测通过，才绘制后面的东西
+            if (CheckGlobalParameters())
             {
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.ExpandWidth(true));
                 EditorGUILayout.BeginVertical(GUI.skin.box);
-                todList[i].name = EditorGUILayout.TextField("Name", todList[i].name);
-                todList[i].Time = EditorGUILayout.FloatField("Time", todList[i].Time);
-                if (GUILayout.Button("Remove"))
+
+                for (int i = 0; i < todList.Count; i++)
                 {
-                    todList.RemoveAt(i);
-                    GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
-                    return; // 避免在遍历过程中修改列表
+                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                    todList[i].name = EditorGUILayout.TextField("Name", todList[i].name);
+                    todList[i].Time = EditorGUILayout.FloatField("Time", todList[i].Time);
+                    if (GUILayout.Button("Remove"))
+                    {
+                        todList.RemoveAt(i);
+                        GUIUtility.ExitGUI(); //提前结束绘制，不加这个报错不匹配
+                        return; // 避免在遍历过程中修改列表
+                    }
+
+                    EditorGUILayout.EndVertical();
                 }
 
                 EditorGUILayout.EndVertical();
-            }
+                EditorGUILayout.EndScrollView();
 
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndScrollView();
+                if (GUILayout.Button("添加TOD关键帧", GUILayout.Height(50)))
+                {
+                    todList.Add(new TempTOD());
+                }
 
-            if (GUILayout.Button("添加TOD关键帧", GUILayout.Height(50)))
-            {
-                todList.Add(new TempTOD());
-            }
-
-            if (GUILayout.Button("生成TOD文件", GUILayout.Height(50)))
-            {
-                CheckName();
-                CheckTime();
-                GenerateTOD();
+                if (GUILayout.Button("生成TOD文件", GUILayout.Height(50)))
+                {
+                    CheckName();
+                    CheckTime();
+                    GenerateTOD();
+                }
             }
 
             //消息盒子

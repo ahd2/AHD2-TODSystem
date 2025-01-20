@@ -13,7 +13,7 @@ namespace AHD2TimeOfDay
     public partial class TimeOfDaysGenerator : EditorWindow
     {
         //检测全局参数
-        private void CheckGlobalParameters()
+        private bool CheckGlobalParameters()
         {
             if (_todGlobalParameters)
             {
@@ -28,7 +28,7 @@ namespace AHD2TimeOfDay
                 {
                     message = "全局参数材质数组为空";
                     messageType = MessageType.Error;
-                    return; // 避免在遍历过程中修改列表(其实，这里return，似乎没有什么作用，还是可以正常进行后续操作，甚至于这个列表似乎只会在刚生成全局参数时为空（我去好像还不是这样）（我去，在重新编译一遍，这个materials就不为空了？或者说，tod列表可以序列化了。说明拿到了它的tod？）)
+                    return false; // 避免在遍历过程中修改列表(其实，这里return，似乎没有什么作用，还是可以正常进行后续操作，甚至于这个列表似乎只会在刚生成全局参数时为空（我去好像还不是这样）（我去，在重新编译一遍，这个materials就不为空了？或者说，tod列表可以序列化了。说明拿到了它的tod？）)
                 }
 
                 //检测全局参数材质数组是否有空的（即数组添加材质扩容后，又把材质删除）
@@ -38,7 +38,7 @@ namespace AHD2TimeOfDay
                     {
                         message = "全局参数材质数组有缺失！";
                         messageType = MessageType.Error;
-                        return; // 避免在遍历过程中修改列表
+                        return false; // 避免在遍历过程中修改列表
                     }
                 }
 
@@ -46,6 +46,7 @@ namespace AHD2TimeOfDay
                 todList = _todGlobalParameters.todFrameList;
                 EditorUtility.SetDirty(
                     _todGlobalParameters); //要用这个标记so为已修改。unity才能把改动保存(为什么放在这里，因为这里也是每帧调用，而且是必定有_todGlobalParameters才会触发，所以就放在这了)
+                return true;
             }
             else
             {
@@ -55,7 +56,7 @@ namespace AHD2TimeOfDay
                 message = "全局参数配置为空";
                 messageType = MessageType.Error;
                 //GUIUtility.ExitGUI();//提前结束绘制，不加这个报错不匹配
-                return; // 避免在遍历过程中修改列表
+                return false; // 避免在遍历过程中修改列表
             }
         }
 

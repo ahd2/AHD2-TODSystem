@@ -60,7 +60,7 @@ namespace AHD2TimeOfDay
         
         [FormerlySerializedAs("todTime")] public float todElapsedTime; //当前时段已经经过的时间
         
-        [SerializeField] public List<TempTOD> todFrameList; //维护关键帧列表，工具用
+        [SerializeField] public List<TempTOD> todFrameList = new List<TempTOD>(); //维护关键帧列表，工具用
         
         #endregion
         
@@ -75,7 +75,7 @@ namespace AHD2TimeOfDay
         #endregion
         
         //========================插值后的材质==========================
-        public Material[] materials; //插值材质数组，场景中使用的材质放这里。
+        public Material[] materials = Array.Empty<Material>(); //插值材质数组，场景中使用的材质放这里。
         
         //======================函数部分================================
         #region 函数区域
