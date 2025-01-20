@@ -48,7 +48,7 @@ namespace AHD2TimeOfDay
         }
 
         //控制时间是否流动
-        [FormerlySerializedAs("timeFlow")] public bool isTimeFlow; //私有的加_，公开的不加
+        public bool isTimeFlow; //私有的加_，公开的不加
         
         public TimeOfDay[] timeOfDays; //tod数组
         public TimeOfDay currentTimeOfDay;
@@ -56,9 +56,9 @@ namespace AHD2TimeOfDay
         public int _dayOrNight; //0为白天1为夜晚
         
         /*[HideInInspector]*/
-        [FormerlySerializedAs("todTimeRatio")] public float todElapsedTimeRatio; //当前时段已经经过的时间比例（插值用）
+        public float todElapsedTimeRatio; //当前时段已经经过的时间比例（插值用）
         
-        [FormerlySerializedAs("todTime")] public float todElapsedTime; //当前时段已经经过的时间
+        public float todElapsedTime; //当前时段已经经过的时间
         
         [SerializeField] public List<TempTOD> todFrameList = new List<TempTOD>(); //维护关键帧列表，工具用
         
@@ -68,8 +68,8 @@ namespace AHD2TimeOfDay
         #region Variables1
 
         //光源
-        [FormerlySerializedAs("_lightColor")] public Color MainlightColor; //光源色
-        [FormerlySerializedAs("lightIntensity")] public float MainlightIntensity;
+        public Color MainlightColor; //光源色
+        public float MainlightIntensity;
         
         public Texture2D IblBrdfLut;
 

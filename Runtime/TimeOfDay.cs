@@ -12,15 +12,15 @@ namespace AHD2TimeOfDay
     public class TimeOfDay : ScriptableObject
     {
         public TimeOfDay nextTOD; //下一个时刻
-        [FormerlySerializedAs("startTime")] public float CurrentTODTime; //当前时刻的代表时间
-        [FormerlySerializedAs("endTime")] public float NextTODTime; //下一时刻的代表时间(时间范围为[0,24)，即24点统一用0点)
+        public float CurrentTODTime; //当前时刻的代表时间
+        public float NextTODTime; //下一时刻的代表时间(时间范围为[0,24)，即24点统一用0点)
         [HideInInspector] public bool isCross24; //这个时刻和下个时刻中间是否越过24点
 
         [HideInInspector] public float duration; //这个TOD到下个TOD的间隔时长
 
         //光源
-        [FormerlySerializedAs("lightColor")] public Color MainlightColor;
-        [FormerlySerializedAs("lightIntensity")] public float MainlightIntensity;
+        public Color MainlightColor;
+        public float MainlightIntensity;
         public bool datOrNight; //0为白天，1为黑夜
 
         public Material[] materials;
