@@ -161,12 +161,12 @@ namespace AHD2TimeOfDay
                 if (timeOfDay.isCross24)
                 {
                     //如果时间在当前时刻中
-                    if (CurrentTime <= timeOfDay.NextTODTime || CurrentTime > timeOfDay.CurrentTODTime)
+                    if (CurrentTime < timeOfDay.NextTODTime || CurrentTime >= timeOfDay.CurrentTODTime)
                     {
                         //切换至该时刻
                         currentTimeOfDay = timeOfDay;
                         //更新当前时刻已经经过的时间
-                        if (CurrentTime - timeOfDay.CurrentTODTime > 0)
+                        if (CurrentTime - timeOfDay.CurrentTODTime >= 0)
                         {
                             todElapsedTime = CurrentTime - timeOfDay.CurrentTODTime;
                         }
