@@ -70,7 +70,7 @@ namespace AHD2TimeOfDay
                 quat.x += 180; //晚上则反向
                 //quat.x = quat.x % 360;
             }
-
+            
             //Debug.Log(quat.x);//后续考虑要不要固定光照，让其不会在10°后再下降。
             // if (quat.x < 10)
             // {
@@ -97,7 +97,7 @@ namespace AHD2TimeOfDay
             Shader.SetGlobalColor(AHD2_MainlightColor, todGlobalParameters.MainlightColor);
             Shader.SetGlobalFloat(AHD2_MainlightIntensity, todGlobalParameters.MainlightIntensity);
             Shader.SetGlobalVector(LightDirection,
-                new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));
+                new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));//传入的是360度旋转不会在晚上反向的方向
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);
             Shader.SetGlobalTexture(IblBrdfLut, todGlobalParameters.IblBrdfLut);
         }

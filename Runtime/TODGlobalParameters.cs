@@ -214,7 +214,7 @@ namespace AHD2TimeOfDay
             MainlightIntensity = Mathf.Lerp(currentTimeOfDay.MainlightIntensity, currentTimeOfDay.nextTOD.MainlightIntensity,
                 todElapsedTimeRatio);
             //传入预计算光源方向，a通道为昼夜标记
-            _dayOrNight = Convert.ToInt32(currentTimeOfDay.datOrNight);
+            _dayOrNight = Convert.ToInt32(currentTimeOfDay.dayOrNight);
         }
 
         #endregion

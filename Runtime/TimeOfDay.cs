@@ -21,7 +21,8 @@ namespace AHD2TimeOfDay
         //光源
         public Color MainlightColor;
         public float MainlightIntensity;
-        public bool datOrNight; //0为白天，1为黑夜
+        [FormerlySerializedAs("datOrNight")] [Tooltip("勾选为night，不勾选为day")]
+        public bool dayOrNight; //0为白天，1为黑夜
 
         public Material[] materials;
 
