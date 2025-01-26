@@ -146,7 +146,7 @@ namespace AHD2TimeOfDay
 #if UNITY_EDITOR
             //防止framedebug因为异步操作频繁抖动
             // 检测编辑器是否暂停
-            if (EditorApplication.isPaused)
+            if (FrameDebugger.enabled)
             {
                 // 暂停时停止异步操作
                 AsyncGPUReadback.WaitAllRequests(); // 等待所有异步操作完成
