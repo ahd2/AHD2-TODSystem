@@ -124,7 +124,10 @@ namespace AHD2TimeOfDay
                 using (new ProfilingScope(cmd, m_ProfilingSampler)){
                     cmd.SetRenderTarget(skyboxmap);
                     cmd.SetViewProjectionMatrices(BakeCameraData.faceMatrices[i], BakeCameraData.PMatrix4X4);
+                    LocalKeyword renderingReflectorProbe = new LocalKeyword(RenderSettings.skybox.shader, "_REFLECTOR_RENDERING");
+                    cmd.EnableKeyword(RenderSettings.skybox, renderingReflectorProbe);//必须用cmd不然不会和drawmesh同步
                     cmd.DrawMesh(skyboxmesh, Matrix4x4.identity, RenderSettings.skybox);
+                    cmd.DisableKeyword(RenderSettings.skybox, renderingReflectorProbe);
                 }
                 Graphics.ExecuteCommandBuffer(cmd);
                 Graphics.Blit(skyboxmap,skyboxmapmirror,mirror);
