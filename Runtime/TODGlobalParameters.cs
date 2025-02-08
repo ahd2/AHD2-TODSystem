@@ -71,6 +71,10 @@ namespace AHD2TimeOfDay
         public Color MainlightColor; //光源色
         public float MainlightIntensity;
         
+        //雾效
+        public Color FogLightColor;
+        public float FogLightIntensity;
+        
         public Texture2D IblBrdfLut;
 
         #endregion
@@ -202,6 +206,10 @@ namespace AHD2TimeOfDay
             {
                 materials[i].Lerp(currentTimeOfDay.materials[i], currentTimeOfDay.nextTOD.materials[i], todElapsedTimeRatio);
             }
+
+            FogLightColor = Color.Lerp(currentTimeOfDay.FogLightColor, currentTimeOfDay.nextTOD.FogLightColor, todElapsedTimeRatio);
+            FogLightIntensity = Mathf.Lerp(currentTimeOfDay.FogLightIntensity, currentTimeOfDay.nextTOD.FogLightIntensity,
+                todElapsedTimeRatio);
         }
 
         /// <summary>

@@ -21,6 +21,11 @@ namespace AHD2TimeOfDay
         //光源
         public Color MainlightColor;
         public float MainlightIntensity;
+        
+        //雾效
+        public Color FogLightColor;
+        public float FogLightIntensity;
+        
         [FormerlySerializedAs("datOrNight")] [Tooltip("勾选为night，不勾选为day")]
         public bool dayOrNight; //0为白天，1为黑夜
 

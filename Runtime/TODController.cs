@@ -19,6 +19,7 @@ namespace AHD2TimeOfDay
         private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
         private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
         private static readonly int IblBrdfLut = Shader.PropertyToID("_iblBrdfLut");
+        private static readonly int AHD2_FoglightColor = Shader.PropertyToID("AHD2_FoglightColor");
 
         void Start()
         {
@@ -100,6 +101,10 @@ namespace AHD2TimeOfDay
                 new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));//传入的是360度旋转不会在晚上反向的方向
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);
             Shader.SetGlobalTexture(IblBrdfLut, todGlobalParameters.IblBrdfLut);
+            Shader.SetGlobalVector(AHD2_FoglightColor, new Vector4(todGlobalParameters.FogLightColor.r, 
+                todGlobalParameters.FogLightColor.g, 
+                todGlobalParameters.FogLightColor.b, 
+                todGlobalParameters.FogLightIntensity));
         }
     }
 }
