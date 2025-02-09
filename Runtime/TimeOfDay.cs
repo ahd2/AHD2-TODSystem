@@ -21,6 +21,7 @@ namespace AHD2TimeOfDay
         //光源
         public Color MainlightColor;
         public float MainlightIntensity;
+        public Vector3 MainlightDirection;//真光源方向，影响方向光的
         
         //雾效
         public Color FogLightColor;

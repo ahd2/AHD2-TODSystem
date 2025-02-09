@@ -70,6 +70,7 @@ namespace AHD2TimeOfDay
         //光源
         public Color MainlightColor; //光源色
         public float MainlightIntensity;
+        public Vector3 MainlightDirection;
         
         //雾效
         public Color FogLightColor;
@@ -224,6 +225,8 @@ namespace AHD2TimeOfDay
             MainlightColor = Color.Lerp(currentTimeOfDay.MainlightColor, currentTimeOfDay.nextTOD.MainlightColor, todElapsedTimeRatio);
             MainlightIntensity = Mathf.Lerp(currentTimeOfDay.MainlightIntensity, currentTimeOfDay.nextTOD.MainlightIntensity,
                 todElapsedTimeRatio);
+            MainlightDirection = Vector3.Lerp(currentTimeOfDay.MainlightDirection,
+                currentTimeOfDay.nextTOD.MainlightDirection, todElapsedTimeRatio);
             //传入预计算光源方向，a通道为昼夜标记
             _dayOrNight = Convert.ToInt32(currentTimeOfDay.dayOrNight);
         }

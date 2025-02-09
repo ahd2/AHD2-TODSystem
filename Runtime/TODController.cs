@@ -11,12 +11,12 @@ namespace AHD2TimeOfDay
         public TODGlobalParameters todGlobalParameters; //未拖入也会报错，不处理了
         public Light MainLight; //主光源
         [SerializeField]public bool isTimeFlow;
-        private Vector3 starquat; //计算光源旋转用
-        private Vector3 endquat; //计算光源旋转用
-        private Vector3 lightDirection; //假光源方向，360度转
+        private Vector3 _starquat; //计算光源旋转用
+        private Vector3 _endquat; //计算光源旋转用
+        private Vector3 _fakeMainlightDirection; //假光源方向，360度转
         private static readonly int AHD2_MainlightColor = Shader.PropertyToID("AHD2_MainlightColor");
         private static readonly int AHD2_MainlightIntensity = Shader.PropertyToID("AHD2_MainlightIntensity");
-        private static readonly int LightDirection = Shader.PropertyToID("_lightDirection");
+        private static readonly int AHD2_FakeMainlightDirection = Shader.PropertyToID("AHD2_FakeMainlightDirection");
         private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
         private static readonly int IblBrdfLut = Shader.PropertyToID("_iblBrdfLut");
         private static readonly int AHD2_FoglightColor = Shader.PropertyToID("AHD2_FoglightColor");
@@ -53,8 +53,8 @@ namespace AHD2TimeOfDay
         /// </summary>
         void InitialLight()
         {
-            starquat = new Vector3(-90, 0, 0); //对应0点
-            endquat = new Vector3(270, 0, 0); //对应24点
+            _starquat = new Vector3(-90, 0, 0); //对应0点
+            _endquat = new Vector3(270, 0, 0); //对应24点
             //光源设置为color模式
             
         }
@@ -65,25 +65,11 @@ namespace AHD2TimeOfDay
         void RotateLight()
         {
             //欧拉角插值
-            Vector3 quat = Vector3.Lerp(starquat, endquat, todGlobalParameters.CurrentTime / 24);
-            lightDirection = -(Quaternion.Euler(quat) * Vector3.forward).normalized; //要反向，指向光源
-            if (todGlobalParameters._dayOrNight == 1)
-            {
-                quat.x += 180; //晚上则反向
-                //quat.x = quat.x % 360;
-            }
+            Vector3 quat = Vector3.Lerp(_starquat, _endquat, todGlobalParameters.CurrentTime / 24);//360旋转的假光源角度
+            _fakeMainlightDirection = -(Quaternion.Euler(quat) * Vector3.forward).normalized; //要反向，指向光源
             
-            //Debug.Log(quat.x);//后续考虑要不要固定光照，让其不会在10°后再下降。
-            // if (quat.x < 10)
-            // {
-            //     quat.x = 10;
-            // }
-            //
-            // if (quat.x > 170)
-            // {
-            //     quat.x = 170;
-            // }
-            MainLight.transform.rotation = Quaternion.Euler(quat);
+            //真光源角度
+            MainLight.transform.rotation = Quaternion.Euler(todGlobalParameters.MainlightDirection);
         }
 
         /// <summary>
@@ -98,8 +84,8 @@ namespace AHD2TimeOfDay
             //shader设置
             Shader.SetGlobalColor(AHD2_MainlightColor, todGlobalParameters.MainlightColor);
             Shader.SetGlobalFloat(AHD2_MainlightIntensity, todGlobalParameters.MainlightIntensity);
-            Shader.SetGlobalVector(LightDirection,
-                new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, todGlobalParameters._dayOrNight));//传入的是360度旋转不会在晚上反向的方向
+            Shader.SetGlobalVector(AHD2_FakeMainlightDirection,
+                new Vector4(_fakeMainlightDirection.x, _fakeMainlightDirection.y, _fakeMainlightDirection.z, todGlobalParameters._dayOrNight));//传入的是360度旋转不会在晚上反向的方向
             Shader.SetGlobalFloat(TodTimeRatio, todGlobalParameters.todElapsedTimeRatio);
             Shader.SetGlobalTexture(IblBrdfLut, todGlobalParameters.IblBrdfLut);
             Shader.SetGlobalVector(AHD2_FoglightColor, new Vector4(todGlobalParameters.FogLightColor.r, 
