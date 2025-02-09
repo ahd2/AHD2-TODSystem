@@ -20,6 +20,7 @@ namespace AHD2TimeOfDay
         private static readonly int TodTimeRatio = Shader.PropertyToID("_todTimeRatio");
         private static readonly int IblBrdfLut = Shader.PropertyToID("_iblBrdfLut");
         private static readonly int AHD2_FoglightColor = Shader.PropertyToID("AHD2_FoglightColor");
+        private static readonly int AHD2_HGCoefficient = Shader.PropertyToID("AHD2_HGCoefficient");
 
         void Start()
         {
@@ -105,6 +106,7 @@ namespace AHD2TimeOfDay
                 todGlobalParameters.FogLightColor.g, 
                 todGlobalParameters.FogLightColor.b, 
                 todGlobalParameters.FogLightIntensity));
+            Shader.SetGlobalFloat(AHD2_HGCoefficient, todGlobalParameters.HGCoefficient);
         }
     }
 }

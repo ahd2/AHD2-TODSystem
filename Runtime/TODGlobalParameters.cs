@@ -74,6 +74,7 @@ namespace AHD2TimeOfDay
         //雾效
         public Color FogLightColor;
         public float FogLightIntensity;
+        public float HGCoefficient;
         
         public Texture2D IblBrdfLut;
 
@@ -209,6 +210,8 @@ namespace AHD2TimeOfDay
 
             FogLightColor = Color.Lerp(currentTimeOfDay.FogLightColor, currentTimeOfDay.nextTOD.FogLightColor, todElapsedTimeRatio);
             FogLightIntensity = Mathf.Lerp(currentTimeOfDay.FogLightIntensity, currentTimeOfDay.nextTOD.FogLightIntensity,
+                todElapsedTimeRatio);
+            HGCoefficient = Mathf.Lerp(currentTimeOfDay.HGCoefficient, currentTimeOfDay.nextTOD.HGCoefficient,
                 todElapsedTimeRatio);
         }
 
