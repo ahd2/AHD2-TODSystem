@@ -15,4 +15,7 @@ MonoBehaviour:
   shaders:
     sphericalHarmonicsCS: {fileID: 7200000, guid: 3dc24bd364f437649ae5f483c67186d3,
       type: 3}
-    aa: {fileID: 7200000, guid: 991fda0c512563d478318c41c08b297a, type: 3}
+    relightCS: {fileID: 7200000, guid: 991fda0c512563d478318c41c08b297a, type: 3}
+  meshes:
+    skyboxmesh: {fileID: 8753159517595272503, guid: ff8fdb527d24f3f429f6e7f155e78b87,
+      type: 3}

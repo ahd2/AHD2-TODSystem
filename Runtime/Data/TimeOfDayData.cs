@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
+#endif
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -46,7 +48,7 @@ namespace AHD2TimeOfDay
             public ComputeShader sphericalHarmonicsCS;
             
             [Reload("Shaders/ReflectionProbe/Relight.compute")]
-            public ComputeShader aa;
+            public ComputeShader relightCS;
         }
 
         [Serializable, ReloadGroup]
@@ -58,7 +60,8 @@ namespace AHD2TimeOfDay
         [Serializable, ReloadGroup]
         public sealed class MeshResources
         {
-            
+            [Reload("Meshes/ReflectionProbe/skybox.fbx")]
+            public Mesh skyboxmesh;
         }
 
         public ShaderResources shaders;

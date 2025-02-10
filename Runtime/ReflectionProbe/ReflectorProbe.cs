@@ -87,8 +87,8 @@ namespace AHD2TimeOfDay
             coefficience = ScriptableObject.CreateInstance<Coefficience>();
             int resolution = probe.resolution;
             sphericalHarmonicsComputeShader = TodGlobalParameters.TimeOfDayData.shaders.sphericalHarmonicsCS;
-            RelightCS = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.ahd2.tod-system/Shaders/ReflectionProbe/Relight.compute");
-            skyboxmesh = AssetDatabase.LoadAssetAtPath<Mesh>("Packages/com.ahd2.tod-system/Meshes/ReflectionProbe/skybox.fbx");
+            RelightCS = TodGlobalParameters.TimeOfDayData.shaders.relightCS;
+            skyboxmesh = TodGlobalParameters.TimeOfDayData.meshes.skyboxmesh;
             //初始化skyboxRT（不懂要不要释放）
             if (skyboxmap == null)
             {
