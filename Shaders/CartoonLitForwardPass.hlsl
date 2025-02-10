@@ -1,6 +1,6 @@
 #ifndef CARTOON_LIT_FORWARD_PASS_INCLUDED
 #define CARTOON_LIT_FORWARD_PASS_INCLUDED
-
+#include "Packages/AHD2-TODSystem/ShaderLibrary/VolumetricFog.hlsl"
 struct appdata
 {
     float4 vertex : POSITION;
@@ -55,10 +55,9 @@ v2f CartoonLitVertex (appdata v)
 
     // 处理烘培光照
     OUTPUT_LIGHTMAP_UV(v.staticLightmapUV, unity_LightmapST, o.lightmapUVOrVertexSH.xy);
-    o.lightmapUVOrVertexSH.xyz = SampleSH9(shArray, o.normalWS);
+    o.lightmapUVOrVertexSH.xyz = SampleSH9(AHD2_SHArray, o.normalWS);
     return o;
 }
-#include "Packages/AHD2-TODSystem/ShaderLibrary/VolumetricFog.hlsl"
 
 half4 CartoonLitFragment (v2f i) : SV_Target
 {

@@ -8,7 +8,7 @@ SAMPLER(sampler_Normal);
 RWTexture2D<float4> SkyboxTex;
 int FaceIndex;
 int Resolution;
-uniform float4 shArray[7];
+uniform float4 AHD2_SHArray[7];
 half4 AHD2_MainlightColor;
 
 [numthreads(8,8,1)]
@@ -21,7 +21,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     //SkyboxTex[id.xy] = float4(col.xyz, 1);
     col.a = min(1, col.a * 2);
     float4 normal = SAMPLE_TEXTURE2D_ARRAY_LOD(_Normal, sampler_Normal, uv, FaceIndex, 0) * 2 - 1;
-    half3 SHcol = SampleSH9(shArray, normal.xyz);
+    half3 SHcol = SampleSH9(AHD2_SHArray, normal.xyz);
     half NoL = dot(_MainLightPosition, normal);
     half halflambert = NoL * 0.5 + 0.5;
     col.xyz *= halflambert * AHD2_MainlightColor.xyz;

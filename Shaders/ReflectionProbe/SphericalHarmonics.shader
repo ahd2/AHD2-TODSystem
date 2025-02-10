@@ -21,7 +21,7 @@ Shader "AHD2TODSystem/SphericalHarmonicsShader"
         float2 texcoord     : TEXCOORD0;
         float3 normalWS     : TEXCOORD1;
     };
-    uniform float4 shArray[7];
+    uniform float4 AHD2_SHArray[7];
     Varyings Vert(Attributes input)
     {
         Varyings output = (Varyings)0;
@@ -35,7 +35,7 @@ Shader "AHD2TODSystem/SphericalHarmonicsShader"
 
     float4 Frag(Varyings input) : SV_TARGET
     {
-        float3 shColor = SampleSH9(shArray, normalize(input.normalWS));
+        float3 shColor = SampleSH9(AHD2_SHArray, normalize(input.normalWS));
         return float4(shColor, 1);
     }
 

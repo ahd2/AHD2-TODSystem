@@ -15,11 +15,11 @@
 #if !defined(_MIXED_LIGHTING_SUBTRACTIVE) && defined(LIGHTMAP_SHADOW_MIXING) && !defined(SHADOWS_SHADOWMASK)
     #define _MIXED_LIGHTING_SUBTRACTIVE
 #endif
-uniform float4 shArray[7];
+uniform float4 AHD2_SHArray[7];
 // Samples SH L0, L1 and L2 terms
 half3 SampleSH(half3 normalWS)
 {
-    return max(half3(0, 0, 0), SampleSH9(shArray, normalWS));
+    return max(half3(0, 0, 0), SampleSH9(AHD2_SHArray, normalWS));
 }
 
 // SH Vertex Evaluation. Depending on target SH sampling might be
@@ -429,7 +429,7 @@ void MixRealtimeAndBakedGI(inout Light light, half3 normalWS, inout half3 bakedG
     bakedGI = SubtractDirectMainLightFromLightmap(light, normalWS, bakedGI);
 #endif
     //使用TOD系统的Diffuse
-    bakedGI = SampleSH9(shArray, normalWS) * 2;//补充下天光强度
+    bakedGI = SampleSH9(AHD2_SHArray, normalWS) * 2;//补充下天光强度
 }
 
 // Backwards compatibility

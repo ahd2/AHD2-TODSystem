@@ -306,7 +306,7 @@ namespace AHD2TimeOfDay
                 C1 * coefficience.coefficiencesArray[8].y,
                 C1 * coefficience.coefficiencesArray[8].z, 
                 1);
-            Shader.SetGlobalVectorArray(ShaderConstants.SHArray, shArray);
+            Shader.SetGlobalVectorArray(ShaderConstants.AHD2_SHArray, shArray);
         }
 
         private void OnDisable()
@@ -356,7 +356,7 @@ namespace AHD2TimeOfDay
         static class ShaderConstants
         {
             //SH系数
-            public static readonly int SHArray = Shader.PropertyToID("shArray");
+            public static readonly int AHD2_SHArray = Shader.PropertyToID("AHD2_SHArray");
 
             // Compute Shader 变量
             public static readonly int DiffuseTexture = Shader.PropertyToID("_Diffuse");

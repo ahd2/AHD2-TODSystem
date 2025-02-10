@@ -67,9 +67,6 @@ namespace AHD2TimeOfDay
             //欧拉角插值
             Vector3 quat = Vector3.Lerp(_starquat, _endquat, todGlobalParameters.CurrentTime / 24);//360旋转的假光源角度
             _fakeMainlightDirection = -(Quaternion.Euler(quat) * Vector3.forward).normalized; //要反向，指向光源
-            
-            //真光源角度
-            MainLight.transform.rotation = Quaternion.Euler(todGlobalParameters.MainlightDirection);
         }
 
         /// <summary>
@@ -81,6 +78,7 @@ namespace AHD2TimeOfDay
             //设置主光
             MainLight.color = todGlobalParameters.MainlightColor;
             MainLight.intensity = todGlobalParameters.MainlightIntensity;
+            MainLight.transform.rotation = Quaternion.Euler(todGlobalParameters.MainlightDirection);//真光源角度
             //shader设置
             Shader.SetGlobalColor(AHD2_MainlightColor, todGlobalParameters.MainlightColor);
             Shader.SetGlobalFloat(AHD2_MainlightIntensity, todGlobalParameters.MainlightIntensity);
