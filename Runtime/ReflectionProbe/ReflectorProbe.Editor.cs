@@ -11,10 +11,10 @@ namespace AHD2TimeOfDay
     /// </summary>
     public partial class ReflectorProbe : MonoBehaviour
     {
+#if UNITY_EDITOR
         private static HashSet<ReflectorProbe> dynamics = new HashSet<ReflectorProbe>(); 
 
         private static Dictionary<int, RenderPair> targets = new Dictionary<int, RenderPair>();
-#if UNITY_EDITOR
         public Camera Camera
         {
             get
