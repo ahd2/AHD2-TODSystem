@@ -31,9 +31,9 @@ namespace AHD2TimeOfDay
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, CreateInstance<CreateTimeOfDayDataAsset>(), "TimeOfDayData.asset", null, null);
         }
 
-        internal static TimeOfDayData GetDefaultPostProcessData()
+        internal static TimeOfDayData GetDefaultTimeOfDayData()
         {
-            var path = System.IO.Path.Combine(UniversalRenderPipelineAsset.packagePath, "Runtime/Data/TimeOfDayData.asset");
+            var path = System.IO.Path.Combine("Packages/com.ahd2.tod-system", "Runtime/Data/TimeOfDayData.asset");
             return AssetDatabase.LoadAssetAtPath<TimeOfDayData>(path);
         }
 
@@ -42,7 +42,11 @@ namespace AHD2TimeOfDay
         [Serializable, ReloadGroup]
         public sealed class ShaderResources
         {
+            [Reload("Shaders/ReflectionProbe/SphericalHarmonicsComputeShader.compute")]
+            public ComputeShader sphericalHarmonicsCS;
             
+            [Reload("Shaders/ReflectionProbe/Relight.compute")]
+            public ComputeShader aa;
         }
 
         [Serializable, ReloadGroup]

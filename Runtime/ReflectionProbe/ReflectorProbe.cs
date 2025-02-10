@@ -59,6 +59,7 @@ namespace AHD2TimeOfDay
         }
         //渲染天空盒相机vp矩阵SO
         public BakeCameraData BakeCameraData;
+        public TODGlobalParameters TodGlobalParameters;
 
         [SerializeField]
         private Camera customCamera;
@@ -85,7 +86,7 @@ namespace AHD2TimeOfDay
             
             coefficience = ScriptableObject.CreateInstance<Coefficience>();
             int resolution = probe.resolution;
-            sphericalHarmonicsComputeShader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.ahd2.tod-system/Shaders/ReflectionProbe/SphericalHarmonicsComputeShader.compute");
+            sphericalHarmonicsComputeShader = TodGlobalParameters.TimeOfDayData.shaders.sphericalHarmonicsCS;
             RelightCS = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.ahd2.tod-system/Shaders/ReflectionProbe/Relight.compute");
             skyboxmesh = AssetDatabase.LoadAssetAtPath<Mesh>("Packages/com.ahd2.tod-system/Meshes/ReflectionProbe/skybox.fbx");
             //初始化skyboxRT（不懂要不要释放）

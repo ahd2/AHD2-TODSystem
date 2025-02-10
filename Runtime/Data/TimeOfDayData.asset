@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9eafc6dfb4682549b7810d87f0b1970, type: 3}
+  m_Name: TimeOfDayData
+  m_EditorClassIdentifier: 
+  shaders:
+    sphericalHarmonicsCS: {fileID: 7200000, guid: 3dc24bd364f437649ae5f483c67186d3,
+      type: 3}
+    aa: {fileID: 7200000, guid: 991fda0c512563d478318c41c08b297a, type: 3}

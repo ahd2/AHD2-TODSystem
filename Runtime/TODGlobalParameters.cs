@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 
 namespace AHD2TimeOfDay
@@ -79,6 +80,8 @@ namespace AHD2TimeOfDay
         
         public Texture2D IblBrdfLut;
 
+        public TimeOfDayData TimeOfDayData;
+
         #endregion
         
         //========================插值后的材质==========================
@@ -86,6 +89,17 @@ namespace AHD2TimeOfDay
         
         //======================函数部分================================
         #region 函数区域
+
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            //编辑器模式下，自动赋值data
+            if (TimeOfDayData == null)
+                TimeOfDayData = TimeOfDayData.GetDefaultTimeOfDayData();
+            //编辑器模式下，随时更新data
+            ResourceReloader.ReloadAllNullIn(TimeOfDayData, "Packages/com.ahd2.tod-system");
+#endif
+        }
 
         /// <summary>
         /// 初始化参数

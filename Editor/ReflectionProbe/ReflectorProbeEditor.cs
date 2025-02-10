@@ -8,6 +8,8 @@ namespace AHD2TimeOfDay
     {
         private SerializedObject reflectionProbes;
 
+        private SerializedProperty todGlobalParamField; //全局参数
+
         private SerializedProperty importance;
         private SerializedProperty size;
         private SerializedProperty offset;
@@ -32,6 +34,9 @@ namespace AHD2TimeOfDay
                 probes[i] = ((ReflectorProbe)serializedObject.targetObjects[i]).GetComponent<ReflectionProbe>();
 
             reflectionProbes = new SerializedObject(probes);
+            
+            //全局参数
+            todGlobalParamField = serializedObject.FindProperty("TodGlobalParameters");
 
             importance = reflectionProbes.FindProperty("m_Importance");
             size = reflectionProbes.FindProperty("m_BoxSize");
@@ -51,7 +56,7 @@ namespace AHD2TimeOfDay
         {
             reflectionProbes.Update();
             serializedObject.Update();
-
+            EditorGUILayout.PropertyField(todGlobalParamField, new GUIContent("全局参数"));
             EditorGUILayout.LabelField("Runtime");
             EditorGUI.indentLevel++;
 
