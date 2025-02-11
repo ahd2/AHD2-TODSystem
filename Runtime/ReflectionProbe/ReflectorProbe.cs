@@ -106,7 +106,7 @@ namespace AHD2TimeOfDay
             }
             if (mirror == null)
             {
-                mirror = new Material(Shader.Find("Hidden/ReflectorProbe/Mirror"));
+                mirror = new Material(TodGlobalParameters.TimeOfDayData.shaders.mirrorPS);
             }
 
 #if UNITY_EDITOR

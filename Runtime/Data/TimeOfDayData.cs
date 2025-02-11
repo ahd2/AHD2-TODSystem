@@ -44,11 +44,15 @@ namespace AHD2TimeOfDay
         [Serializable, ReloadGroup]
         public sealed class ShaderResources
         {
+            //反射探针
             [Reload("Shaders/ReflectionProbe/SphericalHarmonicsComputeShader.compute")]
             public ComputeShader sphericalHarmonicsCS;
             
             [Reload("Shaders/ReflectionProbe/Relight.compute")]
             public ComputeShader relightCS;
+            
+            [Reload("Shaders/ReflectionProbe/Mirror.shader")]
+            public Shader mirrorPS;
         }
 
         [Serializable, ReloadGroup]
