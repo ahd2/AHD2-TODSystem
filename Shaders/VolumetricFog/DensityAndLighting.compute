@@ -1,0 +1,219 @@
+#pragma kernel DensityAndLighting
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderVariablesFunctions.hlsl"
+
+//常量声明
+#define INV_4PI  0.07957747154594767f
+
+//接收投影变体
+#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+#pragma multi_compile _ _FORWARD_PLUS//必须有这个变体声明不然USE_FORWARD_PLUS无效
+
+RWTexture3D<float4> _DensityBuffer;
+float4x4 _VBufferCoordToViewDirWS;
+float4 _VBufferDistanceDecodingParams;
+uniform float4 AHD2_SHArray[7];//SH
+float4 AHD2_FoglightColor;
+float3 _InvTextureSize;
+float AHD2_HGCoefficient;
+
+//不需要抖动信息了
+struct JitteredRay
+{
+     float3 originWS;
+     float3 centerDirWS;
+};
+
+// Returns the forward (up) direction of the current view in the world space.
+float3 GetViewUpDir()
+{
+     float4x4 viewMat = GetWorldToViewMatrix();
+     return viewMat[1].xyz;
+}
+
+float HGPhaseFunction(float g, float cosTheta)
+{
+     float g2 = g * g;
+     float denominator = 1.0f + g2 - 2.0f * g * cosTheta;
+     // 使用正确的归一化系数 1/(4π) ≈ 0.079577
+     return INV_4PI * (1.0f - g2) * rsqrt(denominator * denominator * denominator);
+}
+
+float3 CalInScattering(float3 lightcolor, float3 lightDir, float3 viewDir, float g)
+{
+     float cosVal = dot(-lightDir, -viewDir);//入射向量(光线输入)和出射向量（视线的反向）的夹角
+     return lightcolor * HGPhaseFunction(g, cosVal);
+}
+
+float Hash13(float3 p)
+{
+     p = frac(p * 0.1031);
+     p += dot(p, p.zyx + 31.32);
+     return frac((p.x + p.y) * p.z);
+}
+
+[numthreads(8,8,1)]
+void DensityAndLighting (uint3 id : SV_DispatchThreadID)
+{
+     //计算体素世界坐标
+     float2 centerCoord = id.xy + float2(0.5, 0.5);
+     // Compute a ray direction s.t. ViewSpace(rayDirWS).z = 1.
+     float3 rayDirWS       = mul(-float4(centerCoord, 1, 1), _VBufferCoordToViewDirWS).xyz;
+     float  rcpLenRayDir   = rsqrt(dot(rayDirWS, rayDirWS));
+     
+     float noise = Hash13(id);
+     JitteredRay ray;
+     ray.originWS    = GetCurrentViewPosition();
+     ray.centerDirWS = rayDirWS * rcpLenRayDir; // Normalize
+
+     float t0 = _VBufferDistanceDecodingParams.z + _VBufferDistanceDecodingParams.x;//近平面距离，用这个算就不用调函数了
+     float de = _InvTextureSize.z; // 
+     float3 voxelCenterWS;
+     float3 fogLightCol = float3(0,0,0);
+     for (uint slice = 0; slice < 128; slice++)
+     {
+          //计算体素坐标
+          float e1 = slice * de + de; // (slice + 1) / sliceCount 本质是0-1的值
+          float t1 = DecodeLogarithmicDepthGeneralized(e1, _VBufferDistanceDecodingParams);//把0-1的值映射到near-far（用户自定义是否线性）
+          float dt = t1 - t0;//这一个体素的长度（t1是体素的远端距离值，t0是近端距离值）
+          float t  = t0 + 0.5f * dt;//体素核心距离值
+          t += noise * dt;//乘dt后还挺有效的！！！
+          voxelCenterWS = ray.originWS + t * ray.centerDirWS;//体素核心坐标
+          //计算雾密度
+          float fogStartHeight = -50;
+          float playerHeight = max(ray.originWS.y - fogStartHeight, 0.0001);
+          float fixedcoefficient = 3;//0-正无穷，1是默认
+          float c = 1 / playerHeight;
+          float fogDensity = saturate(exp(-c * fixedcoefficient * (voxelCenterWS.y - fogStartHeight))) * 0.2;//密度（0-1之间）
+
+          //计算雾光照
+          float4 shadowcoord = TransformWorldToShadowCoord(voxelCenterWS);
+          Light mainlight = GetMainLight(shadowcoord);
+          half3 SHcol = SampleSH9(AHD2_SHArray, ray.centerDirWS);
+          fogLightCol = CalInScattering(AHD2_FoglightColor.xyz * AHD2_FoglightColor.a * mainlight.shadowAttenuation, mainlight.direction, ray.centerDirWS, AHD2_HGCoefficient);
+          fogLightCol += SHcol * INV_4PI * 10;//补正环境光强度
+          //点光源
+          #if USE_FORWARD_PLUS
+          {
+               uint lightIndex; 
+               ClusterIterator _urp_internal_clusterIterator = ClusterInit(centerCoord * _InvTextureSize.xy, voxelCenterWS, 0);
+               [loop]
+               while (ClusterNext(_urp_internal_clusterIterator, lightIndex)) 
+               {
+                    float3 lightPos = _AdditionalLightsPosition[lightIndex].xyz;
+
+
+                    float3 originToLight = lightPos - ray.originWS;//相机指向点光源的向量
+                    float projDist = dot(originToLight, ray.centerDirWS);//相机点到光源点的线段，在视线方向上的投影
+                    projDist = clamp(projDist, t0, t1);//计算光源峰值能量采样点是否在t0-t1之间
+
+                    // 计算采样点
+                    float3 samplePos = ray.originWS + projDist * ray.centerDirWS;//只采样光源峰值亮度投影部分（重要性采样变体）
+                    Light sampledLight = GetAdditionalLight(lightIndex, samplePos);
+
+                    // 蒙特卡洛积分
+                    float3 pointLight = sampledLight.color * sampledLight.distanceAttenuation;
+                    
+                    fogLightCol += pointLight * INV_4PI;//不考虑各向异性相位
+               }
+          }
+          #endif
+
+          
+          fogLightCol *= fogDensity;//介质浓度补正，浓度低的话，光线穿过增加的内散射光也低。
+          //最终赋值，rgb是该体素光照值，a是雾密度值（透射值在散射部分计算并叠加）
+          uint3 coord = uint3(id.xy, slice);
+          _DensityBuffer[coord] = float4(fogLightCol, fogDensity);
+          noise = Hash13(coord);
+          t0 = t1;
+     }
+}
+
+RWTexture3D<float4> _ScatterBuffer;
+#pragma kernel Scatter
+[numthreads(8,8,1)]
+void Scatter (uint3 id : SV_DispatchThreadID)
+{
+     float t0 = _VBufferDistanceDecodingParams.z + _VBufferDistanceDecodingParams.x;//近平面距离，就不用调函数了
+     float de = 1/128.0f; // Log-encoded distance between slices
+     uint _VBufferSliceCount = 128;
+     float3 totalRadiance = 0;
+     float  totalTransmittance = 1.0;
+     for (uint slice = 0; slice < _VBufferSliceCount; slice++)
+     {
+          float e1 = slice * de + de; // (slice + 1) / sliceCount
+          float t1 = DecodeLogarithmicDepthGeneralized(e1, _VBufferDistanceDecodingParams);
+          float dt = t1 - t0;
+          t0 = t1;
+
+          uint3 coord = uint3(id.xy, slice);
+          float4 voxel_data = _DensityBuffer[coord];
+          float transmittance = exp(-voxel_data.a * dt * 2.0);//计算当前体素的透射值（通过密度）
+          //增加的光
+          float3 scatteringIntegratedOverSlice = (voxel_data.rgb - voxel_data.rgb * transmittance) / max(voxel_data.a, .00001f);
+          totalRadiance += scatteringIntegratedOverSlice * totalTransmittance;
+          //透射率
+          totalTransmittance *= transmittance;
+          //最终散射
+          _ScatterBuffer[coord] = float4(totalRadiance, totalTransmittance);
+     }
+}
+
+//降采样
+RWTexture3D<float4> _DownBuffer;
+Texture3D<float4> _ScatterBuffer1;
+SamplerState _ScatterBuffer1_Trilinear_clamp_sampler;
+#pragma kernel DownSample
+[numthreads(8,8,8)]
+void DownSample (uint3 id : SV_DispatchThreadID)
+{
+     float3 uv = id + 0.5f;
+     uv *= _InvTextureSize;
+     _DownBuffer[id] = SAMPLE_TEXTURE3D_LOD(_ScatterBuffer1, _ScatterBuffer1_Trilinear_clamp_sampler, uv, 0);
+}
+
+//基础高斯模糊（不用lds优化）
+#pragma kernel GaussianX
+int _XEdge;
+[numthreads(8,8,8)]
+void GaussianX (uint3 id : SV_DispatchThreadID)
+{
+     int3 id0 = id;
+     id0.x = id.x - 1;
+     id0.x = max(id0.x, 0);
+     int3 id1 = id;
+     id1.x += 1;
+     id1.x = min(id1.x, _XEdge - 1);
+     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
+}
+
+#pragma kernel GaussianY
+int _YEdge;
+[numthreads(8,8,8)]
+void GaussianY (uint3 id : SV_DispatchThreadID)
+{
+     int3 id0 = id;
+     id0.y -= 1;
+     id0.y = max(id0.y, 0);
+     int3 id1 = id;
+     id1.y += 1;
+     id1.y = min(id1.y, _YEdge - 1);
+     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
+}
+
+int _ZEdge;
+RWTexture3D<float4> _HistoryScatterBuffer;
+#pragma kernel GaussianZ
+[numthreads(8,8,8)]
+void GaussianZ (uint3 id : SV_DispatchThreadID)
+{
+     uint3 id0 = id;
+     id0.z -= 1;
+     id0.z = max(id0.z, 0);
+     uint3 id1 = id;
+     id1.z += 1;
+     id1.z = min(id1.z, _ZEdge - 1);
+     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
+     _DownBuffer[id] = _DownBuffer[id] * 0.4 + 0.6 * _HistoryScatterBuffer[id];
+}
