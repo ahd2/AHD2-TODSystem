@@ -85,7 +85,7 @@ void DensityAndLighting (uint3 id : SV_DispatchThreadID)
           float playerHeight = max(ray.originWS.y - fogStartHeight, 0.0001);
           float fixedcoefficient = 3;//0-正无穷，1是默认
           float c = 1 / playerHeight;
-          float fogDensity = saturate(exp(-c * fixedcoefficient * (voxelCenterWS.y - fogStartHeight))) * 0.2;//密度（0-1之间）
+          float fogDensity = saturate(exp(-c * fixedcoefficient * (voxelCenterWS.y - fogStartHeight))) * 0.1;//密度（0-1之间）
 
           //计算雾光照
           float4 shadowcoord = TransformWorldToShadowCoord(voxelCenterWS);

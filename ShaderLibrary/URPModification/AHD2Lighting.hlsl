@@ -245,7 +245,6 @@ half3 CalculateBlinnPhong(Light light, InputData inputData, SurfaceData surfaceD
     return lightDiffuseColor * surfaceData.albedo + lightSpecularColor;
 #endif
 }
-half4 _lightColor;//a通道为强度
 ///////////////////////////////////////////////////////////////////////////////
 //                      Fragment Functions                                   //
 //       Used by ShaderGraph and others builtin renderers                    //
@@ -281,7 +280,6 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
     AmbientOcclusionFactor aoFactor = CreateAmbientOcclusionFactor(inputData, surfaceData);
     uint meshRenderingLayers = GetMeshRenderingLayer();
     Light mainLight = GetMainLight(inputData, shadowMask, aoFactor);
-    mainLight.color = _lightColor.xyz;//更改lightcolor
 
     // NOTE: We don't apply AO to the GI here because it's done in the lighting calculation below...
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
