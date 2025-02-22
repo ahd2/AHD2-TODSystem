@@ -176,44 +176,91 @@ void DownSample (uint3 id : SV_DispatchThreadID)
 //基础高斯模糊（不用lds优化）
 #pragma kernel GaussianX
 int _XEdge;
-[numthreads(8,8,8)]
-void GaussianX (uint3 id : SV_DispatchThreadID)
+groupshared float4 lds_dataX[66][2][2]; // X方向需要多存两侧各1个元素
+[numthreads(64,2,2)]
+void GaussianX (uint3 id : SV_DispatchThreadID, uint3 groupid : SV_GroupThreadID)
 {
-     int3 id0 = id;
-     id0.x = id.x - 1;
-     id0.x = max(id0.x, 0);
-     int3 id1 = id;
-     id1.x += 1;
-     id1.x = min(id1.x, _XEdge - 1);
-     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
+     //groupid.x的范围是0-63，ldsdata的x范围是0-65
+     lds_dataX[groupid.x + 1][groupid.y][groupid.z] = _DownBuffer[id.xyz];
+     //填两边的
+     if(groupid.x == 0)
+     {
+          int3 id0 = id;
+          id0.x = id.x - 1;
+          id0.x = max(id0.x, 0);
+          lds_dataX[groupid.x][groupid.y][groupid.z] = _DownBuffer[id0];
+     }
+     if(groupid.x == 63)
+     {
+          int3 id1 = id;
+          id1.x += 1;
+          id1.x = min(id1.x, _XEdge - 1);
+          lds_dataX[groupid.x + 2][groupid.y][groupid.z] = _DownBuffer[id1];
+     }
+     GroupMemoryBarrierWithGroupSync();
+     //索引分别是groupid + 1（核心） groupid + 1 - 1（左边） groupid + 2（右边）
+     _DownBuffer[id] = 0.24f * lds_dataX[groupid.x][groupid.y][groupid.z] + 0.52f * lds_dataX[groupid.x+1][groupid.y][groupid.z] + 0.24f * lds_dataX[groupid.x+2][groupid.y][groupid.z];
 }
 
+// Y方向模糊LDS优化版
 #pragma kernel GaussianY
 int _YEdge;
-[numthreads(8,8,8)]
-void GaussianY (uint3 id : SV_DispatchThreadID)
+groupshared float4 lds_dataY[2][66][2]; // Y方向需要上下各扩展1个元素
+
+[numthreads(2,64,2)]
+void GaussianY (uint3 id : SV_DispatchThreadID, uint3 groupid : SV_GroupThreadID)
 {
-     int3 id0 = id;
-     id0.y -= 1;
-     id0.y = max(id0.y, 0);
-     int3 id1 = id;
-     id1.y += 1;
-     id1.y = min(id1.y, _YEdge - 1);
-     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
+     // groupid.y范围0-63，lds_data的y范围0-65
+     lds_dataY[groupid.x][groupid.y + 1][groupid.z] = _DownBuffer[id.xyz];
+     
+     // 填充上下边界
+     if(groupid.y == 0) {
+          int3 id0 = id;
+          id0.y = max(id.y - 1, 0);
+          lds_dataY[groupid.x][groupid.y][groupid.z] = _DownBuffer[id0];
+     }
+     if(groupid.y == 63) {
+          int3 id1 = id;
+          id1.y = min(id.y + 1, _YEdge - 1);
+          lds_dataY[groupid.x][groupid.y + 2][groupid.z] = _DownBuffer[id1];
+     }
+     
+     GroupMemoryBarrierWithGroupSync();
+     
+     _DownBuffer[id] = 0.24f * lds_dataY[groupid.x][groupid.y][groupid.z] 
+                     + 0.52f * lds_dataY[groupid.x][groupid.y + 1][groupid.z] 
+                     + 0.24f * lds_dataY[groupid.x][groupid.y + 2][groupid.z];
 }
 
+// Z方向模糊LDS优化版
+#pragma kernel GaussianZ
 int _ZEdge;
 RWTexture3D<float4> _HistoryScatterBuffer;
-#pragma kernel GaussianZ
-[numthreads(8,8,8)]
-void GaussianZ (uint3 id : SV_DispatchThreadID)
+groupshared float4 lds_dataZ[2][2][66]; // Z方向需要前后各扩展1个元素
+
+[numthreads(2,2,64)]
+void GaussianZ (uint3 id : SV_DispatchThreadID, uint3 groupid : SV_GroupThreadID)
 {
-     uint3 id0 = id;
-     id0.z -= 1;
-     id0.z = max(id0.z, 0);
-     uint3 id1 = id;
-     id1.z += 1;
-     id1.z = min(id1.z, _ZEdge - 1);
-     _DownBuffer[id] = 0.24f * _DownBuffer[id0] + 0.52f * _DownBuffer[id] + 0.24f * _DownBuffer[id1];
-     _DownBuffer[id] = _DownBuffer[id] * 0.4 + 0.6 * _HistoryScatterBuffer[id];
+     // groupid.z范围0-63，lds_data的z范围0-65
+     lds_dataZ[groupid.x][groupid.y][groupid.z + 1] = _DownBuffer[id.xyz];
+     
+     // 填充前后边界
+     if(groupid.z == 0) {
+          uint3 id0 = id;
+          id0.z = max(id.z - 1, 0);
+          lds_dataZ[groupid.x][groupid.y][groupid.z] = _DownBuffer[id0];
+     }
+     if(groupid.z == 63) {
+          uint3 id1 = id;
+          id1.z = min(id.z + 1, _ZEdge - 1);
+          lds_dataZ[groupid.x][groupid.y][groupid.z + 2] = _DownBuffer[id1];
+     }
+     
+     GroupMemoryBarrierWithGroupSync();
+     
+     float4 result = 0.24f * lds_dataZ[groupid.x][groupid.y][groupid.z] 
+                   + 0.52f * lds_dataZ[groupid.x][groupid.y][groupid.z + 1]
+                   + 0.24f * lds_dataZ[groupid.x][groupid.y][groupid.z + 2];
+                   
+     _DownBuffer[id] = result * 0.4 + 0.6 * _HistoryScatterBuffer[id];
 }

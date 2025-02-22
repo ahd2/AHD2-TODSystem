@@ -85,8 +85,9 @@ namespace AHD2TimeOfDay
             // 计算线程组大小
             int threadGroupsX = Mathf.Max(1, Mathf.CeilToInt(_texScreenWidth / 8.0f)); // 确保至少为 1
             int threadGroupsY = Mathf.Max(1, Mathf.CeilToInt(_texScreenHeight / 8.0f)); // 确保至少为 1
-            int halfthreadGroupsX = Mathf.Max(1, Mathf.CeilToInt(_texScreenWidth / 16.0f));
-            int halfthreadGroupsY = Mathf.Max(1, Mathf.CeilToInt(_texScreenHeight / 16.0f));
+            int blurthreadGroupsX = Mathf.Max(1, Mathf.CeilToInt(_texScreenWidth / 64.0f));
+            int blurthreadGroupsY = Mathf.Max(1, Mathf.CeilToInt(_texScreenHeight / 2.0f));
+            int blurthreadGroupsZ = Mathf.Max(1, Mathf.CeilToInt(128 / 2.0f));
             using (new ProfilingScope(cmd, _volumetricFogSampler))
             {
                 //int threadGroupsZ = 128; // 3D 纹理的深度
@@ -115,18 +116,24 @@ namespace AHD2TimeOfDay
                 int gaussianXCSKernel = _densityAndLightingComputeShader.FindKernel("GaussianX");
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianXCSKernel, _DownBuffer, _scatterBuffer);
                 cmd.SetComputeIntParam(_densityAndLightingComputeShader, "_XEdge", densityTexDesc.width);
-                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianXCSKernel, threadGroupsX, threadGroupsY, 16);
+                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianXCSKernel, Mathf.CeilToInt(_texScreenWidth / 64.0f), 
+                    Mathf.CeilToInt(_texScreenHeight / 2.0f), 
+                    Mathf.CeilToInt(128 / 2.0f));
                 //Y方向模糊
                 int gaussianYCSKernel = _densityAndLightingComputeShader.FindKernel("GaussianY");
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianYCSKernel, _DownBuffer, _scatterBuffer);
                 cmd.SetComputeIntParam(_densityAndLightingComputeShader, "_YEdge", densityTexDesc.height);
-                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianYCSKernel, threadGroupsX, threadGroupsY, 16);
+                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianYCSKernel, Mathf.CeilToInt(_texScreenWidth / 2.0f), 
+                    Mathf.CeilToInt(_texScreenHeight / 64.0f), 
+                    Mathf.CeilToInt(128 / 2.0f));
                 //Z方向模糊
                 int gaussianZCSKernel = _densityAndLightingComputeShader.FindKernel("GaussianZ");
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _DownBuffer, _scatterBuffer);
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _HistoryScatterBuffer, _historyScatterBuffer);
                 cmd.SetComputeIntParam(_densityAndLightingComputeShader, "_ZEdge", densityTexDesc.volumeDepth);
-                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianZCSKernel, threadGroupsX, threadGroupsY, 16);
+                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianZCSKernel, Mathf.CeilToInt(_texScreenWidth / 2.0f), 
+                    Mathf.CeilToInt(_texScreenHeight / 2.0f), 
+                    Mathf.CeilToInt(128 / 64.0f));
                 
                 cmd.SetGlobalTexture(_ScatterBuffer, _scatterBuffer);
             }
