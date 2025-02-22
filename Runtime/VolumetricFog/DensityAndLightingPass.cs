@@ -8,6 +8,8 @@ namespace AHD2TimeOfDay
 {
     public class DensityAndLightingPass : ScriptableRenderPass
     {
+        #region Variables
+
         private static readonly int _DensityBuffer = Shader.PropertyToID("_DensityBuffer");
         private static readonly int _DownBuffer = Shader.PropertyToID("_DownBuffer");
         private static readonly int _HistoryScatterBuffer = Shader.PropertyToID("_HistoryScatterBuffer");
@@ -25,6 +27,16 @@ namespace AHD2TimeOfDay
         //双缓冲
         private RenderTexture _scatterBuffer;
         private RenderTexture _historyScatterBuffer;
+
+        #endregion
+        
+
+        public DensityAndLightingPass(VolumetricFogRendererFeature.VolumetricFogSettings volumetricFogSettings)
+        {
+            this.renderPassEvent = volumetricFogSettings.renderPassEvent;
+            _densityAndLightingComputeShader = volumetricFogSettings.densityAndLightingComputeShader;
+        }
+        
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             var targetCamera = renderingData.cameraData.camera;
@@ -65,7 +77,7 @@ namespace AHD2TimeOfDay
             var depthEncodingParams = ComputeLogarithmicDepthEncodingParams(near, far, 2f);
             Shader.SetGlobalVector("_VBufferDistanceEncodingParams", depthEncodingParams);
             CommandBuffer cmd = CommandBufferPool.Get();
-            cmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
+            //cmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
             // 计算线程组大小
             int threadGroupsX = Mathf.Max(1, Mathf.CeilToInt(_texScreenWidth / 8.0f)); // 确保至少为 1
             int threadGroupsY = Mathf.Max(1, Mathf.CeilToInt(_texScreenHeight / 8.0f)); // 确保至少为 1
@@ -108,22 +120,16 @@ namespace AHD2TimeOfDay
                 //Z方向模糊
                 int gaussianZCSKernel = _densityAndLightingComputeShader.FindKernel("GaussianZ");
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _DownBuffer, _scatterBuffer);
-                cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, "_HistoryScatterBuffer", _historyScatterBuffer);
+                cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _HistoryScatterBuffer, _historyScatterBuffer);
                 cmd.SetComputeIntParam(_densityAndLightingComputeShader, "_ZEdge", densityTexDesc.volumeDepth);
                 cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianZCSKernel, threadGroupsX, threadGroupsY, 16);
                 
                 cmd.SetGlobalTexture(_ScatterBuffer, _scatterBuffer);
             }
-            context.ExecuteCommandBufferAsync(cmd, ComputeQueueType.Background);
-            //context.ExecuteCommandBuffer(cmd);
+            //context.ExecuteCommandBufferAsync(cmd, ComputeQueueType.Default);
+            context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
-        }
-
-        public DensityAndLightingPass(VolumetricFogRendererFeature.VolumetricFogSettings volumetricFogSettings)
-        {
-            this.renderPassEvent = volumetricFogSettings.renderPassEvent;
-            _densityAndLightingComputeShader = volumetricFogSettings.densityAndLightingComputeShader;
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -154,28 +160,24 @@ namespace AHD2TimeOfDay
             {
                 _scatterBuffer = new RenderTexture(densityTexDesc);
                 _scatterBuffer.Create();
-                Debug.Log(1);
             }else if (densityTexDesc.width != _scatterBuffer.width || densityTexDesc.height != _scatterBuffer.height)
             {
                 //如果rt分辨率改变，rt也改变（这个不会经常触发）
                 _scatterBuffer.Release();
                 _scatterBuffer = new RenderTexture(densityTexDesc);
                 _scatterBuffer.Create();
-                Debug.Log(2);
             }
 
             if (!_historyScatterBuffer)
             {
                 _historyScatterBuffer = new RenderTexture(densityTexDesc);
                 _historyScatterBuffer.Create();
-                Debug.Log(3);
             }else if (densityTexDesc.width != _historyScatterBuffer.width || densityTexDesc.height != _historyScatterBuffer.height)
             {
                 //如果rt分辨率改变，rt也改变（这个不会经常触发）
                 _historyScatterBuffer.Release();
                 _historyScatterBuffer = new RenderTexture(densityTexDesc);
                 _historyScatterBuffer.Create();
-                Debug.Log(4);
             }
             
             cmd.GetTemporaryRT(_DensityBuffer, densityTexDesc);//相当于同时设置成了全局纹理（除了ComputeShader还要自己设置）
@@ -183,7 +185,6 @@ namespace AHD2TimeOfDay
         
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
-            Debug.Log("测试OnCameraCleanup是否每帧调用");
             cmd.ReleaseTemporaryRT(_DensityBuffer);
         }
 
@@ -206,7 +207,9 @@ namespace AHD2TimeOfDay
                 _historyScatterBuffer.Release();
             }
         }
-        
+
+        //辅助函数
+        #region UtilsFun
         internal static Matrix4x4 ComputePixelCoordToWorldSpaceViewDirectionMatrix(float verticalFoV, Vector2 lensShift, Vector4 screenSize, Matrix4x4 worldToViewMatrix, bool renderToCubemap, float aspectRatio = -1, bool isOrthographic = false)
         {
             Matrix4x4 viewSpaceRasterTransform;
@@ -292,5 +295,8 @@ namespace AHD2TimeOfDay
 
             return depthParams;
         }
+        
+        #endregion
+        
     }
 }
