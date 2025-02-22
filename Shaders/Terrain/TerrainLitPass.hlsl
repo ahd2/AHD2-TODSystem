@@ -426,7 +426,9 @@ void SplatmapFragment(
     half4 color = UniversalFragmentPBR(inputData, albedo, metallic, /* specular */ half3(0.0h, 0.0h, 0.0h), smoothness, occlusion, /* emission */ half3(0, 0, 0), alpha);
 
     SplatmapFinalColor(color, inputData.fogCoord);
+    #ifdef  VOLUMETRICFOG_ON
     color.xyz = ApplyVolumetricFog(color.xyz, inputData.positionCS, inputData.positionWS);
+    #endif
     outColor = half4(color.rgb, 1.0h);
 
 #ifdef _WRITE_RENDERING_LAYERS

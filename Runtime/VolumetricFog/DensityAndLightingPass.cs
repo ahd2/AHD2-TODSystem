@@ -27,7 +27,9 @@ namespace AHD2TimeOfDay
         //双缓冲
         private RenderTexture _scatterBuffer;
         private RenderTexture _historyScatterBuffer;
-
+        //
+        private bool _fogEnable;
+        private static GlobalKeyword fogKeyword = new GlobalKeyword("VOLUMETRICFOG_ON");
         #endregion
         
 
@@ -35,6 +37,7 @@ namespace AHD2TimeOfDay
         {
             this.renderPassEvent = volumetricFogSettings.renderPassEvent;
             _densityAndLightingComputeShader = volumetricFogSettings.densityAndLightingComputeShader;
+            _fogEnable = volumetricFogSettings.enable;
         }
         
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -181,6 +184,8 @@ namespace AHD2TimeOfDay
             }
             
             cmd.GetTemporaryRT(_DensityBuffer, densityTexDesc);//相当于同时设置成了全局纹理（除了ComputeShader还要自己设置）
+            
+            Shader.SetKeyword(fogKeyword, _fogEnable);
         }
         
         public override void OnCameraCleanup(CommandBuffer cmd)
@@ -206,6 +211,7 @@ namespace AHD2TimeOfDay
             {
                 _historyScatterBuffer.Release();
             }
+            Shader.DisableKeyword("VOLUMETRICFOG_ON");
         }
 
         //辅助函数

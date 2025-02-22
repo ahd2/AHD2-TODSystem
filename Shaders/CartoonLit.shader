@@ -32,6 +32,7 @@ Shader "AHD2TODSystem/CartoonLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK //这两个宏用于控制阴影的烘焙和采样。当你在Unity的Lighting窗口中选择了Shadowmask或者Subtractive模式，这两个宏就会被激活。
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED //这个宏用于控制是否将定向光源的光照信息烘焙到光照贴图中。当你在Unity的Lighting窗口中选择了Baked GI，并且选择了Directional Mode，这个宏就会被激活。
             #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ VOLUMETRICFOG_ON
             //材质面板keyword
             #pragma shader_feature_local_fragment _RMOMAP //_local_fragment表示只在片元着色器生效
             #include "CartoonLitInput.hlsl"

@@ -11,6 +11,7 @@ namespace AHD2TimeOfDay
         [System.Serializable]
         public class VolumetricFogSettings
         {
+            public bool enable;
             public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingShadows;
             //计算密度和光照的CS
             public ComputeShader densityAndLightingComputeShader;//后续改为直接通过路径加载

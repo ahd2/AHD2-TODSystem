@@ -78,7 +78,9 @@ half4 CartoonLitFragment (v2f i) : SV_Target
 
     BRDF brdf = GetBRDF(surface, inputdata);
     half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, mainlight.color, mainlight.shadowAttenuation);
+    #ifdef  VOLUMETRICFOG_ON
     finalcolor = ApplyVolumetricFog(finalcolor, i.vertex, i.positionWS);
+    #endif
     return half4(finalcolor,surface.alpha);
     
     
