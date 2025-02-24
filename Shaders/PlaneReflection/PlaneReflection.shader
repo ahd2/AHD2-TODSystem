@@ -28,7 +28,7 @@ Shader "Custom/PlaneReflection"
             
             CBUFFER_END
 
-            sampler2D _PlanarReflectionTexture;
+            sampler2D _PlanarReflection;
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -54,12 +54,13 @@ Shader "Custom/PlaneReflection"
             half4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.screenUV.xy / i.screenUV.w;
-                half4 col = tex2D(_PlanarReflectionTexture,uv);
+                half4 col = tex2D(_PlanarReflection,uv);
                 return col * 0.7;
                 return col;
             }
             ENDHLSL
         }
+        UsePass "SSR Sample/SSR Forward Lit/DepthNormals"
     }
     Fallback "Diffuse"
 }

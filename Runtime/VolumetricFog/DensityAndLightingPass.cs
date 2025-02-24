@@ -126,14 +126,6 @@ namespace AHD2TimeOfDay
                 cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianYCSKernel, Mathf.CeilToInt(_texScreenWidth), 
                     Mathf.CeilToInt(_texScreenHeight / 128.0f), 
                     Mathf.CeilToInt(128 ));
-                //Z方向模糊
-                int gaussianZCSKernel = _densityAndLightingComputeShader.FindKernel("GaussianZ");
-                cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _DownBuffer, _scatterBuffer);
-                cmd.SetComputeTextureParam(_densityAndLightingComputeShader, gaussianZCSKernel, _HistoryScatterBuffer, _historyScatterBuffer);
-                cmd.SetComputeIntParam(_densityAndLightingComputeShader, "_ZEdge", densityTexDesc.volumeDepth);
-                cmd.DispatchCompute(_densityAndLightingComputeShader, gaussianZCSKernel, Mathf.CeilToInt(_texScreenWidth / 1.0f), 
-                    Mathf.CeilToInt(_texScreenHeight / 1.0f), 
-                    Mathf.CeilToInt(2));
                 
                 cmd.SetGlobalTexture(_ScatterBuffer, _scatterBuffer);
             }

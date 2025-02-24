@@ -134,7 +134,7 @@ namespace AHD2TimeOfDay
                 Graphics.Blit(skyboxmap,skyboxmapmirror,mirror);
                 
                 //先找核
-                int index = RelightCS.FindKernel("CSMain");
+                int index = RelightCS.FindKernel("Relight");
                 int resolution = probe.resolution;
                 RelightCS.SetTexture(index, ShaderConstants.DiffuseTexture, baked);
                 RelightCS.SetTexture(index, ShaderConstants.NormalTexture, bakedNormal);

@@ -1,4 +1,4 @@
-#pragma kernel CSMain
+#pragma kernel Relight
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 TEXTURE2D_ARRAY(_Diffuse);
@@ -12,7 +12,7 @@ uniform float4 AHD2_SHArray[7];
 half4 AHD2_MainlightColor;
 
 [numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void Relight (uint3 id : SV_DispatchThreadID)
 {
     float2 invTextureSize = rcp(float2(Resolution, Resolution));
     float2 uv = (float2(id.xy) + 0.5) * invTextureSize;
