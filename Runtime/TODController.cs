@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace AHD2TimeOfDay
 {
@@ -10,6 +11,7 @@ namespace AHD2TimeOfDay
     {
         public TODGlobalParameters todGlobalParameters; //未拖入也会报错，不处理了
         public Light MainLight; //主光源
+        public LensFlareComponentSRP LensFlare;
         [SerializeField]public bool isTimeFlow;
         private Vector3 _starquat; //计算光源旋转用
         private Vector3 _endquat; //计算光源旋转用
@@ -79,6 +81,13 @@ namespace AHD2TimeOfDay
             MainLight.color = todGlobalParameters.MainlightColor;
             MainLight.intensity = todGlobalParameters.MainlightIntensity;
             MainLight.transform.rotation = Quaternion.Euler(todGlobalParameters.MainlightDirection);//真光源角度
+            //白天开启lensflare
+            if (LensFlare)
+            {
+                LensFlare.enabled = todGlobalParameters._dayOrNight == 0;
+                LensFlare.transform.rotation = Quaternion.LookRotation(-_fakeMainlightDirection);
+            }
+                
             //shader设置
             Shader.SetGlobalColor(AHD2_MainlightColor, todGlobalParameters.MainlightColor);
             Shader.SetGlobalFloat(AHD2_MainlightIntensity, todGlobalParameters.MainlightIntensity);

@@ -160,7 +160,7 @@ half3 CalculateLightingColor(LightingData lightingData, half3 albedo)
 
     if (IsLightingFeatureEnabled(DEBUGLIGHTINGFEATUREFLAGS_GLOBAL_ILLUMINATION))
     {
-        lightingColor += lightingData.giColor;
+        lightingColor += lightingData.giColor * 2;//环境光补正
     }
 
     if (IsLightingFeatureEnabled(DEBUGLIGHTINGFEATUREFLAGS_MAIN_LIGHT))
