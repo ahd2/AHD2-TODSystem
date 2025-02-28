@@ -103,6 +103,23 @@ half3 DirectBRDF(Surface surface, BRDF brdf, half3 mainLightDir, CartoonInputDat
 	return brdf.diffuse + fTerm * dTerm * gTerm / max(4 * NdotL * NdotV ,0.001);//漫反射项+镜面反射项
 }
 
+//额外光的BRDF（包括漫反射项和镜面反射项）
+half3 PointLightBRDF(Surface surface, BRDF brdf, half3 mainLightDir, CartoonInputData inputdata)
+{
+	half3 F0 = lerp(0.04 , surface.color ,surface.metallic);
+	half3 halfDirWS = normalize(inputdata.viewDirWS + mainLightDir);
+	half HdotV = saturate(dot(halfDirWS, inputdata.viewDirWS));
+	half NdotL = saturate(dot(inputdata.normalWS, mainLightDir));
+	half NdotV = saturate(dot(inputdata.normalWS, inputdata.viewDirWS));
+	half NdotH = saturate(dot(inputdata.normalWS, halfDirWS));
+	half3 fTerm = F_Schlick(HdotV, F0);
+	half dTerm = DistributionGGX(NdotH, brdf.roughness);
+	half gTerm = GeometrySchlickGGX(brdf.roughness, NdotV) * GeometrySchlickGGX(brdf.roughness, NdotL);
+	
+	//return  gTerm * dTerm * fTerm;
+	return NdotL * (brdf.diffuse + fTerm * dTerm * gTerm / max(4 * NdotL * NdotV ,0.001));//漫反射项+镜面反射项 * Nol
+}
+
 float3 EnvBRDF(float Metallic, float3 BaseColor, float2 LUT)
 {
 	float3 F0 = lerp(0.04f, BaseColor.rgb, Metallic); 

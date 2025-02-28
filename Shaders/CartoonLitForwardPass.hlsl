@@ -78,6 +78,20 @@ half4 CartoonLitFragment (v2f i) : SV_Target
 
     BRDF brdf = GetBRDF(surface, inputdata);
     half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, mainlight.color, mainlight.shadowAttenuation);
+    //点光源
+    #ifdef USE_FORWARD_PLUS
+    uint lightIndex; 
+    ClusterIterator _urp_internal_clusterIterator = ClusterInit(i.vertex.xy / _ScreenParams.xy, i.positionWS, 0); 
+    [loop] while (ClusterNext(_urp_internal_clusterIterator, lightIndex)) { 
+        lightIndex += URP_FP_DIRECTIONAL_LIGHTS_COUNT; //跳过group里面的方向光，拿到正确的点光源Index
+        FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+    //填充计算
+    Light light = GetAdditionalLight(lightIndex, i.positionWS);
+        finalcolor.xyz += (light.color * light.distanceAttenuation) * PointLightBRDF(surface, brdf, light.direction, inputdata);
+    }
+    #endif
+    //自发光
+    finalcolor.xyz += surface.emissionMask * _EmissionColor;
     #ifdef  VOLUMETRICFOG_ON
     finalcolor = ApplyVolumetricFog(finalcolor, i.vertex, i.positionWS);
     #endif

@@ -7,6 +7,7 @@ struct Surface {
     half  metallic;
     half  roughness;
     half ambientOcclusion;
+    half emissionMask;
     half alpha;
 };
 

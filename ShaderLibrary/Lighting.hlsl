@@ -25,8 +25,9 @@ half3 AmbientLighting(Surface surface, BRDF brdf, CartoonInputData inputdata)
     half3 prefilteredColor = GetSpecular(surface, brdf, inputdata);
     half3 SpecularContribution = prefilteredColor * EnvBRDF(surface.metallic, surface.color, brdf.iblLUT);
     //return 0;
-    return (DiffuseContribution + SpecularContribution) * surface.ambientOcclusion;
+    return (DiffuseContribution + SpecularContribution) * surface.ambientOcclusion * 2;
 }
+
 half3 GetLighting (Surface surface, BRDF brdf, CartoonInputData inputdata, half3 mainlightDir, half3 lightCol, half direcctShadow) {
 	return IncomingLight(surface, mainlightDir, lightCol, direcctShadow) * DirectBRDF(surface, brdf, mainlightDir, inputdata) + AmbientLighting(surface, brdf, inputdata);
 }

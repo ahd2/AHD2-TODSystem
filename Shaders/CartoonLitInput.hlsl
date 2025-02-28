@@ -15,6 +15,7 @@ float4 _MainTex_ST;
 float4 _NormalMap_ST;
 //half4
 half4 _BaseColor;
+half3 _EmissionColor;
 //half
 half _Metallic;
 half _Roughness;
@@ -37,14 +38,16 @@ inline void InitializeSurfaceData(out Surface surface,half4 basecol, float2 uv, 
     surface.color = basecol.xyz;
     surface.alpha = basecol.a;
     #if defined (_RMOMAP)
-    half3 RMO = tex2D(_RMOMap,uv);
+    half4 RMO = tex2D(_RMOMap,uv);
     surface.metallic = RMO.g; //跟diffuse一个ST
     surface.roughness = RMO.r;
     surface.ambientOcclusion = RMO.b;
+    surface.emissionMask = RMO.a;
     #else
     surface.metallic = _Metallic;
     surface.roughness = _Roughness;
     surface.ambientOcclusion = tex2D(_AOMap, uv);
+    surface.emissionMask = 1;
     #endif
 }
 

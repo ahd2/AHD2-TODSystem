@@ -25,6 +25,7 @@ public class AHD2PBRGUI : ShaderGUI
     //所有要用到的property
     public MaterialProperty maintex { get; set; }
     protected MaterialProperty basecol { get; set; }
+    protected MaterialProperty emissioncol { get; set; }
     protected MaterialProperty normalMap { get; set; }
     protected MaterialProperty RMOMap { get; set; }
     protected MaterialProperty metallic { get; set; }
@@ -78,7 +79,8 @@ public class AHD2PBRGUI : ShaderGUI
             editor.TexturePropertySingleLine(Styles.AOMap, aoMap);
             EditorGUI.indentLevel-= 2;
         }
-        
+
+        editor.ColorProperty(emissioncol, "自发光颜色");
     }
 
     public bool m_FirstTimeApply = true;//面板是否首充打开，用于OnOpenGUI函数调用
@@ -108,6 +110,7 @@ public class AHD2PBRGUI : ShaderGUI
 
         maintex = FindProperty("_MainTex", properties, true); //第三个参数是未找到属性时是否抛出异常
         basecol = FindProperty("_BaseColor", properties, true);
+        emissioncol = FindProperty("_EmissionColor", properties, true);
         normalMap = FindProperty("_NormalMap", properties, true); //第三个参数是未找到属性时是否抛出异常
         RMOMap = FindProperty("_RMOMap", properties, false);
         metallic = FindProperty("_Metallic", properties, false);
