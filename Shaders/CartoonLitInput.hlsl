@@ -46,7 +46,7 @@ inline void InitializeSurfaceData(out Surface surface,half4 basecol, float2 uv, 
     #else
     surface.metallic = _Metallic;
     surface.roughness = _Roughness;
-    surface.ambientOcclusion = tex2D(_AOMap, uv);
+    surface.ambientOcclusion = tex2D(_AOMap, uv).r;
     surface.emissionMask = 1;
     #endif
 }

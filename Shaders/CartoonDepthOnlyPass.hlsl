@@ -14,7 +14,7 @@ struct v2f
 v2f CartoonDepthOnlyVertex (appdata v)
 {
     v2f o;
-    o.vertex = TransformObjectToHClip(v.vertex);
+    o.vertex = TransformObjectToHClip(v.vertex.xyz);
     return o;
 }
 

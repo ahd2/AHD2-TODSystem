@@ -8,7 +8,7 @@ float _FogFarPlaneDistance;
 
 half3 ApplyVolumetricFog(half3 col, float4 positionCS, float3 positionWS)
 {
-    float3 fogCoord = float3(positionCS/_ScaledScreenParams.xy, 0);
+    float3 fogCoord = float3(positionCS.xy/_ScaledScreenParams.xy, 0);
     float t = distance(positionWS, GetCurrentViewPosition());
     fogCoord.z = EncodeLogarithmicDepthGeneralized(t, _VBufferDistanceEncodingParams);
     half4 fogCol = SAMPLE_TEXTURE3D(_ScatterBuffer, _ScatterBuffer_Trilinear_clamp_sampler, fogCoord);

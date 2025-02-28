@@ -17,12 +17,12 @@ struct v2f
 v2f CartoonShadowCasterVertex (appdata v)
 {
     v2f o;
-    o.vertex = TransformObjectToHClip(v.vertex);
+    o.vertex = TransformObjectToHClip(v.vertex.xyz);
     //应用阴影bias
     VertexNormalInputs normalInput = GetVertexNormalInputs(v.normal, v.tangentOS);
     o.normalWS = normalize(half3(normalInput.normalWS));
     float3 posWS = TransformObjectToWorld(v.vertex.xyz);
-    float3 lightDirectionWS = _MainLightPosition;
+    float3 lightDirectionWS = _MainLightPosition.xyz;
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(posWS, o.normalWS, lightDirectionWS));
     //not UNITY_REVERSE_Z!!!!
     #if UNITY_REVERSED_Z

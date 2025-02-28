@@ -44,10 +44,10 @@ void InitializeInputData(v2f input , out CartoonInputData inputdata)
 v2f CartoonLitVertex (appdata v)
 {
     v2f o;
-    o.vertex = TransformObjectToHClip(v.vertex);
+    o.vertex = TransformObjectToHClip(v.vertex.xyz);
     o.uv = TRANSFORM_TEX(v.uv, _MainTex);
     
-    o.positionWS = TransformObjectToWorld(v.vertex);
+    o.positionWS = TransformObjectToWorld(v.vertex.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(v.normalOS, v.tangentOS);
     o.normalWS = normalInput.normalWS;
     o.tangentWS = normalInput.tangentWS;
@@ -63,7 +63,7 @@ half4 CartoonLitFragment (v2f i) : SV_Target
 {
     i.shadowCoord = TransformWorldToShadowCoord(i.positionWS);//这里采样才不会出现精度瑕疵
     Light mainlight = GetMainLight(i.shadowCoord);
-    half3 normalMap = tex2D(_NormalMap, i.uv * _NormalMap_ST.xy + _NormalMap_ST.zw,ddx(i.uv.x),ddy(i.uv.y));//双重ST，在Maintex的ST上叠加
+    half3 normalMap = tex2D(_NormalMap, i.uv * _NormalMap_ST.xy + _NormalMap_ST.zw,ddx(i.uv.x),ddy(i.uv.y)).xyz;//双重ST，在Maintex的ST上叠加
     normalMap = normalize(normalMap * 2 - 1);
     half3x3 TBN = half3x3(i.tangentWS.xyz, i.bitangentWS.xyz, normalize(i.normalWS.xyz));
     i.normalWS = TransformTangentToWorld(normalMap,TBN);//矫正了normalWS插值造成的误差，后面直接赋值即可
@@ -96,7 +96,5 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     finalcolor = ApplyVolumetricFog(finalcolor, i.vertex, i.positionWS);
     #endif
     return half4(finalcolor,surface.alpha);
-    
-    
 }
 #endif

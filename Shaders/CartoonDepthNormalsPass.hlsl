@@ -17,7 +17,7 @@ struct v2f
 v2f CartoonDepthNormalsVertex (appdata v)
 {
     v2f o;
-    o.vertex = TransformObjectToHClip(v.vertex);
+    o.vertex = TransformObjectToHClip(v.vertex.xyz);
     o.normalWS = TransformObjectToWorldNormal(v.normal);
     return o;
 }

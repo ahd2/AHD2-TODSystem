@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
-  m_Name: DefaultTODGlobalParameters
+  m_Name: TODGlobalParameters
   m_EditorClassIdentifier: 
   timeFlowSpeed: 1
   timeFlowScale: 2
