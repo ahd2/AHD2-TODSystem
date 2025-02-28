@@ -4,6 +4,7 @@ TEXTURE3D(_ScatterBuffer);
 SamplerState _ScatterBuffer_Trilinear_clamp_sampler;
 float4 _VBufferDistanceEncodingParams;
 float4 AHD2_FoglightColor;
+float _FogFarPlaneDistance;
 
 half3 ApplyVolumetricFog(half3 col, float4 positionCS, float3 positionWS)
 {
@@ -15,7 +16,7 @@ half3 ApplyVolumetricFog(half3 col, float4 positionCS, float3 positionWS)
     //基础雾效
     //距离雾
     float distancefogdendity = 0.1;
-    float distancefog = distancefogdendity * saturate((t - 70) / 500);//从70m开始，其实应该是从体积雾的0.7倍距离开始
+    float distancefog = distancefogdendity * saturate((t - _FogFarPlaneDistance * 0.7) / 500);//从70m开始，其实应该是从体积雾的0.7倍距离开始
     half3 baseFog;
     //雾密度
     float fogdensity = saturate(exp(-positionWS.y * 0.01));

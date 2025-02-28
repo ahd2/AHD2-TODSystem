@@ -17,6 +17,8 @@ uniform float4 AHD2_SHArray[7];//SH
 float4 AHD2_FoglightColor;
 float3 _InvTextureSize;
 float AHD2_HGCoefficient;
+float _FogStartHeight;
+float _FogDensity;
 
 //不需要抖动信息了
 struct JitteredRay
@@ -81,11 +83,11 @@ void DensityAndLighting (uint3 id : SV_DispatchThreadID)
           t += noise * dt;//乘dt后还挺有效的！！！
           voxelCenterWS = ray.originWS + t * ray.centerDirWS;//体素核心坐标
           //计算雾密度
-          float fogStartHeight = -50;
-          float playerHeight = max(ray.originWS.y - fogStartHeight, 0.0001);
-          float fixedcoefficient = 3;//0-正无穷，1是默认
-          float c = 1 / playerHeight;
-          float fogDensity = saturate(exp(-c * fixedcoefficient * (voxelCenterWS.y - fogStartHeight))) * 0.1;//密度（0-1之间）
+          // float playerHeight = max(ray.originWS.y - _FogStartHeight, 0.0001);
+          // float fixedcoefficient = 3;//0-正无穷，1是默认
+          // float c = 1 / playerHeight;
+          // float fogDensity = saturate(exp(-c * fixedcoefficient * (voxelCenterWS.y - _FogStartHeight))) * _FogDensity;//密度（0-1之间）
+          float fogDensity = exp2(-(voxelCenterWS.y - _FogStartHeight) * 0.3) * _FogDensity;
 
           //计算雾光照
           float4 shadowcoord = TransformWorldToShadowCoord(voxelCenterWS);
@@ -131,6 +133,7 @@ void DensityAndLighting (uint3 id : SV_DispatchThreadID)
 }
 
 RWTexture3D<float4> _ScatterBuffer;
+float _FogExtinctonCoeffient;
 #pragma kernel Scatter
 [numthreads(8,8,1)]
 void Scatter (uint3 id : SV_DispatchThreadID)
@@ -149,7 +152,7 @@ void Scatter (uint3 id : SV_DispatchThreadID)
 
           uint3 coord = uint3(id.xy, slice);
           float4 voxel_data = _DensityBuffer[coord];
-          float transmittance = exp(-voxel_data.a * dt * 2.0);//计算当前体素的透射值（通过密度）
+          float transmittance = exp(-voxel_data.a * dt * _FogExtinctonCoeffient);//计算当前体素的透射值（通过密度）
           //增加的光
           float3 scatteringIntegratedOverSlice = (voxel_data.rgb - voxel_data.rgb * transmittance) / max(voxel_data.a, .00001f);
           totalRadiance += scatteringIntegratedOverSlice * totalTransmittance;

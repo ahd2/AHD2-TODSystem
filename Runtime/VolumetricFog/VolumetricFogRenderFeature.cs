@@ -17,10 +17,14 @@ namespace AHD2TimeOfDay
             public ComputeShader densityAndLightingComputeShader;//后续改为直接通过路径加载
             //雾参数
             //全局雾密度
+            public float fogDensity = 0.2f;
             //体积雾视锥体远平面（体积雾最远距离）
+            public float fogFarPlaneDistance = 100.0f;
             //体积雾深度切片线性程度
             //体积雾介质吸收系数
+            public float fogExtinctonCoeffient = 2.0f;
             //雾起始高度
+            public float fogStartHeight = -50.0f;
             //
         }
 

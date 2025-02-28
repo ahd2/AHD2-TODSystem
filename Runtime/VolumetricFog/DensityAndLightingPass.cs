@@ -30,6 +30,16 @@ namespace AHD2TimeOfDay
         //
         private bool _fogEnable;
         private GlobalKeyword _fogKeyword;
+        
+        //全局雾密度
+        private float _fogDensity;
+        //体积雾视锥体远平面（体积雾最远距离）
+        private float _fogFarPlaneDistance;
+        //体积雾深度切片线性程度
+        //体积雾介质吸收系数
+        private float _fogExtinctonCoeffient;
+        //雾起始高度
+        private float _fogStartHeight;
         #endregion
         
 
@@ -39,6 +49,12 @@ namespace AHD2TimeOfDay
             _densityAndLightingComputeShader = volumetricFogSettings.densityAndLightingComputeShader;
             _fogEnable = volumetricFogSettings.enable;
             _fogKeyword = GlobalKeyword.Create("VOLUMETRICFOG_ON");
+
+            //雾参数
+            _fogDensity = volumetricFogSettings.fogDensity;
+            _fogFarPlaneDistance = volumetricFogSettings.fogFarPlaneDistance;
+            _fogExtinctonCoeffient = volumetricFogSettings.fogExtinctonCoeffient;
+            _fogStartHeight = volumetricFogSettings.fogStartHeight;
         }
         
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -69,17 +85,16 @@ namespace AHD2TimeOfDay
                 isOrthographic: isOrthographic
             );
             Shader.SetGlobalMatrix("_VBufferCoordToViewDirWS", vBufferCoordToWorldDir);
-
-            float far = 100;//雾效的远平面
-            float near = 0.3f;//雾效的近平面
+            
             // //深度编码信息
             // float sliceDistributionUniformity = 0.8f;//用户控制，范围0-1
             // float c = 2 - 2 * sliceDistributionUniformity;
             // c = Mathf.Max(c, 0.001f); // 防止除零或无效值
-            var depthDecodingParams = ComputeLogarithmicDepthDecodingParams(near, far, 2f);
+            var depthDecodingParams = ComputeLogarithmicDepthDecodingParams(targetCamera.nearClipPlane, _fogFarPlaneDistance, 2f);
             Shader.SetGlobalVector("_VBufferDistanceDecodingParams", depthDecodingParams);
-            var depthEncodingParams = ComputeLogarithmicDepthEncodingParams(near, far, 2f);
+            var depthEncodingParams = ComputeLogarithmicDepthEncodingParams(targetCamera.nearClipPlane, _fogFarPlaneDistance, 2f);
             Shader.SetGlobalVector("_VBufferDistanceEncodingParams", depthEncodingParams);
+            Shader.SetGlobalFloat("_FogFarPlaneDistance", _fogFarPlaneDistance);
             CommandBuffer cmd = CommandBufferPool.Get();
             //cmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
             // 计算线程组大小
@@ -92,6 +107,8 @@ namespace AHD2TimeOfDay
             {
                 //int threadGroupsZ = 128; // 3D 纹理的深度
                 int densityAndLightingCSKernel = _densityAndLightingComputeShader.FindKernel("DensityAndLighting");
+                cmd.SetComputeFloatParam(_densityAndLightingComputeShader, "_FogStartHeight", _fogStartHeight);
+                cmd.SetComputeFloatParam(_densityAndLightingComputeShader, "_FogDensity", _fogDensity);
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, densityAndLightingCSKernel, _DensityBuffer, _DensityBufferID);
                 cmd.SetComputeMatrixParam(_densityAndLightingComputeShader,  "unity_MatrixV", renderingData.cameraData.GetViewMatrix());
                 cmd.SetComputeVectorParam(_densityAndLightingComputeShader, "_InvTextureSize", new Vector4(1.0f/_texScreenWidth, 1.0f/_texScreenHeight, 1.0f/128, 0));
@@ -99,6 +116,7 @@ namespace AHD2TimeOfDay
                 
                 //计算散射
                 int scatterCSKernel = _densityAndLightingComputeShader.FindKernel("Scatter");
+                cmd.SetComputeFloatParam(_densityAndLightingComputeShader, "_FogExtinctonCoeffient", _fogExtinctonCoeffient);
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, scatterCSKernel, _DensityBuffer, _DensityBufferID);
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, scatterCSKernel, _ScatterBuffer, _scatterBuffer);
                 cmd.DispatchCompute(_densityAndLightingComputeShader, scatterCSKernel, threadGroupsX, threadGroupsY, 1);
