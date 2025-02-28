@@ -40,6 +40,8 @@ namespace AHD2TimeOfDay
         private float _fogExtinctonCoeffient;
         //雾起始高度
         private float _fogStartHeight;
+        private static readonly int Ahd2HgCoefficient = Shader.PropertyToID("AHD2_HGCoefficient");
+
         #endregion
         
 
@@ -107,6 +109,7 @@ namespace AHD2TimeOfDay
             {
                 //int threadGroupsZ = 128; // 3D 纹理的深度
                 int densityAndLightingCSKernel = _densityAndLightingComputeShader.FindKernel("DensityAndLighting");
+                cmd.SetComputeFloatParam(_densityAndLightingComputeShader, Ahd2HgCoefficient, Shader.GetGlobalFloat(Ahd2HgCoefficient));
                 cmd.SetComputeFloatParam(_densityAndLightingComputeShader, "_FogStartHeight", _fogStartHeight);
                 cmd.SetComputeFloatParam(_densityAndLightingComputeShader, "_FogDensity", _fogDensity);
                 cmd.SetComputeTextureParam(_densityAndLightingComputeShader, densityAndLightingCSKernel, _DensityBuffer, _DensityBufferID);

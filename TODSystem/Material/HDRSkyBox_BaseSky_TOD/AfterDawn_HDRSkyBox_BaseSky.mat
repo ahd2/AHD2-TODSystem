@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AfterDawn_HDRSkyBox_BaseSky
+  m_Shader: {fileID: 4800000, guid: bc931b23da3b78949b2548a983e9945b, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CloudMap:
+        m_Texture: {fileID: 2800000, guid: c6bec5849a61b90439cf0108ded6d2df, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarMap:
+        m_Texture: {fileID: 8900000, guid: 8dd109734ec82c44f8af59519a5adc4f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TransmissionRGMap:
+        m_Texture: {fileID: 2800000, guid: a7599b48566a964468935114baec5027, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _LDotV_damping_factor: 1.51
+    - _StarRange: 6
+    - _SunRange: 1.1
+    - _SunRange0: 0.997
+    - _SunRange1: 1
+    - _num: 214.7
+    - _sky_color_intensity: 1.92
+    - _sky_scatter: 0.19
+    - _sun_disk_power_999: 204
+    - _sun_scatter: 0.301
+    m_Colors:
+    - _SunColor: {r: 1.9773997, g: 1.2029632, b: 0.14494023, a: 1}
+    - _SunInnercolor: {r: 10.391295, g: 8.381951, b: 1.7057405, a: 1}
+    - _sky_color: {r: 0.6320754, g: 0.2091426, b: 0, a: 1}
+    - _sunOrgColorBeside: {r: 0.7075472, g: 0.5246036, b: 0.40316838, a: 1}
+    - _sunOrgColorLookAt: {r: 0.7735849, g: 0.6380832, b: 0.0029191307, a: 1}
+    - _sunScatterColorBeside: {r: 0, g: 0.34080186, b: 0.6415094, a: 1}
+    - _sunScatterColorLookAt: {r: 1.4186713, g: 0.63584465, b: 0.13919035, a: 1}
+  m_BuildTextureStacks: []

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: Night12Night2
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 20b977d4b73cf6f468521510da7f3aac, type: 2}
+  CurrentTODTime: 20
+  NextTODTime: 4
+  isCross24: 1
+  duration: 8
+  MainlightColor: {r: 0.0959416, g: 0.11440269, b: 0.31132078, a: 0}
+  MainlightIntensity: 0
+  MainlightDirection: {x: 160, y: 0, z: 0}
+  FogLightColor: {r: 0.048066884, g: 0.30515978, b: 0.5924529, a: 0}
+  FogLightIntensity: 3
+  HGCoefficient: 0
+  dayOrNight: 1
+  materials:
+  - {fileID: 2100000, guid: c29c61dbb1dc67e47882eba4b6d94866, type: 2}

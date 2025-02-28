@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f00ec0cbd352f5b47818976299a9e2b6, type: 3}
+  m_Name: DefaultTODGlobalParameters
+  m_EditorClassIdentifier: 
+  timeFlowSpeed: 1
+  timeFlowScale: 2
+  _currentTime: 17
+  isTimeFlow: 0
+  timeOfDays:
+  - {fileID: 11400000, guid: 20b977d4b73cf6f468521510da7f3aac, type: 2}
+  - {fileID: 11400000, guid: 4768c9c2d369fc64aafc0e9c3dc7d147, type: 2}
+  - {fileID: 11400000, guid: e445f067b36a160488fa9f1c79123e3a, type: 2}
+  - {fileID: 11400000, guid: 9ddcd0dcf06927d4aa9b4fadfb204cd1, type: 2}
+  - {fileID: 11400000, guid: 4c1bb2fb920b91e4b864cfa9242c8968, type: 2}
+  - {fileID: 11400000, guid: d660d395d5d91ec46a34d0a57660a792, type: 2}
+  - {fileID: 11400000, guid: bd7f0fa1d5850244dae9422747d4f498, type: 2}
+  - {fileID: 11400000, guid: 65a4b3ef90a744c4d972908b3401bf76, type: 2}
+  - {fileID: 11400000, guid: 56c6187d09992ce49aa8df92c17e2a87, type: 2}
+  - {fileID: 11400000, guid: 167adfdcb0f009f4ea10a75f4b835e84, type: 2}
+  currentTimeOfDay: {fileID: 11400000, guid: bd7f0fa1d5850244dae9422747d4f498, type: 2}
+  _dayOrNight: 0
+  todElapsedTimeRatio: 0
+  todElapsedTime: 0
+  todFrameList:
+  - name: Night2
+    _time: 4
+  - name: PreDawn
+    _time: 5
+  - name: Dawn
+    _time: 6
+  - name: AfterDawn
+    _time: 7
+  - name: Noon1
+    _time: 8
+  - name: Noon2
+    _time: 16
+  - name: PreDusk
+    _time: 17
+  - name: Dusk
+    _time: 18
+  - name: AfterDusk
+    _time: 19
+  - name: Night1
+    _time: 20
+  MainlightColor: {r: 0.9433962, g: 0.5490713, b: 0.14833269, a: 0.69803923}
+  MainlightIntensity: 5
+  MainlightDirection: {x: 155, y: 0, z: 0}
+  FogLightColor: {r: 0.84313726, g: 0.5751116, b: 0.16862744, a: 0}
+  FogLightIntensity: 7
+  HGCoefficient: 0.05
+  IblBrdfLut: {fileID: 2800000, guid: 373b983f45125c042a202367c7f36bf4, type: 3}
+  TimeOfDayData: {fileID: 11400000, guid: 31c67636ff6455949a6f1bde7f0025a3, type: 2}
+  materials:
+  - {fileID: 2100000, guid: 807f5cae7654bbf46b896db66986c246, type: 2}

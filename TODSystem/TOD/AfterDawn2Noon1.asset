@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: AfterDawn2Noon1
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 167adfdcb0f009f4ea10a75f4b835e84, type: 2}
+  CurrentTODTime: 7
+  NextTODTime: 8
+  isCross24: 0
+  duration: 1
+  MainlightColor: {r: 0.8792453, g: 0.8400804, b: 0.27040932, a: 1}
+  MainlightIntensity: 4
+  MainlightDirection: {x: 25, y: 0, z: 0}
+  FogLightColor: {r: 0.8784314, g: 0.8392157, b: 0.27058825, a: 1}
+  FogLightIntensity: 5
+  HGCoefficient: 0.1
+  dayOrNight: 0
+  materials:
+  - {fileID: 2100000, guid: 6698b72ae8c9e464893d3cef2e1c513f, type: 2}

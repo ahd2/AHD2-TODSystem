@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: PreDusk2Dusk
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 65a4b3ef90a744c4d972908b3401bf76, type: 2}
+  CurrentTODTime: 17
+  NextTODTime: 18
+  isCross24: 0
+  duration: 1
+  MainlightColor: {r: 0.9433962, g: 0.5490713, b: 0.14833269, a: 0.69803923}
+  MainlightIntensity: 5
+  MainlightDirection: {x: 155, y: 0, z: 0}
+  FogLightColor: {r: 0.84313726, g: 0.5751116, b: 0.16862744, a: 0}
+  FogLightIntensity: 7
+  HGCoefficient: 0.05
+  dayOrNight: 0
+  materials:
+  - {fileID: 2100000, guid: a50f8b1d1c438d44db8533846c753f82, type: 2}

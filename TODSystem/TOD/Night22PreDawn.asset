@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
+  m_Name: Night22PreDawn
+  m_EditorClassIdentifier: 
+  nextTOD: {fileID: 11400000, guid: 4768c9c2d369fc64aafc0e9c3dc7d147, type: 2}
+  CurrentTODTime: 4
+  NextTODTime: 5
+  isCross24: 0
+  duration: 1
+  MainlightColor: {r: 0.06805504, g: 0.08728915, b: 0.2924528, a: 0}
+  MainlightIntensity: 0
+  MainlightDirection: {x: 160, y: 0, z: 0}
+  FogLightColor: {r: 0.047058824, g: 0.30588236, b: 0.5921569, a: 0}
+  FogLightIntensity: 3
+  HGCoefficient: 0
+  dayOrNight: 0
+  materials:
+  - {fileID: 2100000, guid: a1e1440dca0e70b4cb42868d19d8bf99, type: 2}
