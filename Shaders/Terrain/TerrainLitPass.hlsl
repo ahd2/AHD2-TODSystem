@@ -1,8 +1,8 @@
 ﻿#ifndef AHD2_TERRAIN_LIT_PASSES_INCLUDED
 #define AHD2_TERRAIN_LIT_PASSES_INCLUDED
 
-#include "Packages/AHD2-TODSystem/ShaderLibrary/URPModification/AHD2Lighting.hlsl"
-#include "Packages/AHD2-TODSystem/ShaderLibrary/URPModification/AHD2GBuffer.hlsl"
+#include "Packages/com.ahd2.tod-system/ShaderLibrary/URPModification/AHD2Lighting.hlsl"
+#include "Packages/com.ahd2.tod-system/ShaderLibrary/URPModification/AHD2GBuffer.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
 
 struct Attributes

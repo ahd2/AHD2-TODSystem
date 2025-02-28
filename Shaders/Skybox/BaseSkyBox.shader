@@ -123,7 +123,7 @@ Shader "AHD2TODSystem/BaseSky"
                 return angle1_to_n1;
             }
 
-            #include "Packages/AHD2-TODSystem/ShaderLibrary/VolumetricFog.hlsl"
+            #include "Packages/com.ahd2.tod-system/ShaderLibrary/VolumetricFog.hlsl"
 
             v2f vert (appdata v)
             {

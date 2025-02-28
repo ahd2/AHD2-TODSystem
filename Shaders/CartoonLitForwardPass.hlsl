@@ -1,6 +1,6 @@
 #ifndef CARTOON_LIT_FORWARD_PASS_INCLUDED
 #define CARTOON_LIT_FORWARD_PASS_INCLUDED
-#include "Packages/AHD2-TODSystem/ShaderLibrary/VolumetricFog.hlsl"
+#include "Packages/com.ahd2.tod-system/ShaderLibrary/VolumetricFog.hlsl"
 struct appdata
 {
     float4 vertex : POSITION;

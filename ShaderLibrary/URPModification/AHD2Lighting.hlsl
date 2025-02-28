@@ -3,7 +3,7 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/BRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging3D.hlsl"
-#include "Packages/AHD2-TODSystem/ShaderLibrary/URPModification/AHD2GlobalIllumination.hlsl"
+#include "Packages/com.ahd2.tod-system/ShaderLibrary/URPModification/AHD2GlobalIllumination.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RealtimeLights.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/AmbientOcclusion.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"

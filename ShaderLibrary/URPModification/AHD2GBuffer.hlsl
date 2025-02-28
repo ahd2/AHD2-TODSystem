@@ -2,7 +2,7 @@
 #define AHD2_GBUFFERUTIL_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
-#include "Packages/AHD2-TODSystem/ShaderLibrary/URPModification/AHD2Lighting.hlsl"
+#include "Packages/com.ahd2.tod-system/ShaderLibrary/URPModification/AHD2Lighting.hlsl"
 
 // inspired from [builtin_shaders]/CGIncludes/UnityGBuffer.cginc
 
