@@ -115,10 +115,11 @@ namespace AHD2TimeOfDay
             
             // 创建新Feature实例
             var newFeature = ScriptableObject.CreateInstance<VolumetricFogRendererFeature>();
+            newFeature.name = "VolumetricFogRendererFeature";
             // 查找并设置ComputeShader
             ComputeShader fogComputeShader =
                 AssetDatabase.LoadAssetAtPath<ComputeShader>(
-                    "Packages/com.ahd2.tod-system/TODSystem/Shaders/VolumetricFog/DensityAndLighting.compute");
+                    "Packages/com.ahd2.tod-system/Shaders/VolumetricFog/DensityAndLighting.compute");
             if (fogComputeShader == null)
             {
                 Debug.LogWarning("未找到雾效ComputeShader，请手动设置");
