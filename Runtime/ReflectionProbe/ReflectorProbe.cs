@@ -73,7 +73,7 @@ namespace AHD2TimeOfDay
         {
             public float3[] coefficiencesArray;
         }
-        private void OnEnable()
+        public void OnEnable()
         {
             instances.Add(this);
             

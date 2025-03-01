@@ -38,6 +38,7 @@ namespace AHD2TimeOfDay
             ReflectionProbe scriptComponent = ahd2ReflectionProbe.AddComponent<ReflectionProbe>();
             ReflectorProbe newReflectorProbe = ahd2ReflectionProbe.AddComponent<ReflectorProbe>();
             newReflectorProbe.TodGlobalParameters = defaultTODGlobalParameters;
+            newReflectorProbe.OnEnable();//强制刷新一遍
             //初始化（生成就烘焙一次）
             newReflectorProbe.bakeable = true;
             ReflectorProbe[] probes = new ReflectorProbe[1];
