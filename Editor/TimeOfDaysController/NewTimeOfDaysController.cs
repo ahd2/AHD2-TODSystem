@@ -77,10 +77,10 @@ namespace AHD2TimeOfDay
             
             // 通过反射获取当前渲染器数据列表
             Type urpAssetType = urpAsset.GetType();
-            FieldInfo renderersField = urpAssetType.GetField("m_Renderers", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo renderersField = urpAssetType.GetField("m_RendererDataList", BindingFlags.NonPublic | BindingFlags.Instance);
             if (renderersField == null)
             {
-                Debug.LogError("无法获取m_Renderers字段");
+                Debug.LogError("无法获取m_RendererDataList字段");
                 return;
             }
             
