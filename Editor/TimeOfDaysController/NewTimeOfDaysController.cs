@@ -42,6 +42,15 @@ namespace AHD2TimeOfDay
             }
             scriptComponent.todGlobalParameters = defaultTODGlobalParameters;
             
+            //复制反射探针烘焙renderdata到Asset目录
+            ScriptableRendererData bakedRenderData = AssetDatabase.LoadAssetAtPath<ScriptableRendererData>("Assets/TODSystem/ReflectionBakedRenderer.asset");//尝试拿到复制出来的全局参数SO
+            if (!bakedRenderData)
+            {
+                bakedRenderData = Instantiate(AssetDatabase.LoadAssetAtPath<ScriptableRendererData>("Packages/com.ahd2.tod-system/Runtime/ReflectionProbe/ReflectionBakedRenderer.asset"));//复制出全局参数SO
+                AssetDatabase.CreateAsset(bakedRenderData, "Assets/TODSystem/ReflectionBakedRenderer.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
             //所有方向光
             Light[] allLights = FindObjectsOfType<Light>();
             List<Light> directionalLights = new List<Light>();
