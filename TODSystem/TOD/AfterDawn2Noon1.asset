@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e24666f07e6254ab6dcef95b0d9136, type: 3}
   m_Name: AfterDawn2Noon1
   m_EditorClassIdentifier: 
-  nextTOD: {fileID: 11400000, guid: 167adfdcb0f009f4ea10a75f4b835e84, type: 2}
+  nextTOD: {fileID: 11400000, guid: 4c1bb2fb920b91e4b864cfa9242c8968, type: 2}
   CurrentTODTime: 7
   NextTODTime: 8
   isCross24: 0
