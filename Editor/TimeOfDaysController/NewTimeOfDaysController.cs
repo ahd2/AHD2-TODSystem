@@ -147,12 +147,53 @@ namespace AHD2TimeOfDay
             }
 
             // 添加到Renderer Data
-            newFeature.Create();
-            rendererData.rendererFeatures.Add(newFeature);
+            addRenderFeature(rendererData, newFeature);
 
             // 标记资源需要保存
             EditorUtility.SetDirty(rendererData);
             AssetDatabase.SaveAssets();
+        }
+        
+        //来自https://discussions.unity.com/t/urp-adding-a-renderfeature-from-script/842637
+        /// <summary>
+        /// Based on Unity add feature code.
+        /// See: AddComponent() in https://github.com/Unity-Technologies/Graphics/blob/d0473769091ff202422ad13b7b764c7b6a7ef0be/com.unity.render-pipelines.universal/Editor/ScriptableRendererDataEditor.cs#180
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="feature"></param>
+        static void addRenderFeature(ScriptableRendererData data, ScriptableRendererFeature feature)
+        {
+            // Let's mirror what Unity does.
+            var serializedObject = new SerializedObject(data);
+
+            var renderFeaturesProp = serializedObject.FindProperty("m_RendererFeatures"); // Let's hope they don't change these.
+            var renderFeaturesMapProp = serializedObject.FindProperty("m_RendererFeatureMap");
+
+            serializedObject.Update();
+
+            // Store this new effect as a sub-asset so we can reference it safely afterwards.
+            // Only when we're not dealing with an instantiated asset
+            if (EditorUtility.IsPersistent(data))
+                AssetDatabase.AddObjectToAsset(feature, data);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(feature, out var guid, out long localId);
+
+            // Grow the list first, then add - that's how serialized lists work in Unity
+            renderFeaturesProp.arraySize++;
+            var componentProp = renderFeaturesProp.GetArrayElementAtIndex(renderFeaturesProp.arraySize - 1);
+            componentProp.objectReferenceValue = feature;
+
+            // Update GUID Map
+            renderFeaturesMapProp.arraySize++;
+            var guidProp = renderFeaturesMapProp.GetArrayElementAtIndex(renderFeaturesMapProp.arraySize - 1);
+            guidProp.longValue = localId;
+
+            // Force save / refresh
+            if (EditorUtility.IsPersistent(data))
+            {
+                AssetDatabase.SaveAssetIfDirty(data);
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
