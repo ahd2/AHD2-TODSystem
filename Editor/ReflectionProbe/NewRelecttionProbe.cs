@@ -9,6 +9,22 @@ namespace AHD2TimeOfDay
         [MenuItem("GameObject/AHD2TODSystem/CreateReflectionProbe", false, 2000)]
         public static void CreateNewTimeOfDaysController(MenuCommand menuCommand)
         {
+            TODGlobalParameters defaultTODGlobalParameters =
+                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/DefaultTODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
+            if (defaultTODGlobalParameters)
+            {
+                CreateReflector(menuCommand, defaultTODGlobalParameters);
+            }
+            else
+            {
+                Debug.LogWarning("未找到默认tod全局参数，请先创建TodController或确保“Assets/TODSystem/DefaultTODGlobalParameters.asset”目录下有全局参数");
+                CreateReflector(menuCommand, defaultTODGlobalParameters);
+            }
+            
+        }
+
+        private static void CreateReflector(MenuCommand menuCommand, TODGlobalParameters defaultTODGlobalParameters)
+        {
             // 创建一个新的游戏对象
             GameObject ahd2ReflectionProbe = new GameObject("AHD2ReflectionProbe");
 
@@ -20,7 +36,8 @@ namespace AHD2TimeOfDay
             
             // 在新创建的游戏对象上添加指定的脚本组件
             ReflectionProbe scriptComponent = ahd2ReflectionProbe.AddComponent<ReflectionProbe>();
-            ReflectorProbe newReflectorProbe = ahd2ReflectionProbe.AddComponent<ReflectorProbe>(); 
+            ReflectorProbe newReflectorProbe = ahd2ReflectionProbe.AddComponent<ReflectorProbe>();
+            newReflectorProbe.TodGlobalParameters = defaultTODGlobalParameters;
             //初始化（生成就烘焙一次）
             newReflectorProbe.bakeable = true;
             ReflectorProbe[] probes = new ReflectorProbe[1];
