@@ -147,6 +147,7 @@ namespace AHD2TimeOfDay
             }
 
             // 添加到Renderer Data
+            newFeature.Create();
             rendererData.rendererFeatures.Add(newFeature);
 
             // 标记资源需要保存
