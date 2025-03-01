@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace AHD2TimeOfDay
@@ -11,6 +12,9 @@ namespace AHD2TimeOfDay
         [MenuItem("GameObject/AHD2TODSystem/CreateTimeOfDaysController", false, 2000)]
         public static void CreateNewTimeOfDaysController(MenuCommand menuCommand)
         {
+            GlobalKeyword fogKeyword = GlobalKeyword.Create("VOLUMETRICFOG_ON");
+            Shader.SetKeyword(fogKeyword, false);//
+            
             // 创建一个新的游戏对象
             GameObject timeOfDaysController = new GameObject("TimeOfDaysController");
 

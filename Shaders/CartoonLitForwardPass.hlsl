@@ -79,7 +79,7 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     BRDF brdf = GetBRDF(surface, inputdata);
     half3 finalcolor = GetLighting(surface, brdf, inputdata, mainlight.direction, mainlight.color, mainlight.shadowAttenuation);
     //点光源
-    #ifdef USE_FORWARD_PLUS
+    #ifdef _FORWARD_PLUS
     uint lightIndex; 
     ClusterIterator _urp_internal_clusterIterator = ClusterInit(i.vertex.xy / _ScreenParams.xy, i.positionWS, 0); 
     [loop] while (ClusterNext(_urp_internal_clusterIterator, lightIndex)) { 
