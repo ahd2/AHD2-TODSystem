@@ -89,6 +89,13 @@ half4 CartoonLitFragment (v2f i) : SV_Target
     Light light = GetAdditionalLight(lightIndex, i.positionWS);
         finalcolor.xyz += (light.color * light.distanceAttenuation) * PointLightBRDF(surface, brdf, light.direction, inputdata);
     }
+    #else
+    uint pixelLightCount = GetAdditionalLightsCount();
+    for (uint lightIndex = 0; lightIndex < pixelLightCount; ++lightIndex)
+    {
+        Light light = GetAdditionalLight(lightIndex, i.positionWS);
+        finalcolor.xyz += (light.color * light.distanceAttenuation) * PointLightBRDF(surface, brdf, light.direction, inputdata);
+    }
     #endif
     //自发光
     finalcolor.xyz += surface.emissionMask * _EmissionColor;

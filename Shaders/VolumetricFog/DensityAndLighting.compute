@@ -96,7 +96,7 @@ void DensityAndLighting (uint3 id : SV_DispatchThreadID)
           fogLightCol = CalInScattering(AHD2_FoglightColor.xyz * AHD2_FoglightColor.a * mainlight.shadowAttenuation, mainlight.direction, ray.centerDirWS, AHD2_HGCoefficient);
           fogLightCol += SHcol * INV_4PI * 10;//补正环境光强度
           //点光源
-          #if USE_FORWARD_PLUS
+          #if _FORWARD_PLUS
           {
                uint lightIndex; 
                ClusterIterator _urp_internal_clusterIterator = ClusterInit(centerCoord * _InvTextureSize.xy, voxelCenterWS, 0);
@@ -119,6 +119,26 @@ void DensityAndLighting (uint3 id : SV_DispatchThreadID)
                     
                     fogLightCol += pointLight * INV_4PI;//不考虑各向异性相位
                }
+          }
+          #else
+          uint pixelLightCount = GetAdditionalLightsCount();
+          for (uint lightIndex = 0; lightIndex < pixelLightCount; ++lightIndex)
+          {
+               float3 lightPos = _AdditionalLightsPosition[lightIndex].xyz;
+
+
+               float3 originToLight = lightPos - ray.originWS;//相机指向点光源的向量
+               float projDist = dot(originToLight, ray.centerDirWS);//相机点到光源点的线段，在视线方向上的投影
+               projDist = clamp(projDist, t0, t1);//计算光源峰值能量采样点是否在t0-t1之间
+
+               // 计算采样点
+               float3 samplePos = ray.originWS + projDist * ray.centerDirWS;//只采样光源峰值亮度投影部分（重要性采样变体）
+               Light sampledLight = GetAdditionalLight(lightIndex, samplePos);
+
+               // 蒙特卡洛积分
+               float3 pointLight = sampledLight.color * sampledLight.distanceAttenuation;
+                    
+               fogLightCol += pointLight * INV_4PI;//不考虑各向异性相位
           }
           #endif
 
