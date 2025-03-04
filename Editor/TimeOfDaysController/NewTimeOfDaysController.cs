@@ -35,8 +35,75 @@ namespace AHD2TimeOfDay
                 AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/DefaultTODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
             if (!defaultTODGlobalParameters)//如果没有,拿不到，那么就新建一个
             {
-                defaultTODGlobalParameters = Instantiate(AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Packages/com.ahd2.tod-system/TODSystem/TODGlobalParameters.asset"));//复制出全局参数SO
-                AssetDatabase.CreateAsset(defaultTODGlobalParameters, "Assets/TODSystem/DefaultTODGlobalParameters.asset");
+                //复制所有文件
+                TimeOfDaysEditorUtility.CopyDirectory("Packages/com.ahd2.tod-system/TODSystem", "Assets/TODSystem");
+                //更改TOD的引用
+                TimeOfDay DawnTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Dawn2AfterDawn.asset");
+                TimeOfDay AfterDawnTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/AfterDawn2Noon1.asset");
+                TimeOfDay Noon1TOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Noon12Noon2.asset");
+                TimeOfDay Noon2TOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Noon22PreDusk.asset");
+                TimeOfDay PreDuskTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/PreDusk2Dusk.asset");
+                TimeOfDay DuskTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Dusk2AfterDusk.asset");
+                TimeOfDay AfterDuskTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/AfterDusk2Night1.asset");
+                TimeOfDay Night1TOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Night12Night2.asset");
+                TimeOfDay Night2TOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/Night22PreDawn.asset");
+                TimeOfDay PreDawnTOD = AssetDatabase.LoadAssetAtPath<TimeOfDay>("Assets/TODSystem/TOD/PreDawn2Dawn.asset");
+                
+                Material DawnSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Dawn_HDRSkyBox_BaseSky.mat");
+                Material AfterDawnSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/AfterDawn_HDRSkyBox_BaseSky.mat");
+                Material Noon1Sky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Noon1_HDRSkyBox_BaseSky.mat");
+                Material Noon2Sky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Noon2_HDRSkyBox_BaseSky.mat");
+                Material PreDuskSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/PreDusk_HDRSkyBox_BaseSky.mat");
+                Material DuskSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Dusk_HDRSkyBox_BaseSky.mat");
+                Material AfterDuskSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/AfterDusk_HDRSkyBox_BaseSky.mat");
+                Material Night1Sky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Night1_HDRSkyBox_BaseSky.mat");
+                Material Night2Sky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/Night2_HDRSkyBox_BaseSky.mat");
+                Material PreDawnSky = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky_TOD/PreDawn_HDRSkyBox_BaseSky.mat");
+
+                DawnTOD.materials[0] = DawnSky;
+                DawnTOD.nextTOD = AfterDawnTOD;
+                
+                AfterDawnTOD.materials[0] = AfterDawnSky;
+                AfterDawnTOD.nextTOD = Noon1TOD;
+                
+                Noon1TOD.materials[0] = Noon1Sky;
+                Noon1TOD.nextTOD = Noon2TOD;
+                
+                Noon2TOD.materials[0] = Noon2Sky;
+                Noon2TOD.nextTOD = PreDuskTOD;
+
+                PreDuskTOD.materials[0] = PreDuskSky;
+                PreDuskTOD.nextTOD = DuskTOD;
+
+                DuskTOD.materials[0] = DuskSky;
+                DuskTOD.nextTOD = AfterDuskTOD;
+
+                AfterDuskTOD.materials[0] = AfterDuskSky;
+                AfterDuskTOD.nextTOD = Night1TOD;
+
+                Night1TOD.materials[0] = Night1Sky;
+                Night1TOD.nextTOD = Night2TOD;
+
+                Night2TOD.materials[0] = Night2Sky;
+                Night2TOD.nextTOD = PreDawnTOD;
+
+                PreDawnTOD.materials[0] = PreDawnSky;
+                PreDawnTOD.nextTOD = DawnTOD;
+                //更改全局参数的引用
+                defaultTODGlobalParameters = AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/TODGlobalParameters.asset");
+                defaultTODGlobalParameters.materials[0] = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky.mat");
+
+                defaultTODGlobalParameters.timeOfDays[0] = DawnTOD;
+                defaultTODGlobalParameters.timeOfDays[1] = AfterDawnTOD;
+                defaultTODGlobalParameters.timeOfDays[2] = Noon1TOD;
+                defaultTODGlobalParameters.timeOfDays[3] = Noon2TOD;
+                defaultTODGlobalParameters.timeOfDays[4] = PreDuskTOD;
+                defaultTODGlobalParameters.timeOfDays[5] = DuskTOD;
+                defaultTODGlobalParameters.timeOfDays[6] = AfterDuskTOD;
+                defaultTODGlobalParameters.timeOfDays[7] = Night1TOD;
+                defaultTODGlobalParameters.timeOfDays[8] = Night2TOD;
+                defaultTODGlobalParameters.timeOfDays[9] = PreDawnTOD;
+                
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
@@ -69,7 +136,7 @@ namespace AHD2TimeOfDay
                 Debug.LogWarning("请放入主方向光！！Please add the main directional light!");
             }
             
-            RenderSettings.skybox = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.ahd2.tod-system/TODSystem/Material/HDRSkyBox_BaseSky.mat");
+            RenderSettings.skybox = AssetDatabase.LoadAssetAtPath<Material>("Assets/TODSystem/Material/HDRSkyBox_BaseSky.mat");
             // 选中新创建的游戏对象
             Selection.activeObject = timeOfDaysController;
         }
