@@ -97,6 +97,8 @@ namespace AHD2TimeOfDay
             var depthEncodingParams = ComputeLogarithmicDepthEncodingParams(targetCamera.nearClipPlane, _fogFarPlaneDistance, 2f);
             Shader.SetGlobalVector("_VBufferDistanceEncodingParams", depthEncodingParams);
             Shader.SetGlobalFloat("_FogFarPlaneDistance", _fogFarPlaneDistance);
+            Shader.SetGlobalFloat("_FogStartHeight", _fogStartHeight);
+            Shader.SetGlobalFloat("_FogDensity", _fogDensity);
             CommandBuffer cmd = CommandBufferPool.Get();
             //cmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
             // 计算线程组大小
