@@ -32,7 +32,7 @@ namespace AHD2TimeOfDay
             //初始化
             TimeOfDaysEditorUtility.CreateDirectory("Assets/TODSystem");//尝试创建路径
             TODGlobalParameters defaultTODGlobalParameters =
-                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/DefaultTODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
+                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/TODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
             if (!defaultTODGlobalParameters)//如果没有,拿不到，那么就新建一个
             {
                 //复制所有文件

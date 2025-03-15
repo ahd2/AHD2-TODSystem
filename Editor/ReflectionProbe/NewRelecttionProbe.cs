@@ -10,14 +10,14 @@ namespace AHD2TimeOfDay
         public static void CreateNewTimeOfDaysController(MenuCommand menuCommand)
         {
             TODGlobalParameters defaultTODGlobalParameters =
-                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/DefaultTODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
+                AssetDatabase.LoadAssetAtPath<TODGlobalParameters>("Assets/TODSystem/TODGlobalParameters.asset");//尝试拿到复制出来的全局参数SO
             if (defaultTODGlobalParameters)
             {
                 CreateReflector(menuCommand, defaultTODGlobalParameters);
             }
             else
             {
-                Debug.LogWarning("未找到默认tod全局参数，请先创建TodController或确保“Assets/TODSystem/DefaultTODGlobalParameters.asset”目录下有全局参数");
+                Debug.LogWarning("未找到默认tod全局参数，请先创建TodController或确保“Assets/TODSystem/TODGlobalParameters.asset”目录下有全局参数");
                 CreateReflector(menuCommand, defaultTODGlobalParameters);
             }
             
