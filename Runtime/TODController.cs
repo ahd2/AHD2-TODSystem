@@ -80,7 +80,8 @@ namespace AHD2TimeOfDay
             //设置主光
             MainLight.color = todGlobalParameters.MainlightColor;
             MainLight.intensity = todGlobalParameters.MainlightIntensity;
-            MainLight.transform.rotation = Quaternion.Euler(todGlobalParameters.MainlightDirection);//真光源角度
+            //MainLight.transform.Rotate(new Vector3(1,0,0), 0, Space.World);
+            MainLight.transform.rotation = todGlobalParameters.MainlightDirection;//真光源角度
             //白天开启lensflare
             if (LensFlare)
             {

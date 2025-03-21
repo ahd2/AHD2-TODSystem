@@ -71,7 +71,8 @@ namespace AHD2TimeOfDay
         //光源
         public Color MainlightColor; //光源色
         public float MainlightIntensity;
-        public Vector3 MainlightDirection;
+        public Quaternion MainlightDirection;
+        public Vector3 MainlightTiltAngle;
         
         //雾效
         public Color FogLightColor;
@@ -239,8 +240,17 @@ namespace AHD2TimeOfDay
             MainlightColor = Color.Lerp(currentTimeOfDay.MainlightColor, currentTimeOfDay.nextTOD.MainlightColor, todElapsedTimeRatio);
             MainlightIntensity = Mathf.Lerp(currentTimeOfDay.MainlightIntensity, currentTimeOfDay.nextTOD.MainlightIntensity,
                 todElapsedTimeRatio);
-            MainlightDirection = Vector3.Lerp(currentTimeOfDay.MainlightDirection,
-                currentTimeOfDay.nextTOD.MainlightDirection, todElapsedTimeRatio);
+            // 将关键帧的欧拉角转换为四元数
+            Quaternion currentRot = Quaternion.AngleAxis(currentTimeOfDay.MainlightAngle, Vector3.right);
+            Quaternion nextRot = Quaternion.AngleAxis(currentTimeOfDay.nextTOD.MainlightAngle, Vector3.right);
+            // 应用倾斜
+            Quaternion tilt = Quaternion.Euler(MainlightTiltAngle);
+            currentRot = tilt * currentRot;
+            nextRot = tilt * nextRot;
+
+            // 四元数插值
+            MainlightDirection = Quaternion.Slerp(currentRot, nextRot, todElapsedTimeRatio);
+
             //传入预计算光源方向，a通道为昼夜标记
             _dayOrNight = Convert.ToInt32(currentTimeOfDay.dayOrNight);
         }

@@ -19,7 +19,7 @@ MonoBehaviour:
   duration: 8
   MainlightColor: {r: 1, g: 0.81041104, b: 0.3754716, a: 1}
   MainlightIntensity: 8
-  MainlightDirection: {x: 30, y: 0, z: 0}
+  MainlightAngle: 30
   FogLightColor: {r: 0.074624375, g: 0.73752505, b: 0.8415094, a: 0}
   FogLightIntensity: 7
   HGCoefficient: 0
