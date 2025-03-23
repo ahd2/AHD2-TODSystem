@@ -7,7 +7,7 @@ namespace AHD2TimeOfDay
 {
     public class MaterialTODViewer : EditorWindow
     {
-        private TimeOfDay materialList;
+        private TODGlobalParameters GlobalParameters;
         private Vector2 scrollPosition;
         private Material selectedMaterial;
         private MaterialEditor materialEditor;
@@ -17,64 +17,131 @@ namespace AHD2TimeOfDay
         {
             GetWindow<MaterialTODViewer>("Material List Viewer");
         }
+        //选择显示类型
+        private int _selectedIndex = 0;
 
         void OnGUI()
         {
             GUILayout.Label("Material List Viewer", EditorStyles.boldLabel);
 
+            GUILayout.BeginHorizontal();
             // 拖拽赋值ScriptableObject
-            materialList = (TimeOfDay)EditorGUILayout.ObjectField(
+            GlobalParameters = (TODGlobalParameters)EditorGUILayout.ObjectField(
                 "Material List Asset",
-                materialList,
-                typeof(TimeOfDay),
+                GlobalParameters,
+                typeof(TODGlobalParameters),
                 false);
-
-            if (materialList == null || materialList.materials == null)
+            // 定义一个字符串数组作为下拉框的选项
+            string[] options = new string[] { "显示单个关键帧所有材质", "显示单个材质所有关键帧" };
+            _selectedIndex = EditorGUILayout.Popup(_selectedIndex, options);
+            if (GlobalParameters && _selectedIndex == 0)
             {
-                EditorGUILayout.HelpBox("Please assign a Material List asset", MessageType.Info);
+                // 绘制时间点选择下拉框
+                DrawTimeOfDaySelector();
+            }
+            if (GlobalParameters && _selectedIndex == 1)
+            {
+                // 绘制材质选择下拉框
+                DrawMaterialSelector();
+            }
+            GUILayout.EndHorizontal();
+
+            if (GlobalParameters == null || GlobalParameters.materials == null)
+            {
+                EditorGUILayout.HelpBox("拖入全局参数SO", MessageType.Info);
                 return;
             }
 
+            //先是一个横向的框，显示一个关键帧的所有材质
+            //然后纵向
             DrawMaterialList();
-            DrawSelectedMaterialInspector();
         }
+        private int selectedTimeOfDayIndex = 0; // 新增字段保存选中索引
+        void DrawTimeOfDaySelector()
+        {
+            if (GlobalParameters.timeOfDays == null || GlobalParameters.timeOfDays.Length == 0)
+            {
+                EditorGUILayout.HelpBox("没有配置TOD", MessageType.Warning);
+                return;
+            }
 
+            // 生成选项名称数组
+            string[] options = new string[GlobalParameters.timeOfDays.Length];
+            for (int i = 0; i < GlobalParameters.timeOfDays.Length; i++)
+            {
+                //(需要todFrameList和todlist对齐)
+                options[i] = GlobalParameters.todFrameList[i].name;
+            }
+    
+            // 绘制下拉框
+            selectedTimeOfDayIndex = EditorGUILayout.Popup(
+                "选择TOD",
+                selectedTimeOfDayIndex,
+                options);
+        }
+        private int selectedMatIndex = 0; // 新增字段保存选中索引
+        void DrawMaterialSelector()
+        {
+            if (GlobalParameters.materials == null || GlobalParameters.materials.Length == 0)
+            {
+                EditorGUILayout.HelpBox("没有配置材质", MessageType.Warning);
+                return;
+            }
+
+            // 生成选项名称数组
+            string[] options = new string[GlobalParameters.materials.Length];
+            for (int i = 0; i < GlobalParameters.materials.Length; i++)
+            {
+                //(需要todFrameList和todlist对齐)
+                options[i] = GlobalParameters.materials[i].name;
+            }
+    
+            // 绘制下拉框
+            selectedMatIndex = EditorGUILayout.Popup(
+                "选择材质",
+                selectedMatIndex,
+                options);
+        }
         void DrawMaterialList()
         {
             float previewSize = 100f;
             float margin = 5f;
 
-            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(previewSize + 30));
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
             EditorGUILayout.BeginHorizontal();
 
-            foreach (var material in materialList.materials)
+            if (_selectedIndex == 0)//显示单个关键帧所有材质
             {
-                if (material == null) continue;
-
-                EditorGUILayout.BeginVertical(GUILayout.Width(previewSize + margin));
-
-                // 绘制材质预览
-                Texture2D preview = AssetPreview.GetAssetPreview(material);
-                bool isSelected = selectedMaterial == material;
-
-                if (preview != null)
+                //每一个材质，先开一个横向（为了和左右分割），再开一个纵向框，装该材质所有TOD
+                //要求全局参数类和tod的材质索引是一样的。
+                for (int i = 0; i < GlobalParameters.materials.Length; i++)
                 {
-                    GUI.backgroundColor = isSelected ? Color.blue : Color.white;
-                    if (GUILayout.Button(preview, GUILayout.Width(previewSize), GUILayout.Height(previewSize)))
-                    {
-                        SelectMaterial(material);
-                    }
+                    // 单个材质面板容器
+                    EditorGUILayout.BeginHorizontal(GUI.skin.box, GUILayout.ExpandWidth(true));
+                    EditorGUILayout.BeginVertical();
 
-                    GUI.backgroundColor = Color.white;
+                    var tod =GlobalParameters.timeOfDays[selectedTimeOfDayIndex];
+                    SelectMaterial(tod.materials[i]);
+                    DrawSelectedMaterialInspector(tod.materials[i]);
+
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.EndHorizontal();
                 }
-                else
+            }else if (_selectedIndex == 1)//显示单个材质所有关键帧
+            {
+                for (int i = 0; i < GlobalParameters.timeOfDays.Length; i++)
                 {
-                    GUILayout.Box("Loading...", GUILayout.Width(previewSize), GUILayout.Height(previewSize));
-                }
+                    // 单个材质面板容器
+                    EditorGUILayout.BeginHorizontal(GUI.skin.box, GUILayout.ExpandWidth(true));
+                    EditorGUILayout.BeginVertical();
 
-                // 显示材质名称
-                GUILayout.Label(material.name, EditorStyles.centeredGreyMiniLabel);
-                EditorGUILayout.EndVertical();
+                    var mat =GlobalParameters.timeOfDays[i].materials[selectedMatIndex];
+                    SelectMaterial(mat);
+                    DrawSelectedMaterialInspector(mat);
+
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.EndHorizontal();
+                }
             }
 
             EditorGUILayout.EndHorizontal();
@@ -86,30 +153,31 @@ namespace AHD2TimeOfDay
             selectedMaterial = material;
             DestroyImmediate(materialEditor);
             materialEditor = Editor.CreateEditor(selectedMaterial) as MaterialEditor;
+            UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(materialEditor.target, true);//让其默认展开
         }
 
-        private Vector2 propertyScrollPos;
-        void DrawSelectedMaterialInspector()
+        // 在类中添加字典存储滚动位置
+        private Dictionary<Material, Vector2> materialScrollPositions = new Dictionary<Material, Vector2>();
+        void DrawSelectedMaterialInspector(Material mat)
         {
-            if (selectedMaterial == null || materialEditor == null)
+            // 获取或创建滚动位置
+            if (!materialScrollPositions.ContainsKey(mat))
             {
-                EditorGUILayout.HelpBox("请在上方选择一个材质", MessageType.Info);
-                return;
+                materialScrollPositions[mat] = Vector2.zero;
             }
-
             // 分割线
             EditorGUILayout.Space(5);
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
             EditorGUILayout.Space(5);
 
             // 属性面板标题
-            EditorGUILayout.LabelField($"编辑材质: {selectedMaterial.name}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField($"材质: {selectedMaterial.name}", EditorStyles.boldLabel);
 
             // 绘制材质属性
             materialEditor.DrawHeader();
             if (materialEditor.isVisible)
             {
-                propertyScrollPos = EditorGUILayout.BeginScrollView(propertyScrollPos);
+                materialScrollPositions[mat] = EditorGUILayout.BeginScrollView(materialScrollPositions[mat]);
                 EditorGUILayout.BeginVertical();
                 materialEditor.PropertiesGUI();
                 EditorGUILayout.EndVertical();
