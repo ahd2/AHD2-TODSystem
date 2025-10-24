@@ -1,6 +1,10 @@
-﻿using Unity.Collections;
+using Unity.Collections;
 using UnityEngine;
+#if UNITY_6000_0_OR_NEWER
+using UnityEngine.Rendering.RenderGraphModule;
+#else
 using UnityEngine.Experimental.Rendering.RenderGraphModule;
+#endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -159,10 +163,17 @@ namespace AHD2TimeOfDay
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             //Debug.Log("测试OnCameraSetup是否每帧调用");
+#if UNITY_6000_0_OR_NEWER
+            _texScreenWidth = renderingData.cameraData.cameraTargetDescriptor.width;
+            _texScreenWidth /= 8;
+            _texScreenHeight = renderingData.cameraData.cameraTargetDescriptor.height;
+            _texScreenHeight /= 8 ;
+#else
             _texScreenWidth = renderingData.cameraData.scaledWidth;
             _texScreenWidth /= 8;
             _texScreenHeight = renderingData.cameraData.scaledHeight;
             _texScreenHeight /= 8 ;
+#endif
 
             _DensityBufferID = new RenderTargetIdentifier(_DensityBuffer);
             _ScatterBufferID = new RenderTargetIdentifier(_ScatterBuffer);
